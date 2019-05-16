@@ -1,5 +1,4 @@
-/*
-#include <stdio.h>
+/*#include <stdio.h>
 #include "filestat.h"
 #include <sys/stat.h>
 #include <unistd.h>
@@ -10,6 +9,13 @@
 
 
 
+int numeroMonitorati = 0;
+int numeroLink = 0;
+int numeroDirectory = 0;
+int dimensioneTotale = 0;
+int dimensioneMedia = 0;
+int dimensioneMassima = 0;
+int dimensioneMinima = 0;
 
 
 void updateDimensioneMedia()
@@ -67,9 +73,11 @@ readPath(char *path, int isR, int isL)
 int main(int argc, char const *argv[])
 {
     
-
+for(int i = 0; i<argc; i++){
+    if
+}
     FILE *fileInput;
-    if (strcmp(get_filename_ext(argv[argc - 2]), "in"))
+    if (get_filename_ext(argv[argc - 2]) != NULL && strcmp(get_filename_ext(argv[argc - 2]), "in"))
     {
         fileInput = fopen(argv[argc - 2], "r");
     }
@@ -79,17 +87,21 @@ int main(int argc, char const *argv[])
     }
 
     FILE *fileOutput;
-    if (strcmp(get_filename_ext(argv[argc - 1]), "db"))
+    if (get_filename_ext(argv[argc - 1]) != NULL && strcmp(get_filename_ext(argv[argc - 1]), "db"))
     {
         fileOutput = fopen(argv[argc - 1], "a");
     }
     else
     {
-        fileOutput = fopen("filestat.db", "a");
+        fileOutput = fopen("filestat.db", "r+");
     }
 
-    char *currentPath;
+    char *line;
 
+      while ( fgets ( line, 128, fileInput ) != NULL ) /* read a line */
+      {
+         fputs ( line, stdout ); /* write the line */
+      }
     fclose(fileInput);
     fclose(fileOutput);
     return 0;
