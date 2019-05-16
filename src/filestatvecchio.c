@@ -1,3 +1,4 @@
+/*
 #include <stdio.h>
 #include "filestat.h"
 #include <sys/stat.h>
@@ -93,3 +94,4 @@ int main(int argc, char const *argv[])
     fclose(fileOutput);
     return 0;
 }
+*/

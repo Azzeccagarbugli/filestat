@@ -21,17 +21,18 @@ int noscan_flag;
 
 int main(int argc, char **argv)
 {
-
     static struct option long_options[] = {
-        {"verbose", no_argument, NULL, 'v'},
-        {"stat", no_argument, NULL, 's'},
-        {"report", no_argument, NULL, 'r'},
-        {"history", required_argument, 0, 'h'},
-        {"user", required_argument, 0, 'u'},
-        {"group", required_argument, 0, 'g'},
-        {"length", required_argument, 0, 'l'},
-        {"noscan", no_argument, &noscan_flag, 1},
-        {0, 0, 0, 0}};
+        {"verbose", no_argument,        NULL,         'v'},
+        {"stat",    no_argument,        NULL,         's'},
+        {"report",  no_argument,        NULL,         'r'},
+        {"history", required_argument,  0,            'h'},
+        {"user",    required_argument,  0,            'u'},
+        {"group",   required_argument,  0,            'g'},
+        {"length",  required_argument,  0,            'l'},
+        {"noscan",  no_argument,        &noscan_flag,   1},
+        {0,         0,                  0,              0}
+        };
+
     int c = 0;
 
     if (argc < 1)
@@ -106,7 +107,7 @@ int main(int argc, char **argv)
     printf((fileStat.st_mode & S_IWOTH) ? "w" : "-");
     printf((fileStat.st_mode & S_IXOTH) ? "x" : "-");*/
     //  printf("\n\n");
-
+ 
     // printf("The file %s a symbolic link\n", (S_ISLNK(fileStat.st_mode)) ? "is" : "is not");
 
     return 0;
