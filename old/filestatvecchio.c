@@ -1,109 +1,48 @@
-/*#include <stdio.h>
-#include "filestat.h"
-#include <sys/stat.h>
-#include <unistd.h>
-#include <sys/types.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <fcntl.h>
-#include <getopt.h>
+#include <limits.h>
 
-
-
-int numeroMonitorati = 0;
-int numeroLink = 0;
-int numeroDirectory = 0;
-int dimensioneTotale = 0;
-int dimensioneMedia = 0;
-int dimensioneMassima = 0;
-int dimensioneMinima = 0;
-
-
-void updateDimensioneMedia()
+void analisiSingolaRiga(char *riga)
 {
-    dimensioneMedia = dimensioneTotale / (numeroDirectory + numeroLink + numeroMonitorati);
-}
-
-void updateDimensioneMassima(int newMax)
-{
-    if (newMax > dimensioneMassima)
-        dimensioneMassima = newMax;
-}
-
-void updateDimensioneMinima(int newMin)
-{
-    if (newMin < dimensioneMinima)
-        dimensioneMinima = newMin;
-}
-
-const char *get_filename_ext(const char *filename)
-{
-    const char *dot = strrchr(filename, '.');
-    if (!dot || dot == filename)
-        return "";
-    return dot + 1;
-}
-
-int index_option(int nrElem, char *options[], char *optionToSearch)
-{
-    for (int i = 0; i < nrElem; i++)
+    printf("Line: %s \n", riga);
+    char *path = (char *) calloc(strlen(riga), sizeof(char));      
+    int bR = 0;
+    int bL = 0;
+    int pathRead = 0;
+    char *token;
+    for (token = strtok(riga, " "); token; token = strtok(NULL, " "))
     {
-        if (strcmp(options[i], optionToSearch))
+        if (strcmp(token, "r") == 0)
         {
-            return i;
+            bR = 1;
+        }
+        else if (strcmp(token, "l") == 0)
+        {
+            bL = 1;
+        }
+        else if (!pathRead)
+        {
+            strcpy(path, token);
+            pathRead = 1;
         }
     }
-    return -1;
-}
 
-readPath(char *path, int isR, int isL)
-{
-    struct stat *infoSingleFile;
-    if (isL)
-    {
-        if (lstat(path, infoSingleFile) < 0)
-            return -1;
-    }
-    else
-    {
-        if (stat(path, infoSingleFile) < 0)
-            return -1;
-    }
+    printf("Path: %s\n", path);
+    printf("R: %d\n", bR);
+    printf("L: %d\n", bL);
+    free(path);
 }
 
 int main(int argc, char const *argv[])
 {
-    
-for(int i = 0; i<argc; i++){
-    if
+    char nome[] = "./filestat.in";
+    FILE *input = fopen(nome, "r");
+    char line[128];
+    while (fgets(line, sizeof line, input) != NULL)
+    {
+        analisiSingolaRiga(strtok(line, "\n"));
+    }
+    fclose(input);
+    return 1;
 }
-    FILE *fileInput;
-    if (get_filename_ext(argv[argc - 2]) != NULL && strcmp(get_filename_ext(argv[argc - 2]), "in"))
-    {
-        fileInput = fopen(argv[argc - 2], "r");
-    }
-    else
-    {
-        fileInput = fopen("filestat.in", "r");
-    }
-
-    FILE *fileOutput;
-    if (get_filename_ext(argv[argc - 1]) != NULL && strcmp(get_filename_ext(argv[argc - 1]), "db"))
-    {
-        fileOutput = fopen(argv[argc - 1], "a");
-    }
-    else
-    {
-        fileOutput = fopen("filestat.db", "r+");
-    }
-
-    char *line;
-
-      while ( fgets ( line, 128, fileInput ) != NULL ) /* read a line */
-      {
-         fputs ( line, stdout ); /* write the line */
-      }
-    fclose(fileInput);
-    fclose(fileOutput);
-    return 0;
-}
-*/

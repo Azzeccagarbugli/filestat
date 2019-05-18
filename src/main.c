@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include "../include/main.h"
+#include "../include/scan.h"
 
 static int verbose_flag;
 static int stat_flag;
@@ -26,8 +27,14 @@ static int max_length;
 
 static int noscan_flag;
 
+static FILE *file_input;
+static FILE *file_output;
+static char default_input_path[] = "./filestat.in";
+static char default_output_path[] = "./filestat.db";
+
 int main(int argc, char **argv)
 {
+    parsePaths(argc, argv);
     if (!parseOpt(argc, argv))
     {
         return -1;
@@ -36,7 +43,19 @@ int main(int argc, char **argv)
     {
         printOpt();
     }
+
+    readInputFile(file_input);
+    fclose(file_input);
+    fclose(file_output);
     return 1;
+}
+
+void parsePaths(int argc, char **argv)
+{
+    file_input = ((argc > 2) && (access(argv[argc - 2], F_OK) == 0)) ? fopen(argv[argc - 2], "r") : fopen(default_input_path, "r");
+    file_output = ((argc > 2) && (access(argv[argc - 1], F_OK) == 0)) ? fopen(argv[argc - 1], "r+") : fopen(default_output_path, "r+");
+
+    printf("\n");
 }
 
 void printOpt()
@@ -53,7 +72,8 @@ void printOpt()
     printf("Length flag: %d\n", length_flag);
     printf("Min length: %d\n", min_length);
     printf("Max lenght: %d\n", max_length);
-    printf("Noscan?: %d\n", noscan_flag);
+    printf("Noscan: %d\n", noscan_flag);
+    printf("\n");
 }
 
 int parseOpt(int argc, char **argv)
