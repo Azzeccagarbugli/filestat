@@ -1,11 +1,11 @@
 #include <stdio.h>
-#include <main.h>
 #include <getopt.h>
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include "../include/main.h"
 
 static int verbose_flag;
 static int stat_flag;
@@ -26,11 +26,37 @@ static int max_length;
 
 static int noscan_flag;
 
-int getLengthArg(char *);
-int getHistoryPath(char *);
-void printOpt();
-
 int main(int argc, char **argv)
+{
+    if (!parseOpt(argc, argv))
+    {
+        return -1;
+    }
+    else
+    {
+        printOpt();
+    }
+    return 1;
+}
+
+void printOpt()
+{
+    printf("Verbose Flag: %d\n", verbose_flag);
+    printf("Stat Flag: %d\n", stat_flag);
+    printf("Report flag: %d\n", report_flag);
+    printf("History flag: %d\n", history_flag);
+    printf("History path: %s\n", history_path);
+    printf("User flag: %d\n", user_flag);
+    printf("User ID: %d\n", uID);
+    printf("Group flag: %d\n", group_flag);
+    printf("Group ID: %d\n", gID);
+    printf("Length flag: %d\n", length_flag);
+    printf("Min length: %d\n", min_length);
+    printf("Max lenght: %d\n", max_length);
+    printf("Noscan?: %d\n", noscan_flag);
+}
+
+int parseOpt(int argc, char **argv)
 {
     static struct option long_options[] = {
         {"verbose", no_argument, NULL, 'v'},
@@ -47,7 +73,7 @@ int main(int argc, char **argv)
 
     if (argc < 1)
     {
-        return -1;
+        return 0;
     }
 
     int option_index = 0;
@@ -69,7 +95,7 @@ int main(int argc, char **argv)
             history_flag = 1;
             if (!getHistoryPath(optarg))
             {
-                return -1;
+                return 0;
             };
             break;
         case 'u':
@@ -84,7 +110,7 @@ int main(int argc, char **argv)
             length_flag = 1;
             if (!getLengthArg(optarg))
             {
-                return -1;
+                return 0;
             };
             break;
         case 1:
@@ -92,31 +118,12 @@ int main(int argc, char **argv)
             break;
         }
     }
-    printOpt();
-    return 0;
-}
-
-void printOpt()
-{
-    printf("Verbose Flag: %d\n", verbose_flag);
-    printf("Stat Flag: %d\n", stat_flag);
-    printf("Report flag: %d\n", report_flag);
-    printf("History flag: %d\n", history_flag);
-    printf("History path: %s\n", history_path);
-    printf("User flag: %d\n", user_flag);
-    printf("User ID: %d\n", uID);
-    printf("Group flag: %d\n", group_flag);
-    printf("Group ID: %d\n", gID);
-    printf("Length flag: %d\n", length_flag);
-    printf("Min length: %d\n", min_length);
-    printf("Max lenght: %d\n", max_length);
-    printf("Noscan?: %d\n", noscan_flag);
+    return 1;
 }
 
 int getLengthArg(char *arg)
 {
-    char *token;
-    token = strtok(arg, ":");
+    char *token = strtok(arg, ":");
     if (arg[0] == ':')
     {
         min_length = 0;
@@ -126,12 +133,11 @@ int getLengthArg(char *arg)
     {
         min_length = atoi(token);
         token = strtok(NULL, ":");
-        max_length = atoi(token);
+        max_length = (token != NULL) ? atoi(token) : 0;
     }
     if (max_length != 0 && min_length > max_length)
     {
-        errno = -1;
-        perror("The first value must be major than the second one\n");
+        perror("I valori inseriti con -l non vanno bene\n");
         return 0;
     }
     return 1;
@@ -144,8 +150,8 @@ int getHistoryPath(char *arg)
     strcpy(history_path, arg);
     if (access(history_path, F_OK) == -1)
     {
-        perror("The current file doesn't exist\n");
-        return -1;
+        perror("Il file inserito con -h non esiste in questa directory\n");
+        return 0;
     }
     return 1;
 }
