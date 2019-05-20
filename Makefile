@@ -37,6 +37,6 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) -I$(SRC_DIR) -c $< -o $@
 
 clean: 
-	$(RM) $(OBJ_DIR)/*
+	$(RM) $(OBJ_DIR)/*.o
 	$(RM) filestat
 	@echo "Clean effettuato con successo!"
