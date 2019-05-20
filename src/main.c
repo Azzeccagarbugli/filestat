@@ -5,7 +5,6 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <dirent.h>
 #include "../include/main.h"
 #include "../include/scan.h"
 #include <time.h>
@@ -18,9 +17,6 @@ static char default_input_path[] = "./filestat.in";
 static char default_output_path[] = "./filestat.db";
 
 struct stat file_stats;
-
-DIR *dirp;
-struct dirent *dent;
 
 int main(int argc, char **argv)
 {
@@ -60,6 +56,7 @@ void printOpt()
     printf("Min length: %d\n", opt_info.min_length);
     printf("Max lenght: %d\n", opt_info.max_length);
     printf("Noscan: %d\n", opt_info.noscan_flag);
+    printf("\nEND OF DEBUG\n###\n");
 }
 
 int parseOpt(int argc, char **argv)
@@ -119,7 +116,7 @@ int parseOpt(int argc, char **argv)
             {
                 return 0;
             };
-            filesBetween("."); // Directory attuale
+           // filesBetween("."); // Directory attuale
             break;
         case 'n':
             opt_info.noscan_flag = 1;
@@ -151,7 +148,7 @@ int getLengthArg(char *arg)
     return 1;
 }
 
-void filesBetween(char *dir)
+/*void filesBetween(char *dir)
 {
     dirp = opendir(dir);
     do
@@ -189,7 +186,7 @@ void filesBetween(char *dir)
         }
     } while (dent);
     closedir(dirp);
-}
+}*/
 
 int getHistoryPath(char *arg)
 {

@@ -13,3 +13,4 @@ extern struct ScanInfo scan_info;
 void readInputFile(FILE *);
 void analisiSingolaRiga(char *);
 int startScan(FILE *, FILE *);
+int scanFile(char *, int, int);
