@@ -15,7 +15,7 @@ void readInputFile(FILE *input)
 
 void analisiSingolaRiga(char *riga)
 {
-    printf("Line: %s \n", riga);
+    printf("\nLine: %s \n", riga);
     char *path = (char *) calloc(strlen(riga), sizeof(char));      
     int bR = 0;
     int bL = 0;

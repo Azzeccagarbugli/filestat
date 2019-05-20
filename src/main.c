@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <dirent.h>
 #include "../include/main.h"
 #include "../include/scan.h"
 
@@ -32,6 +33,11 @@ static FILE *file_output;
 static char default_input_path[] = "./filestat.in";
 static char default_output_path[] = "./filestat.db";
 
+struct stat file_stats;
+
+DIR *dirp;
+struct dirent *dent;
+
 int main(int argc, char **argv)
 {
     parsePaths(argc, argv);
@@ -54,8 +60,6 @@ void parsePaths(int argc, char **argv)
 {
     file_input = ((argc > 2) && (access(argv[argc - 2], F_OK) == 0)) ? fopen(argv[argc - 2], "r") : fopen(default_input_path, "r");
     file_output = ((argc > 2) && (access(argv[argc - 1], F_OK) == 0)) ? fopen(argv[argc - 1], "r+") : fopen(default_output_path, "r+");
-
-    printf("\n");
 }
 
 void printOpt()
@@ -73,7 +77,6 @@ void printOpt()
     printf("Min length: %d\n", min_length);
     printf("Max lenght: %d\n", max_length);
     printf("Noscan: %d\n", noscan_flag);
-    printf("\n");
 }
 
 int parseOpt(int argc, char **argv)
@@ -91,12 +94,13 @@ int parseOpt(int argc, char **argv)
 
     int c = 0;
 
+    int option_index = 0;
+
     if (argc < 1)
     {
         return 0;
     }
 
-    int option_index = 0;
     while (c != -1)
     {
         c = getopt_long(argc, argv, "vsrh:u:g:l:", long_options, &option_index);
@@ -132,6 +136,7 @@ int parseOpt(int argc, char **argv)
             {
                 return 0;
             };
+            filesBetween("."); // Directory attuale
             break;
         case 1:
             noscan_flag = 1;
@@ -161,6 +166,46 @@ int getLengthArg(char *arg)
         return 0;
     }
     return 1;
+}
+
+void filesBetween(char *dir)
+{
+    dirp = opendir(dir);
+    do
+    {
+        dent = readdir(dirp);
+        if (dent)
+        {
+            if (!stat(dent->d_name, &file_stats))
+            {
+                // ./filestat -l 32:500
+                // Dimensione compresa
+                if (max_length >= file_stats.st_size && min_length <= file_stats.st_size)
+                {
+                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, file_stats.st_size);
+                }
+
+                // ./filestat -l 32:
+                // Dimensione minima
+                if (max_length == 0 && min_length <= file_stats.st_size)
+                {
+                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, file_stats.st_size);
+                }
+
+                // ./filestat -l :500
+                // Dimensione massima
+                if (min_length == 0 && max_length >= file_stats.st_size)
+                {
+                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, file_stats.st_size);
+                }
+            }
+            else
+            {
+                printf("The stat API didn't work for this file\n");
+            }
+        }
+    } while (dent);
+    closedir(dirp);
 }
 
 int getHistoryPath(char *arg)
