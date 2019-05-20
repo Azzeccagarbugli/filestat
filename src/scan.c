@@ -3,10 +3,55 @@
 #include <string.h>
 #include <limits.h>
 #include "../include/scan.h"
+#include "../include/main.h"
+#include <sys/stat.h>
+#include <sys/types.h>
+
+struct ScanInfo scan_info = {0, 0, 0, 0, 0, 0, 0};
+
+void increaseMonitorati()
+{
+    info.nr_monitorati++;
+};
+void increaseLink()
+{
+    info.nr_link++;
+}
+void increaseDirectory()
+{
+    info.nr_directory++;
+}
+
+void updateDimMedia()
+{
+    info.dim_media = info.dim_totale / info.nr_monitorati;
+}
+
+void updateDimMax(int data)
+{
+    if (data > info.dim_max)
+    {
+        info.dim_max = data;
+    }
+};
+void updateDimMin(int data)
+{
+    if (data < info.dim_min)
+    {
+        info.dim_min = data;
+    }
+}
+void increaseDimTotale(int data)
+{
+    info.dim_totale = info.dim_totale + data;
+    updateDimMedia();
+    updateDimMax(data);
+    updateDimMin(data);
+}
 
 void readInputFile(FILE *input)
 {
-    char line[128];
+    char line[1024];
     while (fgets(line, sizeof line, input) != NULL)
     {
         analisiSingolaRiga(strtok(line, "\n"));
@@ -16,9 +61,9 @@ void readInputFile(FILE *input)
 void analisiSingolaRiga(char *riga)
 {
     printf("\nLine: %s \n", riga);
-    char *path = (char *) calloc(strlen(riga), sizeof(char));      
-    int bR = 0;
-    int bL = 0;
+    char *path = (char *)calloc(strlen(riga), sizeof(char));
+    int isR = 0;
+    int isL = 0;
     int pathRead = 0;
     char *token;
     for (token = strtok(riga, " "); token; token = strtok(NULL, " "))
@@ -37,9 +82,28 @@ void analisiSingolaRiga(char *riga)
             pathRead = 1;
         }
     }
-
-    printf("Path: %s\n", path);
-    printf("R: %d\n", bR);
-    printf("L: %d\n", bL);
+    scanFile(path, isR, isL);
     free(path);
+}
+
+int startScan(FILE *input, FILE *output)
+{
+    readInputFile(input);
+}
+
+int scanFile(char *path, int isR, int isL)
+{
+    struct stat currentStat;
+    if (isL)
+    {
+        if (stat(path, &currentStat) < 0)
+            return 0;
+    }
+    else
+    {
+        if (lstat(path, &currentStat) < 0)
+            return 0;
+    }
+
+    
 }

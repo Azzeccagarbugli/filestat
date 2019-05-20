@@ -8,25 +8,9 @@
 #include <dirent.h>
 #include "../include/main.h"
 #include "../include/scan.h"
+#include <time.h>
 
-static int verbose_flag;
-static int stat_flag;
-static int report_flag;
-
-static int history_flag;
-static char *history_path;
-
-static int user_flag;
-static int uID;
-
-static int group_flag;
-static int gID;
-
-static int length_flag;
-static int min_length;
-static int max_length;
-
-static int noscan_flag;
+struct OptInfo opt_info = {0,0,0,0, NULL, 0,0,0,0,0,0,0,0};
 
 static FILE *file_input;
 static FILE *file_output;
@@ -49,8 +33,7 @@ int main(int argc, char **argv)
     {
         printOpt();
     }
-
-    readInputFile(file_input);
+    startScan(file_input, file_output);
     fclose(file_input);
     fclose(file_output);
     return 1;
@@ -64,19 +47,19 @@ void parsePaths(int argc, char **argv)
 
 void printOpt()
 {
-    printf("Verbose Flag: %d\n", verbose_flag);
-    printf("Stat Flag: %d\n", stat_flag);
-    printf("Report flag: %d\n", report_flag);
-    printf("History flag: %d\n", history_flag);
-    printf("History path: %s\n", history_path);
-    printf("User flag: %d\n", user_flag);
-    printf("User ID: %d\n", uID);
-    printf("Group flag: %d\n", group_flag);
-    printf("Group ID: %d\n", gID);
-    printf("Length flag: %d\n", length_flag);
-    printf("Min length: %d\n", min_length);
-    printf("Max lenght: %d\n", max_length);
-    printf("Noscan: %d\n", noscan_flag);
+    printf("Verbose Flag: %d\n", opt_info.verbose_flag);
+    printf("Stat Flag: %d\n", opt_info.stat_flag);
+    printf("Report flag: %d\n", opt_info.report_flag);
+    printf("History flag: %d\n", opt_info.history_flag);
+    printf("History path: %s\n", opt_info.history_path);
+    printf("User flag: %d\n", opt_info.user_flag);
+    printf("User ID: %d\n", opt_info.uID);
+    printf("Group flag: %d\n", opt_info.group_flag);
+    printf("Group ID: %d\n", opt_info.gID);
+    printf("Length flag: %d\n", opt_info.length_flag);
+    printf("Min length: %d\n", opt_info.min_length);
+    printf("Max lenght: %d\n", opt_info.max_length);
+    printf("Noscan: %d\n", opt_info.noscan_flag);
 }
 
 int parseOpt(int argc, char **argv)
@@ -89,7 +72,7 @@ int parseOpt(int argc, char **argv)
         {"user", required_argument, 0, 'u'},
         {"group", required_argument, 0, 'g'},
         {"length", required_argument, 0, 'l'},
-        {"noscan", no_argument, &noscan_flag, 1},
+        {"noscan", no_argument, 0, 'n'},
         {0, 0, 0, 0}};
 
     int c = 0;
@@ -107,39 +90,39 @@ int parseOpt(int argc, char **argv)
         switch (c)
         {
         case 'v':
-            verbose_flag = 1;
+            opt_info.verbose_flag = 1;
             break;
         case 's':
-            stat_flag = 1;
+            opt_info.stat_flag = 1;
             break;
         case 'r':
-            report_flag = 1;
+            opt_info.report_flag = 1;
             break;
         case 'h':
-            history_flag = 1;
+            opt_info.history_flag = 1;
             if (!getHistoryPath(optarg))
             {
                 return 0;
             };
             break;
         case 'u':
-            user_flag = 1;
-            uID = atoi(optarg);
+            opt_info.user_flag = 1;
+            opt_info.uID = atoi(optarg);
             break;
         case 'g':
-            group_flag = 1;
-            gID = atoi(optarg);
+            opt_info.group_flag = 1;
+            opt_info.gID = atoi(optarg);
             break;
         case 'l':
-            length_flag = 1;
+            opt_info.length_flag = 1;
             if (!getLengthArg(optarg))
             {
                 return 0;
             };
             filesBetween("."); // Directory attuale
             break;
-        case 1:
-            noscan_flag = 1;
+        case 'n':
+            opt_info.noscan_flag = 1;
             break;
         }
     }
@@ -149,18 +132,18 @@ int parseOpt(int argc, char **argv)
 int getLengthArg(char *arg)
 {
     char *token = strtok(arg, ":");
-    if (arg[0] == ':')
+    if (arg[0] == ':') 
     {
-        min_length = 0;
-        max_length = atoi(token);
+        opt_info.min_length = 0;
+        opt_info.max_length = atoi(token);
     }
     else
     {
-        min_length = atoi(token);
+        opt_info.min_length = atoi(token);
         token = strtok(NULL, ":");
-        max_length = (token != NULL) ? atoi(token) : 0;
+        opt_info.max_length = (token != NULL) ? atoi(token) : 0;
     }
-    if (max_length != 0 && min_length > max_length)
+    if (opt_info.max_length != 0 && opt_info.min_length > opt_info.max_length)
     {
         perror("I valori inseriti con -l non vanno bene\n");
         return 0;
@@ -180,23 +163,23 @@ void filesBetween(char *dir)
             {
                 // ./filestat -l 32:500
                 // Dimensione compresa
-                if (max_length >= file_stats.st_size && min_length <= file_stats.st_size)
+                if (opt_info.max_length >= file_stats.st_size && opt_info.min_length <= file_stats.st_size)
                 {
-                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, file_stats.st_size);
+                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, (int) file_stats.st_size);
                 }
 
                 // ./filestat -l 32:
                 // Dimensione minima
-                if (max_length == 0 && min_length <= file_stats.st_size)
+                if (opt_info.max_length == 0 && opt_info.min_length <= file_stats.st_size)
                 {
-                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, file_stats.st_size);
+                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, (int) file_stats.st_size);
                 }
 
                 // ./filestat -l :500
                 // Dimensione massima
-                if (min_length == 0 && max_length >= file_stats.st_size)
+                if (opt_info.min_length == 0 && opt_info.max_length >= file_stats.st_size)
                 {
-                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, file_stats.st_size);
+                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, (int) file_stats.st_size);
                 }
             }
             else
@@ -210,13 +193,13 @@ void filesBetween(char *dir)
 
 int getHistoryPath(char *arg)
 {
-    struct stat sb;
-    history_path = (char *)calloc(strlen(arg), sizeof(char));
-    strcpy(history_path, arg);
-    if (access(history_path, F_OK) == -1)
+    opt_info.history_path = (char *)calloc(strlen(arg), sizeof(char));
+    strcpy(opt_info.history_path, arg);
+    if (access(opt_info.history_path, F_OK) == -1)
     {
         perror("Il file inserito con -h non esiste in questa directory\n");
         return 0;
     }
     return 1;
 }
+
