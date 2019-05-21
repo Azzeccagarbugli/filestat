@@ -86,8 +86,8 @@ void analisiSingolaRiga(char *riga)
     printf("Path: %s\n", path);
     printf("R: %d\n", isR);
     printf("L: %d\n", isL);
-    printf("\n###\n"); 
-    printf("\n###\n"); 
+    printf("\n###\n");
+    printf("\n###\n");
     scanFile(path, isR, isL);
     free(path);
 }
@@ -95,7 +95,7 @@ void analisiSingolaRiga(char *riga)
 int startScan(FILE *input, FILE *output)
 {
     readInputFile(input);
-    printf("\n###\n");  
+    printf("\n###\n");
 }
 
 int scanFile(char *path, int isR, int isL)
@@ -132,7 +132,7 @@ int scanFile(char *path, int isR, int isL)
         while (entry = readdir(dir))
         {
             if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
-                continue;
+               continue;
             char copy[256];
             strcpy(copy, path);
             strcat(strcat(copy, "/"), entry->d_name);
@@ -141,32 +141,34 @@ int scanFile(char *path, int isR, int isL)
         closedir(dir);
     }
 
-    char irusr = currentStat.st_mode & S_IRUSR ? 'r' : '-';
-    char iwusr = currentStat.st_mode & S_IWUSR ? 'w' : '-';
-    char ixusr = currentStat.st_mode & S_IXUSR ? 'x' : '-';
-    char irgrp = currentStat.st_mode & S_IRGRP ? 'r' : '-';
-    char iwgrp = currentStat.st_mode & S_IWGRP ? 'w' : '-';
-    char ixgrp = currentStat.st_mode & S_IXGRP ? 'x' : '-';
-    char iroth = currentStat.st_mode & S_IROTH ? 'r' : '-';
-    char iwoth = currentStat.st_mode & S_IWOTH ? 'w' : '-';
-    char ixoth = currentStat.st_mode & S_IXOTH ? 'x' : '-';
-    printf("# <Path: %s>\n", path);
-    printf("<Data: %s> <User ID: %d> <Group ID: %d> <Diritti: %c%c%c%c%c%c%c%c%c> <Last access: %s> <Last change: %s> <Last mod: %s> <Links: %ld>\n\n",
-           strtok(asctime(timeinfo),"\n"),
-           currentStat.st_uid,
-           currentStat.st_gid,
-           irusr,
-           iwusr,
-           ixusr,
-           irgrp,
-           iwgrp,
-           ixgrp,
-           iroth,
-           iwoth,
-           ixoth,
-           ctime(&currentStat.st_atime), ctime(&currentStat.st_mtime), ctime(&currentStat.st_ctime), currentStat.st_nlink);
-         
-    /* printf("Information for %s\n", path);
+char dinfo = S_ISDIR(currentStat.st_mode) ? 'd' : '-';
+char irusr = currentStat.st_mode & S_IRUSR ? 'r' : '-';
+char iwusr = currentStat.st_mode & S_IWUSR ? 'w' : '-';
+char ixusr = currentStat.st_mode & S_IXUSR ? 'x' : '-';
+char irgrp = currentStat.st_mode & S_IRGRP ? 'r' : '-';
+char iwgrp = currentStat.st_mode & S_IWGRP ? 'w' : '-';
+char ixgrp = currentStat.st_mode & S_IXGRP ? 'x' : '-';
+char iroth = currentStat.st_mode & S_IROTH ? 'r' : '-';
+char iwoth = currentStat.st_mode & S_IWOTH ? 'w' : '-';
+char ixoth = currentStat.st_mode & S_IXOTH ? 'x' : '-';
+printf("# <Path: %s>\n\n", path);
+printf("<Data: %s> <User ID: %d> <Group ID: %d> <Diritti: %c%c%c%c%c%c%c%c%c%c> <Last access: %s> <Last change: %s> <Last mod: %s> <Links: %ld>\n\n###\n\n",
+       strtok(asctime(timeinfo), "\n"),
+       currentStat.st_uid,
+       currentStat.st_gid,
+       dinfo,
+       irusr,
+       iwusr,
+       ixusr,
+       irgrp,
+       iwgrp,
+       ixgrp,
+       iroth,
+       iwoth,
+       ixoth,
+       ctime(&currentStat.st_atime), ctime(&currentStat.st_mtime), ctime(&currentStat.st_ctime), currentStat.st_nlink);
+
+/* printf("Information for %s\n", path);
     printf("---------------------------\n");
     printf("File Size: \t\t%d bytes\n", (int)currentStat.st_size);
     printf("Number of Links: \t%d\n", (int)currentStat.st_nlink);
@@ -187,5 +189,5 @@ int scanFile(char *path, int isR, int isL)
 
     printf("The file %s a symbolic link\n", (S_ISLNK(currentStat.st_mode)) ? "is" : "is not");
     printf("\n\n\n");*/
-    return 1;
+return 1;
 }
