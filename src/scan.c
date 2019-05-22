@@ -8,6 +8,8 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <time.h>
+#include <pwd.h>
+#include <grp.h>
 
 struct ScanInfo scan_info = {0, 0, 0, 0, 0, 0, 0};
 
@@ -151,11 +153,13 @@ char ixgrp = currentStat.st_mode & S_IXGRP ? 'x' : '-';
 char iroth = currentStat.st_mode & S_IROTH ? 'r' : '-';
 char iwoth = currentStat.st_mode & S_IWOTH ? 'w' : '-';
 char ixoth = currentStat.st_mode & S_IXOTH ? 'x' : '-';
+struct passwd *pwsUID = getpwuid(currentStat.st_uid);
+struct group *grpGID = getgrgid(currentStat.st_gid);
 printf("# <Path: %s>\n\n", path);
-printf("<Data: %s> <User ID: %d> <Group ID: %d> <Diritti: %c%c%c%c%c%c%c%c%c%c> <Last access: %s> <Last change: %s> <Last mod: %s> <Links: %ld>\n\n###\n\n",
+printf("<Data: %s> <User: %s> <Group : %s> <Diritti: %c%c%c%c%c%c%c%c%c%c> <Last access: %s> <Last change: %s> <Last mod: %s> <Links: %ld>\n\n###\n\n",
        strtok(asctime(timeinfo), "\n"),
-       currentStat.st_uid,
-       currentStat.st_gid,
+       pwsUID->pw_name,
+       grpGID->gr_name,
        dinfo,
        irusr,
        iwusr,
