@@ -61,11 +61,7 @@ void increaseDimTotale(int data)
 
 void readInputFile(FILE *input)
 {
-    char line[1000];
-    while (fgets(line, 1000, input) != NULL){
-        analisiSingolaRiga(strtok(line, "\n"));
-    }
-    /*int t = 2;
+    int t = 2;
     char *line = (char *)calloc(t, sizeof(char));
     char *temp_line = (char *)calloc(t, sizeof(char));
     while (fgets(temp_line, t * sizeof(char), input))
@@ -83,14 +79,13 @@ void readInputFile(FILE *input)
             line = (char *)realloc(line, strlen(line) + t);
         }
     };
-   analisiSingolaRiga(line);
+    analisiSingolaRiga(line);
     free(line);
-    free(temp_line);*/
+    free(temp_line);
 }
 
 void analisiSingolaRiga(char *riga)
 {
-    printf("DIO BESTIA %s\n", strchr(riga,'\n'));
     char *path = (char *)calloc(strlen(riga), sizeof(char));
     int isR = 0;
     int isL = 0;
@@ -113,7 +108,7 @@ void analisiSingolaRiga(char *riga)
             pathRead = 1;
         }
     }
-    
+
     printf("Path: %s\n", path);
     printf("R: %d\n", isR);
     printf("L: %d\n", isL);
