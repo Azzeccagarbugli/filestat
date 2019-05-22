@@ -69,8 +69,7 @@ void readInputFile(FILE *input)
         strcat(line, temp_line);
         if (strchr(line, '\n'))
         {
-            line[strlen(line) - 1] = '\0';
-            analisiSingolaRiga(line);
+            analisiSingolaRiga(strtok(line, "\r"));
             free(line);
             line = (char *)calloc(t, sizeof(char));
         }
@@ -93,7 +92,6 @@ void analisiSingolaRiga(char *riga)
     char *token;
     for (token = strtok(riga, " "); token; token = strtok(NULL, " "))
     {
-        printf("Token analizzato: %s-\n", token);
         if (strcmp(token, "r") == 0)
         {
             isR = 1;
@@ -109,17 +107,15 @@ void analisiSingolaRiga(char *riga)
         }
     }
 
-    printf("Path: %s\n", path);
+  /*  printf("Path: %s\n", path);
     printf("R: %d\n", isR);
-    printf("L: %d\n", isL);
+    printf("L: %d\n", isL);*/
     scanFile(path, isR, isL);
     free(path);
 }
 
 int scanFile(char *path, int isR, int isL)
 {
-    printf("Inizio scansione file con path: %s\n", path);
-    // printf("Il path corrente è: %s\n", path);
     time_t rawtime;
     struct tm *timeinfo;
 
