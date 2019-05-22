@@ -9,12 +9,16 @@
 #include "../include/scan.h"
 #include <time.h>
 
+#define DEFAULT_INPUT_PATH "./filestat.in"
+#define DEFAULT_OUTPUT_PATH "./filestat.db"
+
 struct OptInfo opt_info = {0,0,0,0, NULL, 0,0,0,0,0,0,0,0};
 
 static FILE *file_input;
 static FILE *file_output;
+/*
 static char default_input_path[] = "./filestat.in";
-static char default_output_path[] = "./filestat.db";
+static char default_output_path[] = "./filestat.db";*/
 
 struct stat file_stats;
 
@@ -27,7 +31,7 @@ int main(int argc, char **argv)
     }
     else
     {
-        printOpt();
+        //printOpt();
     }
     startScan(file_input, file_output);
     fclose(file_input);
@@ -37,8 +41,8 @@ int main(int argc, char **argv)
 
 void parsePaths(int argc, char **argv)
 {
-    file_input = ((argc > 2) && (access(argv[argc - 2], F_OK) == 0)) ? fopen(argv[argc - 2], "r") : fopen(default_input_path, "r");
-    file_output = ((argc > 2) && (access(argv[argc - 1], F_OK) == 0)) ? fopen(argv[argc - 1], "r+") : fopen(default_output_path, "r+");
+    file_input = ((argc > 2) && (access(argv[argc - 2], F_OK) == 0)) ? fopen(argv[argc - 2], "r") : fopen(DEFAULT_INPUT_PATH, "r");
+    file_output = ((argc > 2) && (access(argv[argc - 1], F_OK) == 0)) ? fopen(argv[argc - 1], "r+") : fopen(DEFAULT_OUTPUT_PATH, "r+");
 }
 
 void printOpt()
