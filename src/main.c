@@ -12,7 +12,7 @@
 #define DEFAULT_INPUT_PATH "./filestat.in"
 #define DEFAULT_OUTPUT_PATH "./filestat.db"
 
-struct OptInfo opt_info = {0,0,0,0, NULL, 0,0,0,0,0,0,0,0};
+OptInfo opt_info = {0,0,0,0, NULL, 0,0,0,0,0,0,0,0};
 
 static FILE *file_input;
 static FILE *file_output;

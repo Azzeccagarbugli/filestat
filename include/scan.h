@@ -1,4 +1,10 @@
-struct ScanInfo
+
+#include "../include/tree.h"
+
+#ifndef _SCANH_
+#define _SCANH_
+typedef struct sinfo ScanInfo;
+struct sinfo
 {
     int nr_monitorati;
     int nr_link;
@@ -9,8 +15,11 @@ struct ScanInfo
     int dim_min;
 };
 
-extern struct ScanInfo scan_info;
+extern ScanInfo scan_info;
+RecordNode *readOutputFile(FILE *, RecordNode *);
 void readInputFile(FILE *);
 void analisiSingolaRiga(char *);
 int startScan(FILE *, FILE *);
-int scanFile(char *, int, int);
+int scanFilePath(char *, int, int);
+
+#endif

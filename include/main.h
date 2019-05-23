@@ -1,4 +1,9 @@
-struct OptInfo
+#ifndef _MAINH_
+#define _MAINH_
+
+
+typedef struct oinfo OptInfo;
+struct oinfo
 {
     int verbose_flag;
     int stat_flag;
@@ -20,7 +25,7 @@ struct OptInfo
     int noscan_flag;
 };
 
-extern struct OptInfo opt_info;
+extern OptInfo opt_info;
 
 int getLengthArg(char *);
 int getHistoryPath(char *);
@@ -28,3 +33,5 @@ void printOpt();
 int parseOpt(int, char **);
 void parsePaths(int, char **);
 void filesBetween(char *);
+
+#endif

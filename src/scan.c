@@ -10,15 +10,65 @@
 #include <time.h>
 #include <pwd.h>
 #include <grp.h>
+#include "../include/tree.h"
 
-struct ScanInfo scan_info = {0, 0, 0, 0, 0, 0, 0};
+ScanInfo scan_info = {0, 0, 0, 0, 0, 0, 0};
 
 int startScan(FILE *input, FILE *output)
 {
-    readInputFile(input);
-    printf("\n###\n");
+    RecordNode *tree = malloc(sizeof(RecordNode));
+    tree = emptyNode();
+    tree = readOutputFile(output, tree);
+
+    printf("\nEffettuo la stampa dell'albero\n");
+    printInOrder(tree);
+    printf("###\n");
+    freeNode(tree);
+
+    //readInputFile(input);
 }
 
+RecordNode *readOutputFile(FILE *output, RecordNode *tree)
+{
+    int t = 2;
+    char *line = (char *)calloc(t, sizeof(char));
+    char *currentPath = (char *)malloc(sizeof(char));
+    char *temp_line = (char *)calloc(t, sizeof(char));
+    while (fgets(temp_line, t * sizeof(char), output))
+    {
+        strcat(line, temp_line);
+        if (strchr(line, '\n'))
+        {
+            strtok(line, "\r");
+            if (line[0] == '#' && line[1] == ' ')
+            {
+                //Ho trovato un path
+                currentPath = (char *)realloc(currentPath, strlen(line) * sizeof(char));
+                strcpy(currentPath, line+2);
+                printf("Aggiungo il path: %s\n", currentPath);
+                tree = addPath(tree, currentPath);
+            }
+            else if (line[0] != '#' && line[1] != '#' && line[2] != '#')
+            {
+                //Ho trovato un record
+
+                //printf("Aggiungo il record: %s\n", line);
+                tree = addRecordByPath(tree, currentPath, line);
+            }
+            //### è ignorato
+            free(line);
+            line = (char *)calloc(t, sizeof(char));
+        }
+        else
+        {
+            line = (char *)realloc(line, strlen(line) + t);
+        }
+    };
+    free(line);
+    free(currentPath);
+    free(temp_line);
+    return tree;
+}
 void increaseMonitorati()
 {
     scan_info.nr_monitorati++;
@@ -107,14 +157,14 @@ void analisiSingolaRiga(char *riga)
         }
     }
 
-  /*  printf("Path: %s\n", path);
+    /*  printf("Path: %s\n", path);
     printf("R: %d\n", isR);
     printf("L: %d\n", isL);*/
-    scanFile(path, isR, isL);
+    scanFilePath(path, isR, isL);
     free(path);
 }
 
-int scanFile(char *path, int isR, int isL)
+int scanFilePath(char *path, int isR, int isL)
 {
     time_t rawtime;
     struct tm *timeinfo;
@@ -149,7 +199,7 @@ int scanFile(char *path, int isR, int isL)
             char copy[256];
             strcpy(copy, path);
             strcat(strcat(copy, "/"), entry->d_name);
-            scanFile(copy, isR, isL);
+            scanFilePath(copy, isR, isL);
         }
         closedir(dir);
     }
