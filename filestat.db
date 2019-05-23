@@ -1,12 +1,17 @@
-# ./path 1
+# ./path1
 analisi 1_1
 analisi 1_2
 ###
-# ./path 2
+# ./path2
 analisi 2_1
 analisi 2_2
 analisi 2_3
 ###
-# ./path 3
+# ./path1
+analisi aggiunta dopo a 1
+# ./path2 
+analisi lol
+# ./path2 
+analisi aggiunta dopo a 2 con spazio
 ###
 ###
