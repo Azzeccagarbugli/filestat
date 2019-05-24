@@ -40,7 +40,7 @@ RecordNode *addPath(RecordNode *node, char *path)
     }
 }
 
-RecordNode *addRecordByPath(RecordNode *node, char *path, char *record)
+RecordNode *addRecord(RecordNode *node, char *path, char *record)
 {
     if (isEmpty(node))
     {
@@ -48,18 +48,18 @@ RecordNode *addRecordByPath(RecordNode *node, char *path, char *record)
         RecordNode *new = createNewNode(record, NULL, NULL, 0);
         free(node);
         return new;
-    }
-    else if (pathExist(node, path))
-    {
+    };
         RecordNode *new =
-            ((strcmp(node->value, path) == 0) || (node->isPath != 1)) ? createNewNode(node->value, node->nextPath, addRecordByPath(node->nextRecord, path, record), node->isPath) : createNewNode(node->value, addRecordByPath(node->nextPath, path, record), node->nextRecord, node->isPath);
+            ((strcmp(node->value, path) == 0) || (node->isPath != 1)) ? createNewNode(node->value, node->nextPath, addRecord(node->nextRecord, path, record), node->isPath) : createNewNode(node->value, addRecord(node->nextPath, path, record), node->nextRecord, node->isPath);
         free(node);
         return new;
-    }
-
-    printf("Provato ad aggiungere un record a un path non in memoria\n");
-    return addPath(node, path);
 }
+
+RecordNode *addRecordByPath(RecordNode *node, char *path, char *record){
+    node = addPath(node, path);
+    node = addRecord(node, path, record);
+    return node;
+};
 
 int isEmpty(RecordNode *node)
 {

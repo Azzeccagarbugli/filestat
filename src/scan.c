@@ -45,8 +45,6 @@ RecordNode *readOutputFile(FILE *output, RecordNode *tree)
                 //Ho trovato un path
                 currentPath = (char *)realloc(currentPath, strlen(line) * sizeof(char));
                 strcpy(currentPath, strtok(line + 2, " "));
-                printf("Aggiungo il path: %s\n", currentPath);
-                tree = addPath(tree, currentPath);
             }
             else if (line[0] != '#' && line[1] != '#' && line[2] != '#')
             {

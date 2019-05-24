@@ -12,6 +12,7 @@ struct treenode{
 
 RecordNode* emptyNode();
 RecordNode* createNewNode(char* value, RecordNode* left, RecordNode* right, int isPath);
+RecordNode *addRecord(RecordNode *node, char *path, char *record);
 RecordNode *addRecordByPath(RecordNode *node, char *path, char *record);
 RecordNode *addPath(RecordNode *node, char *path);
 int isEmpty(RecordNode* node);
