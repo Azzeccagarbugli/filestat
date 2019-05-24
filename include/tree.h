@@ -18,5 +18,6 @@ int isEmpty(RecordNode* node);
 RecordNode *getNodeByPath(RecordNode *current, char *value);
 void printInOrder(RecordNode *node);
 void freeNode(RecordNode *node);
+int pathExist(RecordNode *node, char *path);
 
 #endif

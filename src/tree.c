@@ -24,18 +24,16 @@ RecordNode *addPath(RecordNode *node, char *path)
 {
     if (isEmpty(node))
     {
-        // printf("Il path inserito non era presente\n");
+        printf("Il path %s non era presente ed è stato aggiunto\n", path);
         return createNewNode(path, NULL, NULL, 1);
     }
     if (strcmp(node->value, path) == 0)
     {
-        // printf("Il path inserito era già presente\n");
+        printf("Il path %s era già presente\n", path);
         return node;
     }
     else
     {
-
-        // printf("Il path inserito non era in questo nodo\n");
         RecordNode *new = createNewNode(node->value, addPath(node->nextPath, path), node->nextRecord, node->isPath);
         free(node);
         return new;
@@ -46,24 +44,21 @@ RecordNode *addRecordByPath(RecordNode *node, char *path, char *record)
 {
     if (isEmpty(node))
     {
-        // printf("Ho aggiunto %s al percorso: %s\n", record, path);
+        printf("Ho aggiunto %s al percorso: %s\n", record, path);
         RecordNode *new = createNewNode(record, NULL, NULL, 0);
         free(node);
         return new;
     }
+    else if (pathExist(node, path))
+    {
+        RecordNode *new =
+            ((strcmp(node->value, path) == 0) || (node->isPath != 1)) ? createNewNode(node->value, node->nextPath, addRecordByPath(node->nextRecord, path, record), node->isPath) : createNewNode(node->value, addRecordByPath(node->nextPath, path, record), node->nextRecord, node->isPath);
+        free(node);
+        return new;
+    }
 
-    if ((strcmp(node->value, path) == 0) || (node->isPath != 1))
-    {
-        RecordNode *new = createNewNode(node->value, node->nextPath, addRecordByPath(node->nextRecord, path, record), node->isPath);
-        free(node);
-        return new;
-    }
-    else
-    {
-        RecordNode *new = createNewNode(node->value, addRecordByPath(node->nextPath, path, record), node->nextRecord, node->isPath);
-        free(node);
-        return new;
-    }
+    printf("Provato ad aggiungere un record a un path non in memoria\n");
+    return addPath(node, path);
 }
 
 int isEmpty(RecordNode *node)
@@ -79,7 +74,8 @@ void printInOrder(RecordNode *node)
     }
     else
     {
-        if(node->isPath){
+        if (node->isPath)
+        {
             printf("# ");
         }
         printf("%s\n", node->value);
@@ -109,6 +105,28 @@ RecordNode *getNodeByPath(RecordNode *current, char *value)
     }
 };
 
+int pathExist(RecordNode *node, char *path)
+{
+    if (isEmpty(node))
+    {
+        return 0;
+    }
+    else if (node->isPath)
+    {
+        if (strcmp(node->value, path) == 0)
+        {
+            return 1;
+        }
+        else
+        {
+            return pathExist(node->nextPath, path);
+        }
+    }
+    else
+    {
+        return 1;
+    }
+}
 void freeNode(RecordNode *node)
 {
     if (node != NULL)
