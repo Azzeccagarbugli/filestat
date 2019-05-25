@@ -3,6 +3,9 @@
 #include "../include/tree.h"
 #include <string.h>
 
+
+RecordNode *addRecord(RecordNode *node, char *path, char *record);
+RecordNode *addPath(RecordNode *node, char *path);
 RecordNode *emptyNode()
 {
     return NULL;
