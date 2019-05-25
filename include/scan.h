@@ -1,6 +1,6 @@
 
 #include "../include/tree.h"
-
+#include <sys/stat.h>
 #ifndef _SCANH_
 #define _SCANH_
 typedef struct sinfo ScanInfo;
@@ -17,9 +17,10 @@ struct sinfo
 
 extern ScanInfo scan_info;
 RecordNode *readOutputFile(FILE *, RecordNode *);
-void readInputFile(FILE *);
-void analisiSingolaRiga(char *);
+RecordNode *readInputFile(FILE *, RecordNode *);
+RecordNode *analisiSingolaRiga(char *, RecordNode *);
 int startScan(FILE *, FILE *);
-int scanFilePath(char *, int, int);
+RecordNode *scanFilePath(char *, int, int, RecordNode *);
+RecordNode *getStringInfo(struct stat *, char *, RecordNode *);
 
 #endif

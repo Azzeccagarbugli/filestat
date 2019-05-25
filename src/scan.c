@@ -16,16 +16,15 @@ ScanInfo scan_info = {0, 0, 0, 0, 0, 0, 0};
 
 int startScan(FILE *input, FILE *output)
 {
+
     RecordNode *tree = malloc(sizeof(RecordNode));
     tree = emptyNode();
     tree = readOutputFile(output, tree);
-
+    tree = readInputFile(input, tree);
     printf("\nEffettuo la stampa dell'albero\n");
     printInOrder(tree);
     printf("###\n");
     freeNode(tree);
-
-    //readInputFile(input);
 }
 
 RecordNode *readOutputFile(FILE *output, RecordNode *tree)
@@ -105,7 +104,7 @@ void increaseDimTotale(int data)
     updateDimMin(data);
 }
 
-void readInputFile(FILE *input)
+RecordNode *readInputFile(FILE *input, RecordNode *tree)
 {
     int t = 2;
     char *line = (char *)calloc(t, sizeof(char));
@@ -115,7 +114,7 @@ void readInputFile(FILE *input)
         strcat(line, temp_line);
         if (strchr(line, '\n'))
         {
-            analisiSingolaRiga(strtok(line, "\r"));
+            tree = analisiSingolaRiga(strtok(line, "\r"), tree);
             free(line);
             line = (char *)calloc(t, sizeof(char));
         }
@@ -124,12 +123,13 @@ void readInputFile(FILE *input)
             line = (char *)realloc(line, strlen(line) + t);
         }
     };
-    analisiSingolaRiga(line);
+    tree = analisiSingolaRiga(line, tree);
     free(line);
     free(temp_line);
+    return tree;
 }
 
-void analisiSingolaRiga(char *riga)
+RecordNode *analisiSingolaRiga(char *riga, RecordNode *tree)
 {
     char *path = (char *)calloc(strlen(riga), sizeof(char));
     int isR = 0;
@@ -156,32 +156,27 @@ void analisiSingolaRiga(char *riga)
     /*  printf("Path: %s\n", path);
     printf("R: %d\n", isR);
     printf("L: %d\n", isL);*/
-    scanFilePath(path, isR, isL);
+    tree = scanFilePath(path, isR, isL, tree);
     free(path);
+    return tree;
 }
 
-int scanFilePath(char *path, int isR, int isL)
+RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
 {
-    time_t rawtime;
-    struct tm *timeinfo;
-
-    time(&rawtime);
-    timeinfo = localtime(&rawtime);
-
-    struct stat currentStat;
+    struct stat *currentStat = (struct stat *)malloc(sizeof(struct stat));
     if (isL == 1)
     {
         // printf("Del link analizzo il file referenziato\n");
-        if (stat(path, &currentStat) < 0)
-            return 0;
+        if (stat(path, currentStat) < 0)
+            return tree;
     }
     else if (isL == 0)
     {
         //  printf("Del link analizzo il file link\n");
-        if (lstat(path, &currentStat) < 0)
-            return 0;
+        if (lstat(path, currentStat) < 0)
+            return tree;
     }
-    if (isR && S_ISDIR(currentStat.st_mode))
+    if (isR && S_ISDIR(currentStat->st_mode))
     {
         //  printf("IL PERCORSO: %s E' UNA DIRECTORY IN CUI ENTRARE RICORSIVAMENTE\n", path);
 
@@ -192,42 +187,59 @@ int scanFilePath(char *path, int isR, int isL)
         {
             if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
                 continue;
-            char copy[256];
+            char *copy = (char *)calloc(strlen(path) + strlen(entry->d_name) + 1, sizeof(char));
             strcpy(copy, path);
-            strcat(strcat(copy, "/"), entry->d_name);
-            scanFilePath(copy, isR, isL);
+            if (copy[strlen(path) - 1] != '/')
+            {
+                strcat(copy, "/");
+            }
+            strcat(copy, entry->d_name);
+            tree = scanFilePath(copy, isR, isL, tree);
+            free(copy);
         }
         closedir(dir);
     }
+    tree = getStringInfo(currentStat, path, tree);
+    free(currentStat);
+    return tree;
+}
 
-    char dinfo = S_ISDIR(currentStat.st_mode) ? 'd' : '-';
-    char irusr = currentStat.st_mode & S_IRUSR ? 'r' : '-';
-    char iwusr = currentStat.st_mode & S_IWUSR ? 'w' : '-';
-    char ixusr = currentStat.st_mode & S_IXUSR ? 'x' : '-';
-    char irgrp = currentStat.st_mode & S_IRGRP ? 'r' : '-';
-    char iwgrp = currentStat.st_mode & S_IWGRP ? 'w' : '-';
-    char ixgrp = currentStat.st_mode & S_IXGRP ? 'x' : '-';
-    char iroth = currentStat.st_mode & S_IROTH ? 'r' : '-';
-    char iwoth = currentStat.st_mode & S_IWOTH ? 'w' : '-';
-    char ixoth = currentStat.st_mode & S_IXOTH ? 'x' : '-';
-    struct passwd *pwsUID = getpwuid(currentStat.st_uid);
-    struct group *grpGID = getgrgid(currentStat.st_gid);
-    printf("# <Path: %s>\n\n", path);
-    printf("<Data: %s> <User: %s> <Group : %s> <Diritti: %c%c%c%c%c%c%c%c%c%c> <Last access: %s> <Last change: %s> <Last mod: %s> <Links: %ld>\n\n###\n\n",
-           strtok(asctime(timeinfo), "\n"),
-           pwsUID->pw_name,
-           grpGID->gr_name,
-           dinfo,
-           irusr,
-           iwusr,
-           ixusr,
-           irgrp,
-           iwgrp,
-           ixgrp,
-           iroth,
-           iwoth,
-           ixoth,
-           ctime(&currentStat.st_atime), ctime(&currentStat.st_mtime), ctime(&currentStat.st_ctime), currentStat.st_nlink);
+RecordNode *getStringInfo(struct stat *currentStat, char *path, RecordNode *tree)
+{
 
-    return 1;
+    time_t rawtime;
+    struct tm *timeinfo;
+
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+    char dinfo = S_ISDIR(currentStat->st_mode) ? 'd' : '-';
+    char irusr = currentStat->st_mode & S_IRUSR ? 'r' : '-';
+    char iwusr = currentStat->st_mode & S_IWUSR ? 'w' : '-';
+    char ixusr = currentStat->st_mode & S_IXUSR ? 'x' : '-';
+    char irgrp = currentStat->st_mode & S_IRGRP ? 'r' : '-';
+    char iwgrp = currentStat->st_mode & S_IWGRP ? 'w' : '-';
+    char ixgrp = currentStat->st_mode & S_IXGRP ? 'x' : '-';
+    char iroth = currentStat->st_mode & S_IROTH ? 'r' : '-';
+    char iwoth = currentStat->st_mode & S_IWOTH ? 'w' : '-';
+    char ixoth = currentStat->st_mode & S_IXOTH ? 'x' : '-';
+    struct passwd *pwsUID = getpwuid(currentStat->st_uid);
+    struct group *grpGID = getgrgid(currentStat->st_gid);
+    char record[256];
+    sprintf(record, "Data: %s | User: %s | Group : %s | Diritti: %c%c%c%c%c%c%c%c%c%c | Ultimo Accesso: %s | Ultima modifica: %s | Ultima modifica permessi: %s | Links: %ld",
+            strtok(asctime(timeinfo), "\n"),
+            pwsUID->pw_name,
+            grpGID->gr_name,
+            dinfo,
+            irusr,
+            iwusr,
+            ixusr,
+            irgrp,
+            iwgrp,
+            ixgrp,
+            iroth,
+            iwoth,
+            ixoth,
+            ctime(&currentStat->st_atime), ctime(&currentStat->st_mtime), ctime(&currentStat->st_ctime), currentStat->st_nlink);
+        tree = addRecordByPath(tree, path, strtok(record, "\n"));
+    return tree;
 }
