@@ -3,7 +3,6 @@
 #include "../include/tree.h"
 #include <string.h>
 
-
 RecordNode *addRecord(RecordNode *node, char *path, char *record);
 RecordNode *addPath(RecordNode *node, char *path);
 RecordNode *emptyNode()
@@ -14,9 +13,9 @@ RecordNode *emptyNode()
 RecordNode *createNewNode(char *value, RecordNode *left, RecordNode *right, int isPath)
 {
     RecordNode *newNode = (RecordNode *)malloc(sizeof(RecordNode));
-    char *temp = (char *)calloc(strlen(value), sizeof(char));
-    strcpy(temp, value);
-    newNode->value = temp;
+
+    newNode->value = (char *)malloc(strlen(value) * sizeof(char));
+    strcpy(newNode->value, value);
     newNode->nextPath = left;
     newNode->nextRecord = right;
     newNode->isPath = isPath;
@@ -38,6 +37,8 @@ RecordNode *addPath(RecordNode *node, char *path)
     else
     {
         RecordNode *new = createNewNode(node->value, addPath(node->nextPath, path), node->nextRecord, node->isPath);
+       
+        free(node->value);
         free(node);
         return new;
     }
@@ -48,19 +49,23 @@ RecordNode *addRecord(RecordNode *node, char *path, char *record)
     if (isEmpty(node))
     {
         printf("Ho aggiunto %s al percorso: %s\n", record, path);
-        RecordNode *new = createNewNode(record, NULL, NULL, 0);
+        return createNewNode(record, NULL, NULL, 0);
+    }
+    else
+    {
+        RecordNode *new = ((strcmp(node->value, path) == 0) || (node->isPath != 1)) ? createNewNode(node->value, node->nextPath, addRecord(node->nextRecord, path, record), node->isPath) : createNewNode(node->value, addRecord(node->nextPath, path, record), node->nextRecord, node->isPath);
+
+        free(node->value);
         free(node);
         return new;
-    };
-        RecordNode *new =
-            ((strcmp(node->value, path) == 0) || (node->isPath != 1)) ? createNewNode(node->value, node->nextPath, addRecord(node->nextRecord, path, record), node->isPath) : createNewNode(node->value, addRecord(node->nextPath, path, record), node->nextRecord, node->isPath);
-        free(node);
-        return new;
+    }
 }
 
-RecordNode *addRecordByPath(RecordNode *node, char *path, char *record){
+RecordNode *addRecordByPath(RecordNode *node, char *path, char *record)
+{
     node = addPath(node, path);
     node = addRecord(node, path, record);
+    printf("Aggiunta analisi a path terminata\n");
     return node;
 };
 
@@ -130,12 +135,12 @@ int pathExist(RecordNode *node, char *path)
         return 1;
     }
 }
-void freeNode(RecordNode *node)
+void freeTree(RecordNode *node)
 {
     if (node != NULL)
     {
-        freeNode(node->nextPath);
-        freeNode(node->nextRecord);
+        freeTree(node->nextPath);
+        freeTree(node->nextRecord);
         free(node->value);
         free(node);
     }

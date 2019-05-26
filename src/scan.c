@@ -19,12 +19,12 @@ int startScan(FILE *input, FILE *output)
 
     RecordNode *tree = malloc(sizeof(RecordNode));
     tree = emptyNode();
-    tree = readOutputFile(output, tree);
+    //tree = readOutputFile(output, tree);
     tree = readInputFile(input, tree);
     printf("\nEffettuo la stampa dell'albero\n");
     printInOrder(tree);
     printf("###\n");
-    freeNode(tree);
+    freeTree(tree);
 }
 
 RecordNode *readOutputFile(FILE *output, RecordNode *tree)
@@ -153,9 +153,6 @@ RecordNode *analisiSingolaRiga(char *riga, RecordNode *tree)
         }
     }
 
-    /*  printf("Path: %s\n", path);
-    printf("R: %d\n", isR);
-    printf("L: %d\n", isL);*/
     tree = scanFilePath(path, isR, isL, tree);
     free(path);
     return tree;
@@ -163,18 +160,26 @@ RecordNode *analisiSingolaRiga(char *riga, RecordNode *tree)
 
 RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
 {
+    printf("Path: %s\n", path);
+    printf("R: %d\n", isR);
+    printf("L: %d\n", isL);
     struct stat *currentStat = (struct stat *)malloc(sizeof(struct stat));
     if (isL == 1)
     {
+
         // printf("Del link analizzo il file referenziato\n");
         if (stat(path, currentStat) < 0)
+        {
             return tree;
+        }
     }
     else if (isL == 0)
     {
         //  printf("Del link analizzo il file link\n");
         if (lstat(path, currentStat) < 0)
+        {
             return tree;
+        }
     }
     if (isR && S_ISDIR(currentStat->st_mode))
     {
@@ -187,6 +192,7 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
         {
             if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
                 continue;
+
             char *copy = (char *)calloc(strlen(path) + strlen(entry->d_name) + 1, sizeof(char));
             strcpy(copy, path);
             if (copy[strlen(path) - 1] != '/')
@@ -204,13 +210,13 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
     return tree;
 }
 
-RecordNode *getStringInfo(struct stat *currentStat, char *path, RecordNode *tree)
+RecordNode *getStringInfo(struct stat *currentStat, char *path, RecordNode *curTree)
 {
 
     time_t rawtime;
     struct tm *timeinfo;
-
     time(&rawtime);
+
     timeinfo = localtime(&rawtime);
     char dinfo = S_ISDIR(currentStat->st_mode) ? 'd' : '-';
     char irusr = currentStat->st_mode & S_IRUSR ? 'r' : '-';
@@ -224,7 +230,7 @@ RecordNode *getStringInfo(struct stat *currentStat, char *path, RecordNode *tree
     char ixoth = currentStat->st_mode & S_IXOTH ? 'x' : '-';
     struct passwd *pwsUID = getpwuid(currentStat->st_uid);
     struct group *grpGID = getgrgid(currentStat->st_gid);
-    char record[256];
+    char *record = malloc(1000 * sizeof(*record));
     sprintf(record, "Data: %s | User: %s | Group : %s | Diritti: %c%c%c%c%c%c%c%c%c%c | Ultimo Accesso: %s | Ultima modifica: %s | Ultima modifica permessi: %s | Links: %ld",
             strtok(asctime(timeinfo), "\n"),
             pwsUID->pw_name,
@@ -240,6 +246,8 @@ RecordNode *getStringInfo(struct stat *currentStat, char *path, RecordNode *tree
             iwoth,
             ixoth,
             ctime(&currentStat->st_atime), ctime(&currentStat->st_mtime), ctime(&currentStat->st_ctime), currentStat->st_nlink);
-        tree = addRecordByPath(tree, path, strtok(record, "\n"));
-    return tree;
+
+    curTree = addRecordByPath(curTree, path, strtok(record, "\n"));
+    free(record);
+    return curTree;
 }
