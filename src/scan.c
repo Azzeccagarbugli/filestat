@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
+#include <errno.h>
 #include "../include/scan.h"
 #include "../include/main.h"
 #include <sys/stat.h>
@@ -14,6 +15,11 @@
 
 ScanInfo scan_info = {0, 0, 0, 0, 0, 0, 0};
 
+RecordNode *readOutputFile(FILE *, RecordNode *);
+RecordNode *readInputFile(FILE *, RecordNode *);
+RecordNode *analisiSingolaRiga(char *, RecordNode *);
+RecordNode *scanFilePath(char *, int, int, RecordNode *);
+RecordNode *addFileAnalisis(struct stat *, char *, RecordNode *);
 int startScan(FILE *input, FILE *output)
 {
 
@@ -160,7 +166,7 @@ RecordNode *analisiSingolaRiga(char *riga, RecordNode *tree)
 
 RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
 {
-    printf("Path: %s\n", path);
+    printf("\nPath: %s\n", path);
     printf("R: %d\n", isR);
     printf("L: %d\n", isL);
     struct stat *currentStat = (struct stat *)malloc(sizeof(struct stat));
@@ -181,6 +187,18 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
             return tree;
         }
     }
+
+    //Analisi effettiva del file e scrittura su albero
+
+    char buf[PATH_MAX];
+    char *res = realpath(path, buf);
+    if (!res)
+    {
+        perror("realpath");
+        exit(EXIT_FAILURE);
+    }
+    tree = addFileAnalisis(currentStat, buf, tree);
+
     if (isR && S_ISDIR(currentStat->st_mode))
     {
         //  printf("IL PERCORSO: %s E' UNA DIRECTORY IN CUI ENTRARE RICORSIVAMENTE\n", path);
@@ -188,31 +206,38 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
         DIR *dir;
         struct dirent *entry;
         dir = opendir(path);
-        while (entry = readdir(dir))
+        if (!dir)
         {
-            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
-                continue;
-
-            char *copy = (char *)calloc(strlen(path) + strlen(entry->d_name) + 1, sizeof(char));
-            strcpy(copy, path);
-            if (copy[strlen(path) - 1] != '/')
-            {
-                strcat(copy, "/");
-            }
-            strcat(copy, entry->d_name);
-            tree = scanFilePath(copy, isR, isL, tree);
-            free(copy);
+            fprintf(stderr, "Cannot open directory '%s': %s\n",
+                    path, strerror(errno));
         }
-        closedir(dir);
+        else
+        {
+            while (entry = readdir(dir))
+            {
+                if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+                    continue;
+
+                char *copy = (char *)calloc(strlen(path) + strlen(entry->d_name) + 1, sizeof(char));
+                strcpy(copy, path);
+                if (copy[strlen(path) - 1] != '/')
+                {
+                    strcat(copy, "/");
+                }
+                strcat(copy, entry->d_name);
+                tree = scanFilePath(copy, isR, isL, tree);
+                free(copy);
+            }
+            closedir(dir);
+        }
     }
-    tree = getStringInfo(currentStat, path, tree);
+
     free(currentStat);
     return tree;
 }
 
-RecordNode *getStringInfo(struct stat *currentStat, char *path, RecordNode *curTree)
+RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *curTree)
 {
-
     time_t rawtime;
     struct tm *timeinfo;
     time(&rawtime);

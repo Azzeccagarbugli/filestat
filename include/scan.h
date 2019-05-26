@@ -16,11 +16,6 @@ struct sinfo
 };
 
 extern ScanInfo scan_info;
-RecordNode *readOutputFile(FILE *, RecordNode *);
-RecordNode *readInputFile(FILE *, RecordNode *);
-RecordNode *analisiSingolaRiga(char *, RecordNode *);
 int startScan(FILE *, FILE *);
-RecordNode *scanFilePath(char *, int, int, RecordNode *);
-RecordNode *getStringInfo(struct stat *, char *, RecordNode *);
 
 #endif
