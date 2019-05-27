@@ -25,7 +25,7 @@ int startScan(FILE *input, FILE *output)
 
     RecordNode *tree = malloc(sizeof(RecordNode));
     tree = emptyNode();
-    //tree = readOutputFile(output, tree);
+    tree = readOutputFile(output, tree);
     tree = readInputFile(input, tree);
     printf("\nEffettuo la stampa dell'albero\n");
     printInOrder(tree);
@@ -206,19 +206,12 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
         DIR *dir;
         struct dirent *entry;
         dir = opendir(path);
-        if (!dir)
-        {
-            fprintf(stderr, "Cannot open directory '%s': %s\n",
-                    path, strerror(errno));
-        }
-        else
-        {
             while (entry = readdir(dir))
             {
                 if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
                     continue;
 
-                char *copy = (char *)calloc(strlen(path) + strlen(entry->d_name) + 1, sizeof(char));
+                char *copy = (char *)calloc(strlen(path) + strlen(entry->d_name) + 2, sizeof(char));
                 strcpy(copy, path);
                 if (copy[strlen(path) - 1] != '/')
                 {
@@ -229,7 +222,7 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
                 free(copy);
             }
             closedir(dir);
-        }
+        
     }
 
     free(currentStat);
@@ -255,7 +248,7 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
     char ixoth = currentStat->st_mode & S_IXOTH ? 'x' : '-';
     struct passwd *pwsUID = getpwuid(currentStat->st_uid);
     struct group *grpGID = getgrgid(currentStat->st_gid);
-    char *record = malloc(1000 * sizeof(*record));
+    char *record = malloc(240 * sizeof(char));
     sprintf(record, "Data: %s | User: %s | Group : %s | Diritti: %c%c%c%c%c%c%c%c%c%c | Ultimo Accesso: %s | Ultima modifica: %s | Ultima modifica permessi: %s | Links: %ld",
             strtok(asctime(timeinfo), "\n"),
             pwsUID->pw_name,

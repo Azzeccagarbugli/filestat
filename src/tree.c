@@ -3,6 +3,7 @@
 #include "../include/tree.h"
 #include <string.h>
 
+
 RecordNode *addRecord(RecordNode *node, char *path, char *record);
 RecordNode *addPath(RecordNode *node, char *path);
 RecordNode *emptyNode()
@@ -10,14 +11,14 @@ RecordNode *emptyNode()
     return NULL;
 };
 
-RecordNode *createNewNode(char *value, RecordNode *left, RecordNode *right, int isPath)
+RecordNode *createNewNode(char *value, int isPath)
 {
     RecordNode *newNode = (RecordNode *)malloc(sizeof(RecordNode));
 
-    newNode->value = (char *)malloc(strlen(value) * sizeof(char));
+    newNode->value = (char *)malloc((strlen(value)+1) * sizeof(char));
     strcpy(newNode->value, value);
-    newNode->nextPath = left;
-    newNode->nextRecord = right;
+    newNode->nextPath = NULL;
+    newNode->nextRecord = NULL;
     newNode->isPath = isPath;
     return newNode;
 };
@@ -27,7 +28,7 @@ RecordNode *addPath(RecordNode *node, char *path)
     if (isEmpty(node))
     {
         printf("Il path %s non era presente ed è stato aggiunto\n", path);
-        return createNewNode(path, NULL, NULL, 1);
+        return createNewNode(path, 1);
     }
     if (strcmp(node->value, path) == 0)
     {
@@ -36,11 +37,8 @@ RecordNode *addPath(RecordNode *node, char *path)
     }
     else
     {
-        RecordNode *new = createNewNode(node->value, addPath(node->nextPath, path), node->nextRecord, node->isPath);
-       
-        free(node->value);
-        free(node);
-        return new;
+        node->nextPath = addPath(node->nextPath, path);
+        return node;
     }
 }
 
@@ -49,15 +47,18 @@ RecordNode *addRecord(RecordNode *node, char *path, char *record)
     if (isEmpty(node))
     {
         printf("Ho aggiunto %s al percorso: %s\n", record, path);
-        return createNewNode(record, NULL, NULL, 0);
+        return createNewNode(record, 0);
     }
     else
     {
-        RecordNode *new = ((strcmp(node->value, path) == 0) || (node->isPath != 1)) ? createNewNode(node->value, node->nextPath, addRecord(node->nextRecord, path, record), node->isPath) : createNewNode(node->value, addRecord(node->nextPath, path, record), node->nextRecord, node->isPath);
-
-        free(node->value);
-        free(node);
-        return new;
+        if((strcmp(node->value, path) == 0) || (node->isPath == 0)){
+            node->nextRecord = addRecord(node->nextRecord, path, record);
+            return node;
+        } else {
+            //node->nextPath = addPath(node->nextPath, path);
+            node->nextPath = addRecord(node->nextPath, path, record);
+            return node;
+        }
     }
 }
 

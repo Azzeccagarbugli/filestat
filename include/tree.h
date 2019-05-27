@@ -11,7 +11,7 @@ struct treenode{
 };
 
 RecordNode* emptyNode();
-RecordNode* createNewNode(char* value, RecordNode* left, RecordNode* right, int isPath);
+RecordNode* createNewNode(char* value, int isPath);
 RecordNode *addRecordByPath(RecordNode *node, char *path, char *record);
 int isEmpty(RecordNode* node);
 RecordNode *getNodeByPath(RecordNode *current, char *value);
