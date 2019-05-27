@@ -18,4 +18,5 @@ struct sinfo
 extern ScanInfo scan_info;
 int startScan(FILE *, FILE *);
 
+
 #endif

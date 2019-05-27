@@ -21,6 +21,8 @@ RecordNode *readInputFile(FILE *, RecordNode *);
 RecordNode *analisiSingolaRiga(char *, RecordNode *);
 RecordNode *scanFilePath(char *, int, int, RecordNode *);
 RecordNode *addFileAnalisis(struct stat *, char *, RecordNode *);
+void printOnFile(RecordNode *node, FILE *output);
+
 int startScan(FILE *input, FILE *output)
 {
     RecordNode *tree = malloc(sizeof(RecordNode));
@@ -30,6 +32,7 @@ int startScan(FILE *input, FILE *output)
     printf("\nEffettuo la stampa dell'albero\n");
     printInOrder(tree);
     printf("###\n");
+    printOnFile(tree, output);
     freeTree(tree);
 }
 
@@ -248,12 +251,15 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
     char ixoth = currentStat->st_mode & S_IXOTH ? 'x' : '-';
     struct passwd *pwsUID = getpwuid(currentStat->st_uid);
     struct group *grpGID = getgrgid(currentStat->st_gid);
-    char *record = malloc((256 + strlen(pwsUID->pw_name) + strlen(grpGID->gr_name)) * sizeof(char));
+    char size[21];
+    sprintf(size, "%ld", currentStat->st_size);
+    char *record = malloc((200 + strlen(pwsUID->pw_name) + strlen(grpGID->gr_name) + strlen(size)) * sizeof(char));
     
-    sprintf(record, "Data: %s | User: %s | Group : %s | Diritti: %c%c%c%c%c%c%c%c%c%c | Ultimo Accesso: %s | Ultima modifica: %s | Ultima modifica permessi: %s | Links: %ld",
+    sprintf(record, "data - %s | uid - %s | gid - %s | dim - %s| perm - %c%c%c%c%c%c%c%c%c%c | acc - %s | change - %s | mod - %s | nlink - %ld",
             strtok(asctime(timeinfo), "\n"),
             pwsUID->pw_name,
             grpGID->gr_name,
+            size,
             dinfo,
             irusr,
             iwusr,
@@ -269,3 +275,29 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
     free(record);
     return curTree;
 }
+
+/*void printOnFile(RecordNode *node, FILE *output)
+{
+    ftruncate(fileno(output), 0);
+    if (isEmpty(node))
+    {
+        return;
+    }
+    else
+    {
+        if (node->isPath)
+        {
+            fputs("# ", output);
+            //printf("# ");
+        }
+        fputs(output,"%s\n", node->value);
+        //printf("%s\n", node->value);
+        if (node->nextRecord == NULL)
+        {
+            fputs(output, "###\n",NULL);
+            //printf("###\n");
+        }
+        printInOrder(node->nextRecord);
+        printInOrder(node->nextPath);
+    }
+}*/
