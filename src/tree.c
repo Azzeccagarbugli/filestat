@@ -15,7 +15,7 @@ RecordNode *createNewNode(char *value, int isPath)
 {
     RecordNode *newNode = (RecordNode *)malloc(sizeof(RecordNode));
 
-    newNode->value = (char *)malloc((strlen(value)+1) * sizeof(char));
+    newNode->value = (char *)malloc((strlen(value)+2) * sizeof(char));
     strcpy(newNode->value, value);
     newNode->nextPath = NULL;
     newNode->nextRecord = NULL;
