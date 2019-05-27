@@ -23,7 +23,6 @@ RecordNode *scanFilePath(char *, int, int, RecordNode *);
 RecordNode *addFileAnalisis(struct stat *, char *, RecordNode *);
 int startScan(FILE *input, FILE *output)
 {
-
     RecordNode *tree = malloc(sizeof(RecordNode));
     tree = emptyNode();
     tree = readOutputFile(output, tree);
@@ -199,7 +198,7 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
         perror("realpath");
         exit(EXIT_FAILURE);
     }
-    tree = addFileAnalisis(currentStat, buf, tree);
+    tree = addFileAnalisis(currentStat, path, tree);
 
     if (isR && S_ISDIR(currentStat->st_mode))
     {
@@ -249,7 +248,8 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
     char ixoth = currentStat->st_mode & S_IXOTH ? 'x' : '-';
     struct passwd *pwsUID = getpwuid(currentStat->st_uid);
     struct group *grpGID = getgrgid(currentStat->st_gid);
-    char *record = malloc(240 * sizeof(char));
+    char *record = malloc((256 + strlen(pwsUID->pw_name) + strlen(grpGID->gr_name)) * sizeof(char));
+    
     sprintf(record, "Data: %s | User: %s | Group : %s | Diritti: %c%c%c%c%c%c%c%c%c%c | Ultimo Accesso: %s | Ultima modifica: %s | Ultima modifica permessi: %s | Links: %ld",
             strtok(asctime(timeinfo), "\n"),
             pwsUID->pw_name,
@@ -265,8 +265,7 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
             iwoth,
             ixoth,
             ctime(&currentStat->st_atime), ctime(&currentStat->st_mtime), ctime(&currentStat->st_ctime), currentStat->st_nlink);
-
-    curTree = addRecordByPath(curTree, path, strtok(record, "\n"));
+    curTree = addRecordByPath(curTree, path, strtok(record, "\r\n"));
     free(record);
     return curTree;
 }

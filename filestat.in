@@ -1,1 +1,2 @@
-../MasterMind r l
+./obj r l
+./ r l  
