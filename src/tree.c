@@ -13,13 +13,13 @@ RecordNode *emptyNode()
 
 RecordNode *createNewNode(char *value, int isPath)
 {
-    RecordNode *newNode = (RecordNode *)malloc(sizeof(RecordNode));
-
-    newNode->value = (char *)malloc((strlen(value)+2) * sizeof(char));
+    RecordNode *newNode = malloc(sizeof(RecordNode));
+    newNode->value = (char *)malloc(strlen(value) * sizeof(char));
     strcpy(newNode->value, value);
     newNode->nextPath = NULL;
     newNode->nextRecord = NULL;
     newNode->isPath = isPath;
+    printf("Nodo con valore %s aggiunto\n", newNode->value);
     return newNode;
 };
 

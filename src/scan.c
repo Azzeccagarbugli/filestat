@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
+#include <linux/limits.h>
 #include <errno.h>
 #include "../include/scan.h"
 #include "../include/main.h"
@@ -44,7 +45,8 @@ RecordNode *readOutputFile(FILE *output, RecordNode *tree)
         strcat(line, temp_line);
         if (strchr(line, '\n'))
         {
-            strtok(line, "\r");
+            strtok(line, "\r\n");
+
             if (line[0] == '#' && line[1] == ' ')
             {
                 //Ho trovato un path
@@ -120,7 +122,7 @@ RecordNode *readInputFile(FILE *input, RecordNode *tree)
         strcat(line, temp_line);
         if (strchr(line, '\n'))
         {
-            tree = analisiSingolaRiga(strtok(line, "\r"), tree);
+            tree = analisiSingolaRiga(strtok(line, "\r\n"), tree);
             free(line);
             line = (char *)calloc(t, sizeof(char));
         }
@@ -206,23 +208,22 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
         DIR *dir;
         struct dirent *entry;
         dir = opendir(path);
-            while (entry = readdir(dir))
-            {
-                if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
-                    continue;
+        while (entry = readdir(dir))
+        {
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+                continue;
 
-                char *copy = (char *)calloc(strlen(path) + strlen(entry->d_name) + 2, sizeof(char));
-                strcpy(copy, path);
-                if (copy[strlen(path) - 1] != '/')
-                {
-                    strcat(copy, "/");
-                }
-                strcat(copy, entry->d_name);
-                tree = scanFilePath(copy, isR, isL, tree);
-                free(copy);
+            char *copy = (char *)calloc(strlen(path) + strlen(entry->d_name) + 2, sizeof(char));
+            strcpy(copy, path);
+            if (copy[strlen(path) - 1] != '/')
+            {
+                strcat(copy, "/");
             }
-            closedir(dir);
-        
+            strcat(copy, entry->d_name);
+            tree = scanFilePath(copy, isR, isL, tree);
+            free(copy);
+        }
+        closedir(dir);
     }
 
     free(currentStat);
