@@ -36,6 +36,9 @@ $(PROJECT): $(OBJECTS)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) -I$(SRC_DIR) -c $< -o $@
 
+# La phony consente di non creare interferenze con una possibile variabile
+# chiamata nel medesimo modo
+.PHONY: clean
 clean: 
 	$(RM) $(OBJ_DIR)/*.o
 	$(RM) filestat
