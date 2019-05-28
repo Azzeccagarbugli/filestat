@@ -12,7 +12,7 @@
 #define DEFAULT_INPUT_PATH "./filestat.in"
 #define DEFAULT_OUTPUT_PATH "./filestat.db"
 
-OptInfo opt_info = {0,0,0,0, NULL, 0,0,0,0,0,0,0,0};
+OptInfo opt_info = {0, 0, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 0, 0};
 
 static FILE *file_input;
 static FILE *file_output;
@@ -34,6 +34,8 @@ int main(int argc, char **argv)
         //printOpt();
     }
     startScan(file_input, file_output);
+    fflush(file_input);
+    fflush(file_output);
     fclose(file_input);
     fclose(file_output);
     return 1;
@@ -41,8 +43,28 @@ int main(int argc, char **argv)
 
 void parsePaths(int argc, char **argv)
 {
-    file_input = ((argc > 2) && (access(argv[argc - 2], F_OK) == 0)) ? fopen(argv[argc - 2], "r") : fopen(DEFAULT_INPUT_PATH, "r");
-    file_output = ((argc > 2) && (access(argv[argc - 1], F_OK) == 0)) ? fopen(argv[argc - 1], "r+") : fopen(DEFAULT_OUTPUT_PATH, "r+");
+    if ((!((argc > 2) && (access(argv[argc - 2], F_OK) == 0)) || (strcmp(argv[argc - 2], argv[argc - 1]) == 0)))
+    {
+        file_input = fopen(DEFAULT_INPUT_PATH, "a+");
+        printf("Come file di input è stato aperto il predefinito\n");
+    }
+    else
+    {
+        file_input = fopen(argv[argc - 2], "r");
+        printf("Come file di input è stato aperto quello specificato come argomento\n");
+    }
+    if ((!((argc > 2) && (access(argv[argc - 1], F_OK) == 0)) || (strcmp(argv[argc - 2], argv[argc - 1]) == 0)))
+    {
+        file_output = fopen(DEFAULT_OUTPUT_PATH, "a+");
+        printf("Come file di output è stato aperto il predefinito\n");
+    }
+    else
+    {
+        file_output = fopen(argv[argc - 1], "r+");
+        printf("Come file di output è stato aperto quello specificato come argomento\n");
+    }
+    fseek(file_input, 0, SEEK_SET);
+    fseek(file_output, 0, SEEK_SET);
 }
 
 void printOpt()
@@ -60,7 +82,6 @@ void printOpt()
     printf("Min length: %d\n", opt_info.min_length);
     printf("Max lenght: %d\n", opt_info.max_length);
     printf("Noscan: %d\n", opt_info.noscan_flag);
-    printf("\nEND OF DEBUG\n###\n");
 }
 
 int parseOpt(int argc, char **argv)
@@ -120,7 +141,6 @@ int parseOpt(int argc, char **argv)
             {
                 return 0;
             };
-           // filesBetween("."); // Directory attuale
             break;
         case 'n':
             opt_info.noscan_flag = 1;
@@ -133,7 +153,7 @@ int parseOpt(int argc, char **argv)
 int getLengthArg(char *arg)
 {
     char *token = strtok(arg, ":");
-    if (arg[0] == ':') 
+    if (arg[0] == ':')
     {
         opt_info.min_length = 0;
         opt_info.max_length = atoi(token);
@@ -147,50 +167,10 @@ int getLengthArg(char *arg)
     if (opt_info.max_length != 0 && opt_info.min_length > opt_info.max_length)
     {
         perror("I valori inseriti con -l non vanno bene\n");
-        return 0;
+        exit(EXIT_FAILURE);
     }
     return 1;
 }
-
-/*void filesBetween(char *dir)
-{
-    dirp = opendir(dir);
-    do
-    {
-        dent = readdir(dirp);
-        if (dent)
-        {
-            if (!stat(dent->d_name, &file_stats))
-            {
-                // ./filestat -l 32:500
-                // Dimensione compresa
-                if (opt_info.max_length >= file_stats.st_size && opt_info.min_length <= file_stats.st_size)
-                {
-                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, (int) file_stats.st_size);
-                }
-
-                // ./filestat -l 32:
-                // Dimensione minima
-                if (opt_info.max_length == 0 && opt_info.min_length <= file_stats.st_size)
-                {
-                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, (int) file_stats.st_size);
-                }
-
-                // ./filestat -l :500
-                // Dimensione massima
-                if (opt_info.min_length == 0 && opt_info.max_length >= file_stats.st_size)
-                {
-                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, (int) file_stats.st_size);
-                }
-            }
-            else
-            {
-                printf("The stat API didn't work for this file\n");
-            }
-        }
-    } while (dent);
-    closedir(dirp);
-}*/
 
 int getHistoryPath(char *arg)
 {
@@ -199,8 +179,7 @@ int getHistoryPath(char *arg)
     if (access(opt_info.history_path, F_OK) == -1)
     {
         perror("Il file inserito con -h non esiste in questa directory\n");
-        return 0;
+        exit(EXIT_FAILURE);
     }
     return 1;
 }
-

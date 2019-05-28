@@ -32,7 +32,7 @@ int startScan(FILE *input, FILE *output)
     printf("\nEffettuo la stampa dell'albero\n");
     printInOrder(tree);
     printf("###\n");
-    printOnFile(tree, output);
+    //printOnFile(tree, output);
     freeTree(tree);
 }
 
@@ -194,15 +194,16 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
 
     //Analisi effettiva del file e scrittura su albero
 
-    char buf[PATH_MAX];
+    char *buf = malloc(PATH_MAX * sizeof(char));
     char *res = realpath(path, buf);
     if (!res)
     {
         perror("realpath");
         exit(EXIT_FAILURE);
     }
-    tree = addFileAnalisis(currentStat, path, tree);
-
+    tree = addFileAnalisis(currentStat, buf, tree);
+    free(buf);
+    
     if (isR && S_ISDIR(currentStat->st_mode))
     {
         //  printf("IL PERCORSO: %s E' UNA DIRECTORY IN CUI ENTRARE RICORSIVAMENTE\n", path);
@@ -254,7 +255,7 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
     char size[21];
     sprintf(size, "%ld", currentStat->st_size);
     char *record = malloc((200 + strlen(pwsUID->pw_name) + strlen(grpGID->gr_name) + strlen(size)) * sizeof(char));
-    
+
     sprintf(record, "data - %s | uid - %s | gid - %s | dim - %s| perm - %c%c%c%c%c%c%c%c%c%c | acc - %s | change - %s | mod - %s | nlink - %ld",
             strtok(asctime(timeinfo), "\n"),
             pwsUID->pw_name,
@@ -300,4 +301,44 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
         printInOrder(node->nextRecord);
         printInOrder(node->nextPath);
     }
+}*/
+
+/*void filesBetween(char *dir)
+{
+    dirp = opendir(dir);
+    do
+    {
+        dent = readdir(dirp);
+        if (dent)
+        {
+            if (!stat(dent->d_name, &file_stats))
+            {
+                // ./filestat -l 32:500
+                // Dimensione compresa
+                if (opt_info.max_length >= file_stats.st_size && opt_info.min_length <= file_stats.st_size)
+                {
+                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, (int) file_stats.st_size);
+                }
+
+                // ./filestat -l 32:
+                // Dimensione minima
+                if (opt_info.max_length == 0 && opt_info.min_length <= file_stats.st_size)
+                {
+                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, (int) file_stats.st_size);
+                }
+
+                // ./filestat -l :500
+                // Dimensione massima
+                if (opt_info.min_length == 0 && opt_info.max_length >= file_stats.st_size)
+                {
+                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, (int) file_stats.st_size);
+                }
+            }
+            else
+            {
+                printf("The stat API didn't work for this file\n");
+            }
+        }
+    } while (dent);
+    closedir(dirp);
 }*/
