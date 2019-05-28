@@ -22,7 +22,9 @@ RecordNode *readInputFile(FILE *, RecordNode *);
 RecordNode *analisiSingolaRiga(char *, RecordNode *);
 RecordNode *scanFilePath(char *, int, int, RecordNode *);
 RecordNode *addFileAnalisis(struct stat *, char *, RecordNode *);
+void printOutput(FILE *output, RecordNode *node);
 void printOnFile(RecordNode *node, FILE *output);
+void cleanFile(FILE *output);
 
 int startScan(FILE *input, FILE *output)
 {
@@ -30,12 +32,10 @@ int startScan(FILE *input, FILE *output)
     tree = emptyNode();
     tree = readOutputFile(output, tree);
     tree = readInputFile(input, tree);
+    printOutput(output, tree);
     //printf("\nEffettuo la stampa dell'albero\n");
     //printInOrder(tree);
     //printf("###\n");
-    cleanFile(output);
-    printOnFile(tree, output);
-    fprintf(output, "###\n", NULL);
     freeTree(tree);
 }
 
@@ -173,9 +173,9 @@ RecordNode *analisiSingolaRiga(char *riga, RecordNode *tree)
 
 RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
 {
-    printf("\nPath: %s\n", path);
+   /* printf("\nPath: %s\n", path);
     printf("R: %d\n", isR);
-    printf("L: %d\n", isL);
+    printf("L: %d\n", isL);*/
     struct stat *currentStat = (struct stat *)malloc(sizeof(struct stat));
     if (isL == 1)
     {
@@ -308,6 +308,13 @@ void cleanFile(FILE *output)
     fflush(output);
     ftruncate(fileno(output), 0);
     fseek(output, 0, SEEK_SET);
+}
+
+void printOutput(FILE *output, RecordNode *node)
+{
+    cleanFile(output);
+    printOnFile(node, output);
+    fprintf(output, "###\n", NULL);
 }
 
 /*void filesBetween(char *dir)

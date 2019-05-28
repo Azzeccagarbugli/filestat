@@ -1,1 +1,1 @@
-./input.txt r l
+../ r l

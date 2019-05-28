@@ -3,7 +3,6 @@
 #include "../include/tree.h"
 #include <string.h>
 
-
 RecordNode *addRecord(RecordNode *node, char *path, char *record);
 RecordNode *addPath(RecordNode *node, char *path);
 RecordNode *emptyNode()
@@ -19,7 +18,7 @@ RecordNode *createNewNode(char *value, int isPath)
     newNode->nextPath = NULL;
     newNode->nextRecord = NULL;
     newNode->isPath = isPath;
-    printf("Nodo con valore %s aggiunto\n", newNode->value);
+    // printf("Nodo con valore %s aggiunto\n", newNode->value);
     return newNode;
 };
 
@@ -27,12 +26,12 @@ RecordNode *addPath(RecordNode *node, char *path)
 {
     if (isEmpty(node))
     {
-        printf("Il path %s non era presente ed è stato aggiunto\n", path);
+        // printf("Il path %s non era presente ed è stato aggiunto\n", path);
         return createNewNode(path, 1);
     }
     if (strcmp(node->value, path) == 0)
     {
-        printf("Il path %s era già presente\n", path);
+        // printf("Il path %s era già presente\n", path);
         return node;
     }
     else
@@ -46,15 +45,18 @@ RecordNode *addRecord(RecordNode *node, char *path, char *record)
 {
     if (isEmpty(node))
     {
-        printf("Ho aggiunto %s al percorso: %s\n", record, path);
+        // printf("Ho aggiunto %s al percorso: %s\n", record, path);
         return createNewNode(record, 0);
     }
     else
     {
-        if((strcmp(node->value, path) == 0) || (node->isPath == 0)){
+        if ((strcmp(node->value, path) == 0) || (node->isPath == 0))
+        {
             node->nextRecord = addRecord(node->nextRecord, path, record);
             return node;
-        } else {
+        }
+        else
+        {
             node->nextPath = addRecord(node->nextPath, path, record);
             return node;
         }
@@ -65,7 +67,7 @@ RecordNode *addRecordByPath(RecordNode *node, char *path, char *record)
 {
     node = addPath(node, path);
     node = addRecord(node, path, record);
-    printf("Aggiunta analisi a path terminata\n");
+    // printf("Aggiunta analisi a path terminata\n");
     return node;
 };
 

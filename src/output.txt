@@ -1,1 +1,0 @@
-Queste cose sono state scritte su output.txt

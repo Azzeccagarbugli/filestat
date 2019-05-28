@@ -17,7 +17,6 @@ struct sinfo
 
 extern ScanInfo scan_info;
 int startScan(FILE *, FILE *);
-void cleanFile(FILE *output);
 
 
 #endif
