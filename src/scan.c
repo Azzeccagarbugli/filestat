@@ -12,6 +12,7 @@
 #include <time.h>
 #include <pwd.h>
 #include <grp.h>
+#include <unistd.h>
 #include "../include/tree.h"
 
 ScanInfo scan_info = {0, 0, 0, 0, 0, 0, 0};
@@ -29,10 +30,12 @@ int startScan(FILE *input, FILE *output)
     tree = emptyNode();
     tree = readOutputFile(output, tree);
     tree = readInputFile(input, tree);
-    printf("\nEffettuo la stampa dell'albero\n");
-    printInOrder(tree);
-    printf("###\n");
-    //printOnFile(tree, output);
+    //printf("\nEffettuo la stampa dell'albero\n");
+    //printInOrder(tree);
+    //printf("###\n");
+    cleanFile(output);
+    printOnFile(tree, output);
+    fprintf(output, "###\n", NULL);
     freeTree(tree);
 }
 
@@ -203,7 +206,7 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
     }
     tree = addFileAnalisis(currentStat, buf, tree);
     free(buf);
-    
+
     if (isR && S_ISDIR(currentStat->st_mode))
     {
         //  printf("IL PERCORSO: %s E' UNA DIRECTORY IN CUI ENTRARE RICORSIVAMENTE\n", path);
@@ -277,9 +280,9 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
     return curTree;
 }
 
-/*void printOnFile(RecordNode *node, FILE *output)
+void printOnFile(RecordNode *node, FILE *output)
 {
-    ftruncate(fileno(output), 0);
+
     if (isEmpty(node))
     {
         return;
@@ -288,20 +291,24 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
     {
         if (node->isPath)
         {
-            fputs("# ", output);
-            //printf("# ");
+            fprintf(output, "%s ", "#");
         }
-        fputs(output,"%s\n", node->value);
-        //printf("%s\n", node->value);
+        fprintf(output, "%s\n", node->value);
         if (node->nextRecord == NULL)
         {
-            fputs(output, "###\n",NULL);
-            //printf("###\n");
+            fprintf(output, "###\n", NULL);
         }
-        printInOrder(node->nextRecord);
-        printInOrder(node->nextPath);
+        printOnFile(node->nextRecord, output);
+        printOnFile(node->nextPath, output);
     }
-}*/
+}
+
+void cleanFile(FILE *output)
+{
+    fflush(output);
+    ftruncate(fileno(output), 0);
+    fseek(output, 0, SEEK_SET);
+}
 
 /*void filesBetween(char *dir)
 {
