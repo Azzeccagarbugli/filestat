@@ -9,6 +9,9 @@
 #include "../include/scan.h"
 #include <time.h>
 
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
+
 #define DEFAULT_INPUT_PATH "./filestat.in"
 #define DEFAULT_OUTPUT_PATH "./filestat.db"
 
@@ -24,6 +27,8 @@ struct stat file_stats;
 
 int main(int argc, char **argv)
 {
+    clock_t timer_app;
+    timer_app = clock();
     parsePaths(argc, argv);
     if (!parseOpt(argc, argv))
     {
@@ -38,6 +43,9 @@ int main(int argc, char **argv)
     fflush(file_output);
     fclose(file_input);
     fclose(file_output);
+    timer_app = clock() - timer_app;
+    double time_taken = ((double)timer_app) / CLOCKS_PER_SEC;
+    printf("\n%sTempo di esecuzione del programma pari a %f secondi%s\n", ANSI_COLOR_GREEN, time_taken, ANSI_COLOR_RESET);
     return 1;
 }
 
@@ -50,7 +58,7 @@ void parsePaths(int argc, char **argv)
     }
     else
     {
-        file_input = fopen(argv[argc - 2], "r");
+        file_input = fopen(argv[argc - 2], "a+");
         printf("Come file di input è stato aperto quello specificato come argomento\n");
     }
     if ((!((argc > 2) && (access(argv[argc - 1], F_OK) == 0)) || (strcmp(argv[argc - 2], argv[argc - 1]) == 0)))
@@ -60,7 +68,7 @@ void parsePaths(int argc, char **argv)
     }
     else
     {
-        file_output = fopen(argv[argc - 1], "r+");
+        file_output = fopen(argv[argc - 1], "a+");
         printf("Come file di output è stato aperto quello specificato come argomento\n");
     }
     fseek(file_input, 0, SEEK_SET);

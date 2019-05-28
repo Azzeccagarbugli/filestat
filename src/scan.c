@@ -173,7 +173,7 @@ RecordNode *analisiSingolaRiga(char *riga, RecordNode *tree)
 
 RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
 {
-   /* printf("\nPath: %s\n", path);
+    /* printf("\nPath: %s\n", path);
     printf("R: %d\n", isR);
     printf("L: %d\n", isL);*/
     struct stat *currentStat = (struct stat *)malloc(sizeof(struct stat));
@@ -238,11 +238,6 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
 
 RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *curTree)
 {
-    time_t rawtime;
-    struct tm *timeinfo;
-    time(&rawtime);
-
-    timeinfo = localtime(&rawtime);
     char dinfo = S_ISDIR(currentStat->st_mode) ? 'd' : '-';
     char irusr = currentStat->st_mode & S_IRUSR ? 'r' : '-';
     char iwusr = currentStat->st_mode & S_IWUSR ? 'w' : '-';
@@ -253,14 +248,31 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
     char iroth = currentStat->st_mode & S_IROTH ? 'r' : '-';
     char iwoth = currentStat->st_mode & S_IWOTH ? 'w' : '-';
     char ixoth = currentStat->st_mode & S_IXOTH ? 'x' : '-';
+
     struct passwd *pwsUID = getpwuid(currentStat->st_uid);
     struct group *grpGID = getgrgid(currentStat->st_gid);
+
+    /* 
+     * <acc> data dell'ultimo accesso;
+     * <change> data dell'ultimo cambiamento;
+     * <mod> data dell'ultima modifica dei permessi;
+     */
+    char *time_last_access = ctime(&currentStat->st_atime);
+    char *time_last_change = ctime(&currentStat->st_mtime);
+    char *time_last_chmod = ctime(&currentStat->st_ctime);
+
     char size[21];
     sprintf(size, "%ld", currentStat->st_size);
     char *record = malloc((200 + strlen(pwsUID->pw_name) + strlen(grpGID->gr_name) + strlen(size)) * sizeof(char));
 
+    time_t curtime;
+    time(&curtime);
+
+    char *current_time = ctime(&curtime);
+    //printf("%s\n", current_time);
+
     sprintf(record, "data - %s | uid - %s | gid - %s | dim - %s| perm - %c%c%c%c%c%c%c%c%c%c | acc - %s | change - %s | mod - %s | nlink - %ld",
-            strtok(asctime(timeinfo), "\n"),
+            strtok(ctime(&curtime), "\n"),
             pwsUID->pw_name,
             grpGID->gr_name,
             size,
@@ -274,7 +286,8 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
             iroth,
             iwoth,
             ixoth,
-            ctime(&currentStat->st_atime), ctime(&currentStat->st_mtime), ctime(&currentStat->st_ctime), currentStat->st_nlink);
+            time_last_access, time_last_change, time_last_chmod, currentStat->st_nlink);
+
     curTree = addRecordByPath(curTree, path, strtok(record, "\r\n"));
     free(record);
     return curTree;
