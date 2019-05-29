@@ -39,7 +39,7 @@ int startScan(FILE *input, FILE *output)
     //printf("\nEffettuo la stampa dell'albero\n");
     //printInOrder(tree);
     //printf("###\n");
-    freeTree(tree);
+    //freeTree(tree);
 }
 
 RecordNode *readOutputFile(FILE *output, RecordNode *tree)
@@ -176,7 +176,7 @@ RecordNode *analisiSingolaRiga(char *riga, RecordNode *tree)
 
 RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
 {
-    /* printf("\nPath: %s\n", path);
+   /* printf("\nPath: %s\n", path);
     printf("R: %d\n", isR);
     printf("L: %d\n", isL);*/
     struct stat *currentStat = (struct stat *)malloc(sizeof(struct stat));
@@ -200,15 +200,8 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
 
     //Analisi effettiva del file e scrittura su albero
 
-    /*char *buf = malloc(PATH_MAX * sizeof(char));
-    char *res = realpath(path, buf);
-    if (!res)
-    {
-        perror("realpath");
-        exit(EXIT_FAILURE);
-    }*/
     tree = addFileAnalisis(currentStat, realpath(path, NULL), tree);
-    //free(buf);
+  
 
     if (isR && S_ISDIR(currentStat->st_mode))
     {
@@ -314,12 +307,16 @@ void printOnFile(RecordNode *node, FILE *output)
             fprintf(output, "%s ", "#");
         }
         fprintf(output, "%s\n", node->value);
-        if (node->nextRecord == NULL)
+        RecordNode *nextRecord = node->nextRecord;
+        RecordNode *nextPath = node->nextPath;
+        free(node->value);
+        free(node);
+        if (nextRecord == NULL)
         {
             fprintf(output, "###\n", NULL);
         }
-        printOnFile(node->nextRecord, output);
-        printOnFile(node->nextPath, output);
+        printOnFile(nextRecord, output);
+        printOnFile(nextPath, output);
     }
 }
 
@@ -328,6 +325,7 @@ void cleanFile(FILE *output)
     fflush(output);
     ftruncate(fileno(output), 0);
     fseek(output, 0, SEEK_SET);
+    fflush(output);
 }
 
 void printOutput(FILE *output, RecordNode *node)
@@ -335,6 +333,7 @@ void printOutput(FILE *output, RecordNode *node)
     cleanFile(output);
     printOnFile(node, output);
     fprintf(output, "###\n", NULL);
+    fflush(output);
 }
 
 /*void filesBetween(char *dir)
