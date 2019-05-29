@@ -200,15 +200,15 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
 
     //Analisi effettiva del file e scrittura su albero
 
-    char *buf = malloc(PATH_MAX * sizeof(char));
+    /*char *buf = malloc(PATH_MAX * sizeof(char));
     char *res = realpath(path, buf);
     if (!res)
     {
         perror("realpath");
         exit(EXIT_FAILURE);
-    }
-    tree = addFileAnalisis(currentStat, buf, tree);
-    free(buf);
+    }*/
+    tree = addFileAnalisis(currentStat, realpath(path, NULL), tree);
+    //free(buf);
 
     if (isR && S_ISDIR(currentStat->st_mode))
     {
@@ -217,20 +217,23 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
         DIR *dir;
         struct dirent *entry;
         dir = opendir(path);
-        while (entry = readdir(dir))
+        if (dir)
         {
-            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
-                continue;
-
-            char *copy = (char *)calloc(strlen(path) + strlen(entry->d_name) + 2, sizeof(char));
-            strcpy(copy, path);
-            if (copy[strlen(path) - 1] != '/')
+            while (entry = readdir(dir))
             {
-                strcat(copy, "/");
+                if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+                    continue;
+
+                char *copy = (char *)calloc(strlen(path) + strlen(entry->d_name) + 2, sizeof(char));
+                strcpy(copy, path);
+                if (copy[strlen(path) - 1] != '/')
+                {
+                    strcat(copy, "/");
+                }
+                strcat(copy, entry->d_name);
+                tree = scanFilePath(copy, isR, isL, tree);
+                free(copy);
             }
-            strcat(copy, entry->d_name);
-            tree = scanFilePath(copy, isR, isL, tree);
-            free(copy);
         }
         closedir(dir);
     }
