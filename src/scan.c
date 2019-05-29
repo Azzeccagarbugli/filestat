@@ -1,8 +1,11 @@
+#ifdef __linux__
+#include <linux/limits.h>
+#else
+#include <limits.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <limits.h>
-#include <linux/limits.h>
 #include <errno.h>
 #include "../include/scan.h"
 #include "../include/main.h"
@@ -257,22 +260,20 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
      * <change> data dell'ultimo cambiamento;
      * <mod> data dell'ultima modifica dei permessi;
      */
-    char *time_last_access = ctime(&currentStat->st_atime);
-    char *time_last_change = ctime(&currentStat->st_mtime);
-    char *time_last_chmod = ctime(&currentStat->st_ctime);
+    char current_time[32];
+    char time_last_access[32];
+    char time_last_change[32];
+    char time_last_chmod[32];
 
     char size[21];
     sprintf(size, "%ld", currentStat->st_size);
     char *record = malloc((200 + strlen(pwsUID->pw_name) + strlen(grpGID->gr_name) + strlen(size)) * sizeof(char));
 
-    time_t curtime;
+    time_t curtime = time(NULL);
     time(&curtime);
 
-    char *current_time = ctime(&curtime);
-    //printf("%s\n", current_time);
-
     sprintf(record, "data - %s | uid - %s | gid - %s | dim - %s| perm - %c%c%c%c%c%c%c%c%c%c | acc - %s | change - %s | mod - %s | nlink - %ld",
-            strtok(ctime(&curtime), "\n"),
+            strtok(ctime_r(&curtime, current_time), "\n"),
             pwsUID->pw_name,
             grpGID->gr_name,
             size,
@@ -286,7 +287,10 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
             iroth,
             iwoth,
             ixoth,
-            time_last_access, time_last_change, time_last_chmod, currentStat->st_nlink);
+            strtok(ctime_r(&currentStat->st_atime, time_last_access), "\n"),
+            strtok(ctime_r(&currentStat->st_mtime, time_last_change), "\n"),
+            strtok(ctime_r(&currentStat->st_ctime, time_last_chmod), "\n"),
+            currentStat->st_nlink);
 
     curTree = addRecordByPath(curTree, path, strtok(record, "\r\n"));
     free(record);
