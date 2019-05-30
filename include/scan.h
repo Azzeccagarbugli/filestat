@@ -1,21 +1,21 @@
 
-#include "../include/tree.h"
+#include "../include/datastructure.h"
 #include <sys/stat.h>
 #ifndef _SCANH_
 #define _SCANH_
 typedef struct sinfo ScanInfo;
 struct sinfo
 {
-    int nr_monitorati;
-    int nr_link;
-    int nr_directory;
-    int dim_totale;
-    int dim_media;
-    int dim_max;
-    int dim_min;
+    long int nr_monitorati;
+    long int nr_link;
+    long int nr_directory;
+    long int dim_totale;
+    long int dim_media;
+    long int dim_max;
+    long int dim_min;
 };
 
-extern ScanInfo scan_info;
+extern ScanInfo stats;
 int startScan(FILE *, FILE *);
 
 

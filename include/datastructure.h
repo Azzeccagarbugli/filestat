@@ -16,8 +16,9 @@ RecordNode *addRecordByPath(RecordNode *node, char *path, char *record);
 int isEmpty(RecordNode* node);
 RecordNode *getNodeByPath(RecordNode *current, char *value);
 void printInOrder(RecordNode *node);
-void freeTree(RecordNode *node);
-int pathExist(RecordNode *node, char *path);
+void freeNode(RecordNode *node);
+void printOnFile(RecordNode *node, FILE *output);
+void printHistory(RecordNode *root, char *path);
 
 
 #endif

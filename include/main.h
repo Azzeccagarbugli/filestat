@@ -13,14 +13,14 @@ struct oinfo
     char *history_path;
 
     int user_flag;
-    int uID;
+    char *uID;
 
     int group_flag;
-    int gID;
+    char *gID;
 
     int length_flag;
-    int min_length;
-    int max_length;
+    long int min_length;
+    long int max_length;
 
     int noscan_flag;
 };

@@ -9,13 +9,13 @@
 #include "../include/scan.h"
 #include <time.h>
 
-#define ANSI_COLOR_GREEN   "\x1b[32m"
-#define ANSI_COLOR_RESET   "\x1b[0m"
+#define ANSI_COLOR_GREEN "\x1b[32m"
+#define ANSI_COLOR_RESET "\x1b[0m"
 
 #define DEFAULT_INPUT_PATH "./filestat.in"
 #define DEFAULT_OUTPUT_PATH "./filestat.db"
 
-OptInfo opt_info = {0, 0, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 0, 0};
+OptInfo opt_info = {0, 0, 0, 0, NULL, 0, NULL, 0, NULL, 0, 0, 0, 0};
 
 static FILE *file_input;
 static FILE *file_output;
@@ -36,16 +36,22 @@ int main(int argc, char **argv)
     }
     else
     {
-        //printOpt();
+        printOpt();
     }
     startScan(file_input, file_output);
     fflush(file_input);
     fflush(file_output);
     fclose(file_input);
     fclose(file_output);
-    timer_app = clock() - timer_app;
-    double time_taken = ((double)timer_app) / CLOCKS_PER_SEC;
-    printf("\n%sTempo di esecuzione del programma pari a %f secondi%s\n", ANSI_COLOR_GREEN, time_taken, ANSI_COLOR_RESET);
+    if (opt_info.report_flag)
+    {
+        printf("\nReport finale: \n");
+        printf("Numero file elaborati: %ld\n", stats.nr_monitorati);
+        timer_app = clock() - timer_app;
+        double time_taken = ((double)timer_app) / CLOCKS_PER_SEC;
+        printf("Tempo di elaborazione: %f secondi\n", time_taken);
+        printf("Dimensione massima: %ld bytes\n", stats.dim_max);
+    }
     return 1;
 }
 
@@ -61,7 +67,7 @@ void parsePaths(int argc, char **argv)
         file_input = fopen(argv[argc - 2], "a+");
         printf("Come file di input è stato aperto quello specificato come argomento\n");
     }
-    if ((!((argc > 2) && (access(argv[argc - 1], F_OK) == 0)) || (strcmp(argv[argc - 2], argv[argc - 1]) == 0)))
+    if ((!((argc > 2) && (access(argv[argc - 1], F_OK) == 0)) || (strcmp(argv[argc - 2], argv[argc - 1]) == 0) || (strcmp("-h", argv[argc - 2]) == 0) || (strcmp("--history", argv[argc - 2]) == 0)))
     {
         file_output = fopen(DEFAULT_OUTPUT_PATH, "a+");
         printf("Come file di output è stato aperto il predefinito\n");
@@ -83,12 +89,12 @@ void printOpt()
     printf("History flag: %d\n", opt_info.history_flag);
     printf("History path: %s\n", opt_info.history_path);
     printf("User flag: %d\n", opt_info.user_flag);
-    printf("User ID: %d\n", opt_info.uID);
+    printf("User ID: %s\n", opt_info.uID);
     printf("Group flag: %d\n", opt_info.group_flag);
-    printf("Group ID: %d\n", opt_info.gID);
+    printf("Group ID: %s\n", opt_info.gID);
     printf("Length flag: %d\n", opt_info.length_flag);
-    printf("Min length: %d\n", opt_info.min_length);
-    printf("Max lenght: %d\n", opt_info.max_length);
+    printf("Min length: %ld\n", opt_info.min_length);
+    printf("Max lenght: %ld\n", opt_info.max_length);
     printf("Noscan: %d\n", opt_info.noscan_flag);
 }
 
@@ -137,11 +143,13 @@ int parseOpt(int argc, char **argv)
             break;
         case 'u':
             opt_info.user_flag = 1;
-            opt_info.uID = atoi(optarg);
+            opt_info.uID = (char *)calloc(strlen(optarg), sizeof(char));
+            strcpy(opt_info.uID, optarg);
             break;
         case 'g':
             opt_info.group_flag = 1;
-            opt_info.gID = atoi(optarg);
+            opt_info.gID = (char *)calloc(strlen(optarg), sizeof(char));
+            strcpy(opt_info.gID, optarg);
             break;
         case 'l':
             opt_info.length_flag = 1;
@@ -149,7 +157,6 @@ int parseOpt(int argc, char **argv)
             {
                 return 0;
             };
-            filesBetween(".");
             break;
         case 'n':
             opt_info.noscan_flag = 1;

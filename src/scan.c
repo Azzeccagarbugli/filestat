@@ -9,6 +9,7 @@
 #include <errno.h>
 #include "../include/scan.h"
 #include "../include/main.h"
+#include "../include/datastructure.h"
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -16,9 +17,8 @@
 #include <pwd.h>
 #include <grp.h>
 #include <unistd.h>
-#include "../include/tree.h"
 
-ScanInfo scan_info = {0, 0, 0, 0, 0, 0, 0};
+ScanInfo stats = {0, 0, 0, 0, 0, 0, 0};
 
 RecordNode *readOutputFile(FILE *, RecordNode *);
 RecordNode *readInputFile(FILE *, RecordNode *);
@@ -28,26 +28,31 @@ RecordNode *addFileAnalisis(struct stat *, char *, RecordNode *);
 void printOutput(FILE *output, RecordNode *node);
 void printOnFile(RecordNode *node, FILE *output);
 void cleanFile(FILE *output);
-void filesBetween(char *dir);
-
-struct stat file_stats;
-DIR *dirp;
-struct dirent *dent;
+int checkLength(struct stat *file);
+int checkUID(struct stat *file);
+int checkGID(struct stat *file);
+int checkOptions(struct stat *file);
+void updateStats(struct stat *file);
+void printStats();
 
 int startScan(FILE *input, FILE *output)
 {
-    RecordNode *tree = malloc(sizeof(RecordNode));
-    tree = emptyNode();
-    tree = readOutputFile(output, tree);
-    tree = readInputFile(input, tree);
-    printOutput(output, tree);
-    //printf("\nEffettuo la stampa dell'albero\n");
-    //printInOrder(tree);
-    //printf("###\n");
-    //freeTree(tree);
+    RecordNode *data = malloc(sizeof(RecordNode));
+    data = emptyNode();
+    data = readOutputFile(output, data);
+    if (opt_info.history_flag)
+    {
+        printHistory(data, opt_info.history_path);
+    }
+    data = readInputFile(input, data);
+    printOutput(output, data);
+    if (opt_info.stat_flag)
+    {
+        printStats();
+    }
 }
 
-RecordNode *readOutputFile(FILE *output, RecordNode *tree)
+RecordNode *readOutputFile(FILE *output, RecordNode *data)
 {
     int t = 2;
     char *line = (char *)calloc(t, sizeof(char));
@@ -62,16 +67,13 @@ RecordNode *readOutputFile(FILE *output, RecordNode *tree)
 
             if (line[0] == '#' && line[1] == ' ')
             {
-                //Ho trovato un path
                 currentPath = (char *)realloc(currentPath, strlen(line) * sizeof(char));
                 strcpy(currentPath, strtok(line + 2, " "));
             }
             else if (line[0] != '#' && line[1] != '#' && line[2] != '#')
             {
-                //Ho trovato un record
-                tree = addRecordByPath(tree, currentPath, line);
+                data = addRecordByPath(data, currentPath, line);
             }
-            //### è ignorato
             free(line);
             line = (char *)calloc(t, sizeof(char));
         }
@@ -83,49 +85,49 @@ RecordNode *readOutputFile(FILE *output, RecordNode *tree)
     free(line);
     free(currentPath);
     free(temp_line);
-    return tree;
+    return data;
 }
 void increaseMonitorati()
 {
-    scan_info.nr_monitorati++;
+    stats.nr_monitorati++;
 };
 void increaseLink()
 {
-    scan_info.nr_link++;
+    stats.nr_link++;
 }
 void increaseDirectory()
 {
-    scan_info.nr_directory++;
+    stats.nr_directory++;
 }
 
 void updateDimMedia()
 {
-    scan_info.dim_media = scan_info.dim_totale / scan_info.nr_monitorati;
+    stats.dim_media = stats.dim_totale / stats.nr_monitorati;
 }
 
 void updateDimMax(int data)
 {
-    if (data > scan_info.dim_max)
+    if (data > stats.dim_max)
     {
-        scan_info.dim_max = data;
+        stats.dim_max = data;
     }
 };
 void updateDimMin(int data)
 {
-    if (data < scan_info.dim_min)
+    if (data < stats.dim_min)
     {
-        scan_info.dim_min = data;
+        stats.dim_min = data;
     }
 }
 void increaseDimTotale(int data)
 {
-    scan_info.dim_totale = scan_info.dim_totale + data;
+    stats.dim_totale = stats.dim_totale + data;
     updateDimMedia();
     updateDimMax(data);
     updateDimMin(data);
 }
 
-RecordNode *readInputFile(FILE *input, RecordNode *tree)
+RecordNode *readInputFile(FILE *input, RecordNode *data)
 {
     int t = 2;
     char *line = (char *)calloc(t, sizeof(char));
@@ -135,7 +137,7 @@ RecordNode *readInputFile(FILE *input, RecordNode *tree)
         strcat(line, temp_line);
         if (strchr(line, '\n'))
         {
-            tree = analisiSingolaRiga(strtok(line, "\r\n"), tree);
+            data = analisiSingolaRiga(strtok(line, "\r\n"), data);
             free(line);
             line = (char *)calloc(t, sizeof(char));
         }
@@ -144,13 +146,13 @@ RecordNode *readInputFile(FILE *input, RecordNode *tree)
             line = (char *)realloc(line, strlen(line) + t);
         }
     };
-    tree = analisiSingolaRiga(line, tree);
+    data = analisiSingolaRiga(line, data);
     free(line);
     free(temp_line);
-    return tree;
+    return data;
 }
 
-RecordNode *analisiSingolaRiga(char *riga, RecordNode *tree)
+RecordNode *analisiSingolaRiga(char *riga, RecordNode *data)
 {
     char *path = (char *)calloc(strlen(riga), sizeof(char));
     int isR = 0;
@@ -174,43 +176,42 @@ RecordNode *analisiSingolaRiga(char *riga, RecordNode *tree)
         }
     }
 
-    tree = scanFilePath(path, isR, isL, tree);
+    data = scanFilePath(path, isR, isL, data);
     free(path);
-    return tree;
+    return data;
 }
 
-RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
+RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *data)
 {
-    /*printf("\nPath: %s\n", path);
-    printf("R: %d\n", isR);
-    printf("L: %d\n", isL);*/
+    if (opt_info.verbose_flag)
+        printf("\nInizio analisi path: %s\n", realpath(path, NULL));
     struct stat *currentStat = (struct stat *)malloc(sizeof(struct stat));
     if (isL == 1)
     {
-
-        // printf("Del link analizzo il file referenziato\n");
         if (stat(path, currentStat) < 0)
         {
-            return tree;
+            return data;
         }
     }
     else if (isL == 0)
     {
-        //  printf("Del link analizzo il file link\n");
         if (lstat(path, currentStat) < 0)
         {
-            return tree;
+            return data;
         }
     }
 
-    //Analisi effettiva del file e scrittura su albero
+    //Check opzioni al cui interno controllo length, uid, gid
 
-    tree = addFileAnalisis(currentStat, realpath(path, NULL), tree);
+    //Analisi effettiva del file e scrittura su albero
+    if (checkOptions(currentStat))
+    {
+        updateStats(currentStat);
+        data = addFileAnalisis(currentStat, realpath(path, NULL), data);
+    }
 
     if (isR && S_ISDIR(currentStat->st_mode))
     {
-        //  printf("IL PERCORSO: %s E' UNA DIRECTORY IN CUI ENTRARE RICORSIVAMENTE\n", path);
-
         DIR *dir;
         struct dirent *entry;
         dir = opendir(path);
@@ -228,7 +229,7 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
                     strcat(copy, "/");
                 }
                 strcat(copy, entry->d_name);
-                tree = scanFilePath(copy, isR, isL, tree);
+                data = scanFilePath(copy, isR, isL, data);
                 free(copy);
             }
         }
@@ -236,7 +237,7 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
     }
 
     free(currentStat);
-    return tree;
+    return data;
 }
 
 RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *curTree)
@@ -292,36 +293,21 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
             strtok(ctime_r(&currentStat->st_ctime, time_last_chmod), "\n"),
             currentStat->st_nlink);
 
-    curTree = addRecordByPath(curTree, path, strtok(record, "\r\n"));
+    /*if(opt_info.user_flag){
+        printf("")
+    }*/
+    if (!opt_info.noscan_flag)
+    {
+        if (opt_info.length_flag || opt_info.group_flag || opt_info.user_flag)
+        {
+            printf("# %s\n%s\n###\n", path, record);
+        }
+        curTree = addRecordByPath(curTree, path, strtok(record, "\r\n"));
+        if(opt_info.verbose_flag)
+        printf("\nAnalisi del path %s effettuata correttamente\n", path);
+    }
     free(record);
     return curTree;
-}
-
-void printOnFile(RecordNode *node, FILE *output)
-{
-
-    if (isEmpty(node))
-    {
-        return;
-    }
-    else
-    {
-        if (node->isPath)
-        {
-            fprintf(output, "%s ", "#");
-        }
-        fprintf(output, "%s\n", node->value);
-        RecordNode *nextRecord = node->nextRecord;
-        RecordNode *nextPath = node->nextPath;
-        free(node->value);
-        free(node);
-        if (nextRecord == NULL)
-        {
-            fprintf(output, "###\n", NULL);
-        }
-        printOnFile(nextRecord, output);
-        printOnFile(nextPath, output);
-    }
 }
 
 void cleanFile(FILE *output)
@@ -340,42 +326,80 @@ void printOutput(FILE *output, RecordNode *node)
     fflush(output);
 }
 
-void filesBetween(char *dir)
+int checkLength(struct stat *file)
 {
-    dirp = opendir(dir);
-    do
+    if (!opt_info.length_flag)
     {
-        dent = readdir(dirp);
-        if (dent)
-        {
-            if (!stat(dent->d_name, &file_stats))
-            {
-                // ./filestat -l 32:500
-                // Dimensione compresa
-                if (opt_info.max_length >= file_stats.st_size && opt_info.min_length <= file_stats.st_size)
-                {
-                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, (int)file_stats.st_size);
-                }
+        return 1;
+    }
+    else if (opt_info.max_length >= file->st_size && opt_info.min_length <= file->st_size)
+    {
+        return 1;
+    }
+    else if (opt_info.max_length == 0 && opt_info.min_length <= file->st_size)
+    {
+        return 1;
+    }
+    else if (opt_info.min_length == 0 && opt_info.max_length >= file->st_size)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
 
-                // ./filestat -l 32:
-                // Dimensione minima
-                if (opt_info.max_length == 0 && opt_info.min_length <= file_stats.st_size)
-                {
-                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, (int)file_stats.st_size);
-                }
+int checkUID(struct stat *file)
+{
+    if (!opt_info.user_flag)
+    {
+        return 1;
+    }
+    else
+    {
+        struct passwd *pwsUID = getpwuid(file->st_uid);
+        /*printf("User file: %s.\n", pwsUID->pw_name);
+        printf("User flag: %s.\n", opt_info.uID);*/
+        return (strcmp(opt_info.uID, pwsUID->pw_name) == 0);
+    }
+};
+int checkGID(struct stat *file)
+{
+    if (!opt_info.group_flag)
+    {
+        return 1;
+    }
+    else
+    {
+        struct group *grpGID = getgrgid(file->st_gid);
+        return (strcmp(opt_info.gID, grpGID->gr_name) == 0);
+    }
+};
 
-                // ./filestat -l :500
-                // Dimensione massima
-                if (opt_info.min_length == 0 && opt_info.max_length >= file_stats.st_size)
-                {
-                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, (int)file_stats.st_size);
-                }
-            }
-            else
-            {
-                printf("The stat API didn't work for this file\n");
-            }
-        }
-    } while (dent);
-    closedir(dirp);
+int checkOptions(struct stat *file)
+{
+    return (checkLength(file) && checkUID(file) && checkGID(file));
+}
+
+void updateStats(struct stat *file)
+{
+    increaseMonitorati();
+    if (S_ISDIR(file->st_mode))
+        increaseDirectory();
+    if (S_ISLNK(file->st_mode))
+        ;
+    increaseDimTotale(file->st_size);
+}
+
+void printStats()
+{
+    printf("\nStats: \n");
+    printf("Numero file monitorati: %ld\n", stats.nr_monitorati);
+    printf("Numero di link: %ld\n", stats.nr_link);
+    printf("Numero di directory: %ld\n", stats.nr_directory);
+    printf("Dimensione totale: %ld bytes\n", stats.dim_totale);
+    printf("Dimensione media: %ld bytes\n", stats.dim_media);
+    printf("Dimensione massima: %ld bytes\n", stats.dim_max);
+    printf("Dimensione minima: %ld bytes\n\n", stats.dim_min);
 }

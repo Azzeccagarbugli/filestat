@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/tree.h"
+#include "../include/datastructure.h"
+#include "../include/main.h"
 #include <string.h>
 
 RecordNode *addRecord(RecordNode *node, char *path, char *record);
 RecordNode *addPath(RecordNode *node, char *path);
+void printNodeIfAnalisis(RecordNode *node);
 RecordNode *emptyNode()
 {
     return NULL;
@@ -115,35 +117,73 @@ RecordNode *getNodeByPath(RecordNode *current, char *value)
     }
 };
 
-int pathExist(RecordNode *node, char *path)
-{
-    if (isEmpty(node))
-    {
-        return 0;
-    }
-    else if (node->isPath)
-    {
-        if (strcmp(node->value, path) == 0)
-        {
-            return 1;
-        }
-        else
-        {
-            return pathExist(node->nextPath, path);
-        }
-    }
-    else
-    {
-        return 1;
-    }
-}
-void freeTree(RecordNode *node)
+void freeNode(RecordNode *node)
 {
     if (node != NULL)
     {
-        freeTree(node->nextPath);
-        freeTree(node->nextRecord);
         free(node->value);
         free(node);
+    }
+}
+
+void printOnFile(RecordNode *node, FILE *output)
+{
+    if (isEmpty(node))
+    {
+        return;
+    }
+    else
+    {
+        if (node->isPath)
+        {
+            fprintf(output, "%s ", "#");
+            if (opt_info.noscan_flag)
+            {
+                printf("# ");
+            }
+        }
+        fprintf(output, "%s\n", node->value);
+        RecordNode *nextRecord = node->nextRecord;
+        RecordNode *nextPath = node->nextPath;
+
+        if (opt_info.noscan_flag)
+        {
+            printf("%s\n", node->value);
+        }
+
+        freeNode(node);
+        if (nextRecord == NULL)
+        {
+            fprintf(output, "###\n", NULL);
+            if (opt_info.noscan_flag)
+            {
+                printf("###\n");
+            }
+        }
+        printOnFile(nextRecord, output);
+        printOnFile(nextPath, output);
+    }
+}
+
+void printHistory(RecordNode *root, char *path)
+{
+    printf("Cronologia del file al path %s\n", realpath(path, NULL));
+    RecordNode *current = getNodeByPath(root, realpath(path, NULL));
+    if (current == NULL)
+    {
+        printf("Non esiste cronologia di tale file nel file di output specificato\n");
+    }
+    else
+        while (current != NULL)
+        {
+            printNodeIfAnalisis(current);
+            current = current->nextRecord;
+        }
+}
+
+void printNodeIfAnalisis(RecordNode *node)
+{
+    if(node->isPath == 0){
+        printf("%s\n", node->value);
     }
 }
