@@ -149,6 +149,7 @@ int parseOpt(int argc, char **argv)
             {
                 return 0;
             };
+            filesBetween(".");
             break;
         case 'n':
             opt_info.noscan_flag = 1;

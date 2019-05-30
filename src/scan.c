@@ -28,6 +28,11 @@ RecordNode *addFileAnalisis(struct stat *, char *, RecordNode *);
 void printOutput(FILE *output, RecordNode *node);
 void printOnFile(RecordNode *node, FILE *output);
 void cleanFile(FILE *output);
+void filesBetween(char *dir);
+
+struct stat file_stats;
+DIR *dirp;
+struct dirent *dent;
 
 int startScan(FILE *input, FILE *output)
 {
@@ -176,7 +181,7 @@ RecordNode *analisiSingolaRiga(char *riga, RecordNode *tree)
 
 RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
 {
-   /* printf("\nPath: %s\n", path);
+    /*printf("\nPath: %s\n", path);
     printf("R: %d\n", isR);
     printf("L: %d\n", isL);*/
     struct stat *currentStat = (struct stat *)malloc(sizeof(struct stat));
@@ -201,7 +206,6 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *tree)
     //Analisi effettiva del file e scrittura su albero
 
     tree = addFileAnalisis(currentStat, realpath(path, NULL), tree);
-  
 
     if (isR && S_ISDIR(currentStat->st_mode))
     {
@@ -336,7 +340,7 @@ void printOutput(FILE *output, RecordNode *node)
     fflush(output);
 }
 
-/*void filesBetween(char *dir)
+void filesBetween(char *dir)
 {
     dirp = opendir(dir);
     do
@@ -350,21 +354,21 @@ void printOutput(FILE *output, RecordNode *node)
                 // Dimensione compresa
                 if (opt_info.max_length >= file_stats.st_size && opt_info.min_length <= file_stats.st_size)
                 {
-                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, (int) file_stats.st_size);
+                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, (int)file_stats.st_size);
                 }
 
                 // ./filestat -l 32:
                 // Dimensione minima
                 if (opt_info.max_length == 0 && opt_info.min_length <= file_stats.st_size)
                 {
-                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, (int) file_stats.st_size);
+                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, (int)file_stats.st_size);
                 }
 
                 // ./filestat -l :500
                 // Dimensione massima
                 if (opt_info.min_length == 0 && opt_info.max_length >= file_stats.st_size)
                 {
-                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, (int) file_stats.st_size);
+                    printf("File name: %-12s \t%-1d bytes\n", dent->d_name, (int)file_stats.st_size);
                 }
             }
             else
@@ -374,4 +378,4 @@ void printOutput(FILE *output, RecordNode *node)
         }
     } while (dent);
     closedir(dirp);
-}*/
+}
