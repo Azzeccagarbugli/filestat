@@ -184,8 +184,12 @@ RecordNode *analisiSingolaRiga(char *riga, RecordNode *data)
 RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *data)
 {
     if (opt_info.verbose_flag)
+    {
         printf("\nInizio analisi path: %s\n", realpath(path, NULL));
+    }
+
     struct stat *currentStat = (struct stat *)malloc(sizeof(struct stat));
+
     if (isL == 1)
     {
         if (stat(path, currentStat) < 0)
@@ -204,7 +208,7 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *data)
     //Check opzioni al cui interno controllo length, uid, gid
 
     //Analisi effettiva del file e scrittura su albero
-    if (checkOptions(currentStat))
+    if (checkOptions(currentStat) && (!opt_info.noscan_flag))
     {
         updateStats(currentStat);
         data = addFileAnalisis(currentStat, realpath(path, NULL), data);
@@ -256,11 +260,6 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
     struct passwd *pwsUID = getpwuid(currentStat->st_uid);
     struct group *grpGID = getgrgid(currentStat->st_gid);
 
-    /* 
-     * <acc> data dell'ultimo accesso;
-     * <change> data dell'ultimo cambiamento;
-     * <mod> data dell'ultima modifica dei permessi;
-     */
     char current_time[32];
     char time_last_access[32];
     char time_last_change[32];
@@ -293,19 +292,18 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
             strtok(ctime_r(&currentStat->st_ctime, time_last_chmod), "\n"),
             currentStat->st_nlink);
 
-    /*if(opt_info.user_flag){
-        printf("")
-    }*/
-    if (!opt_info.noscan_flag)
+    if (opt_info.length_flag || opt_info.group_flag || opt_info.user_flag)
     {
-        if (opt_info.length_flag || opt_info.group_flag || opt_info.user_flag)
-        {
-            printf("# %s\n%s\n###\n", path, record);
-        }
-        curTree = addRecordByPath(curTree, path, strtok(record, "\r\n"));
-        if(opt_info.verbose_flag)
+        printf("# %s\n%s\n###\n", path, record);
+    }
+
+    curTree = addRecordByPath(curTree, path, strtok(record, "\r\n"));
+
+    if (opt_info.verbose_flag)
+    {
         printf("\nAnalisi del path %s effettuata correttamente\n", path);
     }
+
     free(record);
     return curTree;
 }
@@ -359,11 +357,10 @@ int checkUID(struct stat *file)
     else
     {
         struct passwd *pwsUID = getpwuid(file->st_uid);
-        /*printf("User file: %s.\n", pwsUID->pw_name);
-        printf("User flag: %s.\n", opt_info.uID);*/
         return (strcmp(opt_info.uID, pwsUID->pw_name) == 0);
     }
-};
+}
+
 int checkGID(struct stat *file)
 {
     if (!opt_info.group_flag)
@@ -375,7 +372,7 @@ int checkGID(struct stat *file)
         struct group *grpGID = getgrgid(file->st_gid);
         return (strcmp(opt_info.gID, grpGID->gr_name) == 0);
     }
-};
+}
 
 int checkOptions(struct stat *file)
 {
@@ -386,9 +383,9 @@ void updateStats(struct stat *file)
 {
     increaseMonitorati();
     if (S_ISDIR(file->st_mode))
+    {
         increaseDirectory();
-    if (S_ISLNK(file->st_mode))
-        ;
+    }
     increaseDimTotale(file->st_size);
 }
 

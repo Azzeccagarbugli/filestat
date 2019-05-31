@@ -19,9 +19,6 @@ OptInfo opt_info = {0, 0, 0, 0, NULL, 0, NULL, 0, NULL, 0, 0, 0, 0};
 
 static FILE *file_input;
 static FILE *file_output;
-/*
-static char default_input_path[] = "./filestat.in";
-static char default_output_path[] = "./filestat.db";*/
 
 struct stat file_stats;
 
@@ -30,6 +27,7 @@ int main(int argc, char **argv)
     clock_t timer_app;
     timer_app = clock();
     parsePaths(argc, argv);
+    
     if (!parseOpt(argc, argv))
     {
         return -1;
@@ -38,11 +36,13 @@ int main(int argc, char **argv)
     {
         printOpt();
     }
+    
     startScan(file_input, file_output);
     fflush(file_input);
     fflush(file_output);
     fclose(file_input);
     fclose(file_output);
+    
     if (opt_info.report_flag)
     {
         printf("\nReport finale: \n");
@@ -52,6 +52,7 @@ int main(int argc, char **argv)
         printf("Tempo di elaborazione: %f secondi\n", time_taken);
         printf("Dimensione massima: %ld bytes\n", stats.dim_max);
     }
+    
     return 1;
 }
 
@@ -77,6 +78,7 @@ void parsePaths(int argc, char **argv)
         file_output = fopen(argv[argc - 1], "a+");
         printf("Come file di output è stato aperto quello specificato come argomento\n");
     }
+    
     fseek(file_input, 0, SEEK_SET);
     fseek(file_output, 0, SEEK_SET);
 }

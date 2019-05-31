@@ -21,6 +21,9 @@ SRC_DIR := src
 INC_DIR := include
 OBJ_DIR := obj
 
+# Testing folder
+TEST_DIR := folder_testing
+
 # Funzioni 'wildcard' e 'patsubst' indicate per la generazione 
 # dei file .obj nella directory obj/ 
 SOURCES := $(wildcard $(SRC_DIR)/*.c)
@@ -38,8 +41,15 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 
 # La phony consente di non creare interferenze con una possibile variabile
 # chiamata nel medesimo modo
+.PHONY: test
+test:
+	./folder_testing.sh
+
+# La phony consente di non creare interferenze con una possibile variabile
+# chiamata nel medesimo modo
 .PHONY: clean
 clean: 
 	$(RM) $(OBJ_DIR)/*.o
+	$(RM) $(TEST_DIR)
 	$(RM) filestat
 	@echo "Clean effettuato con successo!"
