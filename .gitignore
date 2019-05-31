@@ -60,3 +60,6 @@ filestat
 # File stuff
 filestat.db
 filestat.in
+
+# Folder testing
+folder_testing/
