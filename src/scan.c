@@ -54,37 +54,25 @@ int startScan(FILE *input, FILE *output)
 
 RecordNode *readOutputFile(FILE *output, RecordNode *data)
 {
-    int t = 2;
-    char *line = (char *)calloc(t, sizeof(char));
-    char *currentPath = (char *)malloc(sizeof(char));
-    char *temp_line = (char *)calloc(t, sizeof(char));
-    while (fgets(temp_line, t * sizeof(char), output))
+    size_t t = 1;
+    char *line = NULL;
+    char *currentPath = NULL;
+    for (ssize_t read = getline(&line, &t, output); read >= 0; read = getline(&line, &t, output))
     {
-        strcat(line, temp_line);
-        if (strchr(line, '\n'))
+        if (line[0] == '#' && line[1] == ' ')
         {
-            strtok(line, "\r\n");
+            free(currentPath);
+            currentPath = malloc(strlen(line) + 1);
+            strcpy(currentPath, strtok(line + 2, "\r\n"));
+        }
+        else if (line[0] != '#' && line[1] != '#' && line[2] != '#')
+        {
+            data = addRecordByPath(data, currentPath, strtok(line, "\r\n"));
+        }
+    }
 
-            if (line[0] == '#' && line[1] == ' ')
-            {
-                currentPath = (char *)realloc(currentPath, strlen(line) * sizeof(char));
-                strcpy(currentPath, strtok(line + 2, " "));
-            }
-            else if (line[0] != '#' && line[1] != '#' && line[2] != '#')
-            {
-                data = addRecordByPath(data, currentPath, line);
-            }
-            free(line);
-            line = (char *)calloc(t, sizeof(char));
-        }
-        else
-        {
-            line = (char *)realloc(line, strlen(line) + t);
-        }
-    };
     free(line);
     free(currentPath);
-    free(temp_line);
     return data;
 }
 void increaseMonitorati()
@@ -129,26 +117,13 @@ void increaseDimTotale(int data)
 
 RecordNode *readInputFile(FILE *input, RecordNode *data)
 {
-    int t = 2;
-    char *line = (char *)calloc(t, sizeof(char));
-    char *temp_line = (char *)calloc(t, sizeof(char));
-    while (fgets(temp_line, t * sizeof(char), input))
+    size_t t = 2;
+    char *line = NULL;
+    for (ssize_t read = getline(&line, &t, input); read >= 0; read = getline(&line, &t, input))
     {
-        strcat(line, temp_line);
-        if (strchr(line, '\n'))
-        {
-            data = analisiSingolaRiga(strtok(line, "\r\n"), data);
-            free(line);
-            line = (char *)calloc(t, sizeof(char));
-        }
-        else
-        {
-            line = (char *)realloc(line, strlen(line) + t);
-        }
-    };
-    data = analisiSingolaRiga(line, data);
+        data = analisiSingolaRiga(strtok(line, "\r\n"), data);
+    }
     free(line);
-    free(temp_line);
     return data;
 }
 
@@ -186,6 +161,9 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *data)
     if (opt_info.verbose_flag)
     {
         printf("\nInizio analisi path: %s\n", realpath(path, NULL));
+        printf("R abilitato: %d\n", isR);
+        printf("L abilitato: %d\n", isL);
+        return data;
     }
 
     struct stat *currentStat = (struct stat *)malloc(sizeof(struct stat));
