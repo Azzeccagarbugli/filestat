@@ -138,6 +138,7 @@ find "$OUTDIR" -type d | while IFS= read D ; do
     for ((ifc=0; ifc<$((MINFILECHILDREN+RANDOM%MAXFILECHILDREN)); ifc++)) {
         CFILE="$(get_rand_filename)";
         #ln -s "$(realpath Data)"
+        ln -s folder_testing/$CFILE folder_testing/link_$CFILE
         echo -n '> '
         [ "$VERBOSE" == "1" ] && echo "$D"/"$CFILE"
         cat /dev/urandom \
@@ -147,5 +148,4 @@ find "$OUTDIR" -type d | while IFS= read D ; do
 done
 
 echo
-# echo `ln -sf folder_testing/*.bin folder_testing/link$CFILE`
 echo "Dimensione totale dei file: $(du -bs $(echo "$OUTDIR"))"
