@@ -81,7 +81,7 @@ get_rand_filename() {
             printf \\$(printf '%03o' ${AARR[RANDOM%aarrcount]});
         }
     else
-        cat /dev/urandom | tr -dc '[ -~]' | tr -d '[$></~:`\\]' | head -c$((MINFILENAMELEN + RANDOM % MAXFILENAMELEN)) #| sed 's/\(["]\)/\\\1/g'
+        cat /dev/urandom | tr -dc '[ -~]' | tr -d '[$></~:`\\]' | head -c$((MINFILENAMELEN + RANDOM % MAXFILENAMELEN))
     fi
     printf "%s" $FILEEXT
 }
@@ -115,7 +115,6 @@ for (( ifl=0;ifl<$((NUMFIRSTLEVELDIRS));ifl++ )) {
         DIRCHILDREN=""; MOREDC=0;
         for ((idc=0; idc<$((MINDIRCHILDREN+RANDOM%MAXDIRCHILDREN)); idc++)) {
             CDIR="$(get_rand_dirname)" ;
-            # make sure comma is last, so brace expansion works even for 1 element? that can mess with expansion math, though
             if [ "$DIRCHILDREN" == "" ]; then DIRCHILDREN="\"$CDIR\"" ;
         else DIRCHILDREN="$DIRCHILDREN,\"$CDIR\"" ; MOREDC=1 ; fi
         }
@@ -137,15 +136,19 @@ find "$OUTDIR" -type d | while IFS= read D ; do
     [ "$VERBOSE" == "1" ] && echo "$D";
     for ((ifc=0; ifc<$((MINFILECHILDREN+RANDOM%MAXFILECHILDREN)); ifc++)) {
         CFILE="$(get_rand_filename)";
-        #ln -s "$(realpath Data)"
-        ln -s folder_testing/$CFILE folder_testing/link_$CFILE
+        #echo ln -s folder_testing/$CFILE folder_testing/link_$(get_rand_filename)
         echo -n '> '
         [ "$VERBOSE" == "1" ] && echo "$D"/"$CFILE"
         cat /dev/urandom \
         | head -c$((MINFILESIZE + RANDOM % MAXFILESIZE)) \
         > "$D"/"$CFILE"
+        if [[ -f folder_testing/$CFILE ]]; then
+            ln -s folder_testing/$CFILE folder_testing/link_$(get_rand_filename)
+        fi
     }
 done
 
+
 echo
+tree -a --dirsfirst -s "$OUTDIR"
 echo "Dimensione totale dei file: $(du -bs $(echo "$OUTDIR"))"
