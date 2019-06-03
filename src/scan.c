@@ -160,36 +160,41 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *data)
 {
     if (opt_info.verbose_flag)
     {
-        printf("\nInizio analisi path: %s\n", realpath(path, NULL));
+        printf("\nInizio analisi path: %s\n", path);
         printf("R abilitato: %d\n", isR);
         printf("L abilitato: %d\n", isL);
-        return data;
     }
 
     struct stat *currentStat = (struct stat *)malloc(sizeof(struct stat));
 
-    if (isL == 1)
+    if (isL == 0)
     {
         if (stat(path, currentStat) < 0)
         {
             return data;
         }
     }
-    else if (isL == 0)
+    else if (isL == 1)
     {
         if (lstat(path, currentStat) < 0)
         {
             return data;
         }
     }
-
     //Check opzioni al cui interno controllo length, uid, gid
 
     //Analisi effettiva del file e scrittura su albero
     if (checkOptions(currentStat) && (!opt_info.noscan_flag))
     {
         updateStats(currentStat);
-        data = addFileAnalisis(currentStat, realpath(path, NULL), data);
+       /* if (S_ISLNK(currentStat->st_mode))
+        {
+            data = addFileAnalisis(currentStat, realpath(path, NULL), data);
+        }
+        else
+        {*/
+            data = addFileAnalisis(currentStat, path, data);
+        //}
     }
 
     if (isR && S_ISDIR(currentStat->st_mode))
@@ -224,7 +229,19 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *data)
 
 RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *curTree)
 {
-    char dinfo = S_ISDIR(currentStat->st_mode) ? 'd' : '-';
+    char dlinfo;
+    if (S_ISDIR(currentStat->st_mode))
+    {
+        dlinfo = 'd';
+    }
+    else if (S_ISLNK(currentStat->st_mode))
+    {
+        dlinfo = 'l';
+    }
+    else
+    {
+        dlinfo = '-';
+    }
     char irusr = currentStat->st_mode & S_IRUSR ? 'r' : '-';
     char iwusr = currentStat->st_mode & S_IWUSR ? 'w' : '-';
     char ixusr = currentStat->st_mode & S_IXUSR ? 'x' : '-';
@@ -255,7 +272,7 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
             pwsUID->pw_name,
             grpGID->gr_name,
             size,
-            dinfo,
+            dlinfo,
             irusr,
             iwusr,
             ixusr,
