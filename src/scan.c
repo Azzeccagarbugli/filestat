@@ -170,7 +170,9 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *data)
     if (isL == 0)
     {
         if (stat(path, currentStat) < 0)
-        {
+        {   
+            if(opt_info.verbose_flag)
+            printf("Non sono riuscito ad aprire il file\n");
             return data;
         }
     }
@@ -178,6 +180,8 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *data)
     {
         if (lstat(path, currentStat) < 0)
         {
+            if(opt_info.verbose_flag)
+            printf("Non sono riuscito ad aprire il file\n");
             return data;
         }
     }
