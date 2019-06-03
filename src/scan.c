@@ -56,7 +56,7 @@ int startScan(FILE *input, FILE *output)
 
 RecordNode *readOutputFile(FILE *output, RecordNode *data)
 {
-    size_t t = 1;
+    size_t t = 256;
     char *line = NULL;
     char *currentPath = NULL;
     for (ssize_t read = getline(&line, &t, output); read >= 0; read = getline(&line, &t, output))
@@ -64,8 +64,7 @@ RecordNode *readOutputFile(FILE *output, RecordNode *data)
         if (line[0] == '#' && line[1] == ' ')
         {
             free(currentPath);
-            currentPath = malloc(strlen(line) + 1);
-            strcpy(currentPath, strtok(line + 2, "\r\n"));
+            currentPath = strdup(strtok(line + 2, "\r\n"));
         }
         else if (line[0] != '#' && line[1] != '#' && line[2] != '#')
         {
@@ -119,7 +118,7 @@ void increaseDimTotale(int data)
 
 RecordNode *readInputFile(FILE *input, RecordNode *data)
 {
-    size_t t = 2;
+    size_t t = 256;
     char *line = NULL;
     for (ssize_t read = getline(&line, &t, input); read >= 0; read = getline(&line, &t, input))
     {
