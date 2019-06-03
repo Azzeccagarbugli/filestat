@@ -34,6 +34,8 @@ int checkGID(struct stat *file);
 int checkOptions(struct stat *file);
 void updateStats(struct stat *file);
 void printStats();
+char *find_last_of(char *str, char c);
+char *getAbsPath(char *path);
 
 int startScan(FILE *input, FILE *output)
 {
@@ -167,38 +169,29 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *data)
 
     struct stat *currentStat = (struct stat *)malloc(sizeof(struct stat));
 
-    if (isL == 0)
+    if (lstat(path, currentStat) < 0)
     {
-        if (stat(path, currentStat) < 0)
-        {   
-            if(opt_info.verbose_flag)
+        if (opt_info.verbose_flag)
             printf("Non sono riuscito ad aprire il file\n");
-            return data;
-        }
+        return data;
     }
-    else if (isL == 1)
-    {
-        if (lstat(path, currentStat) < 0)
-        {
-            if(opt_info.verbose_flag)
-            printf("Non sono riuscito ad aprire il file\n");
-            return data;
-        }
-    }
-    //Check opzioni al cui interno controllo length, uid, gid
 
-    //Analisi effettiva del file e scrittura su albero
-    if (checkOptions(currentStat) && (!opt_info.noscan_flag))
+    if (S_ISLNK(currentStat->st_mode))
+        increaseLink();
+
+    if (isL == 0 && S_ISLNK(currentStat->st_mode))
+    {
+        data = scanFilePath(realpath(path, NULL), isR, isL, data);
+    }
+    else if (S_ISLNK(currentStat->st_mode))
     {
         updateStats(currentStat);
-       /* if (S_ISLNK(currentStat->st_mode))
-        {
-            data = addFileAnalisis(currentStat, realpath(path, NULL), data);
-        }
-        else
-        {*/
-            data = addFileAnalisis(currentStat, path, data);
-        //}
+        data = addFileAnalisis(currentStat, getAbsPath(path), data);
+    }
+    else if (checkOptions(currentStat) && (!opt_info.noscan_flag))
+    {
+        updateStats(currentStat);
+        data = addFileAnalisis(currentStat, realpath(path, NULL), data);
     }
 
     if (isR && S_ISDIR(currentStat->st_mode))
@@ -392,10 +385,43 @@ void printStats()
 {
     printf("\nStats: \n");
     printf("Numero file monitorati: %ld\n", stats.nr_monitorati);
-    printf("Numero di link: %ld\n", stats.nr_link);
-    printf("Numero di directory: %ld\n", stats.nr_directory);
+    printf("Numero di link incontrati: %ld\n", stats.nr_link);
+    printf("Numero di directory incontrati: %ld\n", stats.nr_directory);
     printf("Dimensione totale: %ld bytes\n", stats.dim_totale);
     printf("Dimensione media: %ld bytes\n", stats.dim_media);
     printf("Dimensione massima: %ld bytes\n", stats.dim_max);
     printf("Dimensione minima: %ld bytes\n\n", stats.dim_min);
+}
+
+char *find_last_of(char *str, char c)
+{
+    for (char *i = str + strlen(str); i >= str; i--)
+        if (*i == c)
+            return i;
+    return NULL;
+}
+
+char *getAbsPath(char *path)
+{
+    char *name;
+    char *tmp;
+    char *absPath = malloc(PATH_MAX);
+
+    tmp = find_last_of(path, '/');
+    if (tmp == NULL)
+    {
+        name = strdup(path);
+        getcwd(absPath, PATH_MAX);
+    }
+    else
+    {
+        name = strdup(tmp + 1);
+        *tmp = '\0';
+        realpath(path, absPath);
+    }
+
+    strcat(absPath, "/");
+    strcat(absPath, name);
+    free(name);
+    return absPath;
 }

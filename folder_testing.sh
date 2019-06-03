@@ -143,7 +143,7 @@ find "$OUTDIR" -type d | while IFS= read D ; do
         | head -c$((MINFILESIZE + RANDOM % MAXFILESIZE)) \
         > "$D"/"$CFILE"
         if [[ -f folder_testing/$CFILE ]]; then
-            ln -s folder_testing/$CFILE folder_testing/link_$(get_rand_filename)
+            ln -s $CFILE folder_testing/link_$ifc
         fi
     }
 done
