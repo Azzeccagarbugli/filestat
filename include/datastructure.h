@@ -1,23 +1,32 @@
 #ifndef _TREEH_
 #define _TREEH_
 
-typedef struct treenode RecordNode;
+typedef struct analisisentry AnalisisEntry;
 
-struct treenode{
-    char *value;
-    int isPath;
-    RecordNode *nextPath;
-    RecordNode *nextRecord;
+struct analisisentry
+{
+    char *analisis;
+    AnalisisEntry *nextAnalisis;
 };
 
-RecordNode* emptyNode();
-RecordNode* createNewNode(char* value, int isPath);
-RecordNode *addRecordByPath(RecordNode *node, char *path, char *record);
-int isEmpty(RecordNode* node);
-RecordNode *getNodeByPath(RecordNode *current, char *value);
-void printInOrder(RecordNode *node);
-void freeNode(RecordNode *node);
-void printOnFile(RecordNode *node, FILE *output);
-void printHistory(RecordNode *root, char *path);
+typedef struct pathentry PathEntry;
+
+struct pathentry
+{
+    char *path;
+    AnalisisEntry *analisis;
+    PathEntry *nextPath;
+};
+
+AnalisisEntry *emptyAnalisis();
+PathEntry *emptyPath();
+PathEntry *createNewPath(char *pt);
+int isAnalisisEmpty(AnalisisEntry *entry);
+int isPathEmpty(PathEntry *node);
+PathEntry *addPathAndAnalisis(PathEntry *entry, char *path, char *analisis);
+PathEntry *getNextPath(PathEntry *entry);
+AnalisisEntry *getFirstAnalisis(PathEntry *entry);
+AnalisisEntry *getNextAnalisis(AnalisisEntry *entry);
+PathEntry *getPathEntry(PathEntry *entry, char *path);
 
 #endif

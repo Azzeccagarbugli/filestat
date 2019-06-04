@@ -33,13 +33,12 @@ ScanInfo stats = {0, 0, 0, 0, 0, 0, 0};
  * Insieme di metodi che hanno visibilità solamente all'interno di tale codice, rendendoli 
  * quindi completamente inaccessibili dall'esterno. 
  */
-RecordNode *readOutputFile(FILE *, RecordNode *);
-RecordNode *readInputFile(FILE *, RecordNode *);
-RecordNode *analisiSingolaRiga(char *, RecordNode *);
-RecordNode *scanFilePath(char *, int, int, RecordNode *);
-RecordNode *addFileAnalisis(struct stat *, char *, RecordNode *);
-void printOutput(FILE *output, RecordNode *node);
-void printOnFile(RecordNode *node, FILE *output);
+PathEntry *readOutputFile(FILE *, PathEntry *);
+PathEntry *readInputFile(FILE *, PathEntry *);
+PathEntry *inputLineAnalisis(char *, PathEntry *);
+PathEntry *scanFilePath(char *, int, int, PathEntry *);
+PathEntry *addFileAnalisis(struct stat *, char *, PathEntry *);
+void printOnOutput(FILE *output, PathEntry *node);
 void cleanFile(FILE *output);
 int checkLength(struct stat *file);
 int checkUID(struct stat *file);
@@ -48,27 +47,31 @@ int checkOptions(struct stat *file);
 void updateStats(struct stat *file);
 void printStats();
 char *find_last_of(char *str, char c);
-char *getAbsPath(char *path);
+char *getLinkAbsPath(char *path);
+void printHistory(PathEntry *entry, char *path);
+void printOnFile(PathEntry *pathentry, FILE *file);
+void freeAnalisis(AnalisisEntry *entry);
+void freePath(PathEntry *entry);
 
 /**
- * Metodo che inzializza la scannerizzazione dei file. Tale metodo 
+ * Metodo che inizializza la scannerizzazione dei file. Tale metodo 
  * viene anche richiamato all'interno del main del progetto.
  */
 int startScan(FILE *input, FILE *output)
 {
-    RecordNode *data = malloc(sizeof(RecordNode));
-    
-    data = emptyNode();
+    PathEntry *data = malloc(sizeof(PathEntry));
+
+    data = emptyPath();
     data = readOutputFile(output, data);
-    
+
     if (opt_info.history_flag)
     {
         printHistory(data, opt_info.history_path);
     }
-    
+
     data = readInputFile(input, data);
-    printOutput(output, data);
-    
+    printOnOutput(output, data);
+    freePath(data);
     if (opt_info.stat_flag)
     {
         printStats();
@@ -77,8 +80,8 @@ int startScan(FILE *input, FILE *output)
 
 /**
  * 
- */ 
-RecordNode *readOutputFile(FILE *output, RecordNode *data)
+ */
+PathEntry *readOutputFile(FILE *output, PathEntry *data)
 {
     size_t t = 256;
     char *line = NULL;
@@ -92,7 +95,7 @@ RecordNode *readOutputFile(FILE *output, RecordNode *data)
         }
         else if (line[0] != '#' && line[1] != '#' && line[2] != '#')
         {
-            data = addRecordByPath(data, currentPath, strtok(line, "\r\n"));
+            data = addPathAndAnalisis(data, currentPath, strtok(line, "\r\n"));
         }
     }
 
@@ -140,22 +143,22 @@ void increaseDimTotale(int data)
     updateDimMin(data);
 }
 
-RecordNode *readInputFile(FILE *input, RecordNode *data)
+PathEntry *readInputFile(FILE *input, PathEntry *entry)
 {
     size_t t = 256;
     char *line = NULL;
     for (ssize_t read = getline(&line, &t, input); read >= 0; read = getline(&line, &t, input))
     {
-        data = analisiSingolaRiga(strtok(line, "\r\n"), data);
+        entry = inputLineAnalisis(strtok(line, "\r\n"), entry);
     }
 
     free(line);
-    return data;
+    return entry;
 }
 
-RecordNode *analisiSingolaRiga(char *riga, RecordNode *data)
+PathEntry *inputLineAnalisis(char *riga, PathEntry *entry)
 {
-    char *path = (char *)calloc(strlen(riga), sizeof(char));
+    char *path;
     int isR = 0;
     int isL = 0;
     int pathRead = 0;
@@ -172,23 +175,21 @@ RecordNode *analisiSingolaRiga(char *riga, RecordNode *data)
         }
         else if (!pathRead)
         {
-            strcpy(path, token);
+            path = strdup(token);
             pathRead = 1;
         }
     }
 
-    data = scanFilePath(path, isR, isL, data);
+    entry = scanFilePath(path, isR, isL, entry);
     free(path);
-    return data;
+    return entry;
 }
 
-RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *data)
+PathEntry *scanFilePath(char *path, int isR, int isL, PathEntry *entry)
 {
     if (opt_info.verbose_flag)
     {
-        printf("\nInizio analisi path: %s\n", path);
-        printf("R abilitato: %d\n", isR);
-        printf("L abilitato: %d\n", isL);
+        printf("Inizio ad elaborare il file al path: %s\n", path);
     }
 
     struct stat *currentStat = (struct stat *)malloc(sizeof(struct stat));
@@ -196,48 +197,56 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *data)
     if (lstat(path, currentStat) < 0)
     {
         if (opt_info.verbose_flag)
-            printf("Non sono riuscito ad aprire il file\n");
-        return data;
+            printf("Non sono riuscito ad effettuare l'analisi sul file\n");
+        return entry;
     }
 
     if (S_ISLNK(currentStat->st_mode))
-        increaseLink();
+    {
+        if (opt_info.verbose_flag)
+            printf("Il file che sto elaborando è un link\n");
 
-    if (isL == 0 && S_ISLNK(currentStat->st_mode))
-    {
-        data = scanFilePath(realpath(path, NULL), isR, isL, data);
+        increaseLink();
     }
-    else if (S_ISLNK(currentStat->st_mode))
+
+    if (S_ISDIR(currentStat->st_mode))
+    {
+        if (opt_info.verbose_flag)
+            printf("Il file che sto elaborando è una directory\n");
+
+        increaseDirectory();
+    }
+
+    if (isL == 0)
+    {
+        stat(path, currentStat);
+    }
+    if (checkOptions(currentStat) && (!opt_info.noscan_flag))
     {
         updateStats(currentStat);
-        data = addFileAnalisis(currentStat, getAbsPath(path), data);
-    }
-    else if (checkOptions(currentStat) && (!opt_info.noscan_flag))
-    {
-        updateStats(currentStat);
-        data = addFileAnalisis(currentStat, realpath(path, NULL), data);
+        entry = S_ISLNK(currentStat->st_mode) ? addFileAnalisis(currentStat, getLinkAbsPath(path), entry) : addFileAnalisis(currentStat, realpath(path, NULL), entry);
     }
 
     if (isR && S_ISDIR(currentStat->st_mode))
     {
         DIR *dir;
-        struct dirent *entry;
+        struct dirent *ent;
         dir = opendir(path);
         if (dir)
         {
-            while (entry = readdir(dir))
+            while (ent = readdir(dir))
             {
-                if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+                if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
                     continue;
 
-                char *copy = (char *)calloc(strlen(path) + strlen(entry->d_name) + 2, sizeof(char));
+                char *copy = (char *)malloc(strlen(path) + strlen(ent->d_name) + 2);
                 strcpy(copy, path);
                 if (copy[strlen(path) - 1] != '/')
                 {
                     strcat(copy, "/");
                 }
-                strcat(copy, entry->d_name);
-                data = scanFilePath(copy, isR, isL, data);
+                strcat(copy, ent->d_name);
+                entry = scanFilePath(copy, isR, isL, entry);
                 free(copy);
             }
         }
@@ -245,10 +254,10 @@ RecordNode *scanFilePath(char *path, int isR, int isL, RecordNode *data)
     }
 
     free(currentStat);
-    return data;
+    return entry;
 }
 
-RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *curTree)
+PathEntry *addFileAnalisis(struct stat *currentStat, char *path, PathEntry *entry)
 {
     char dlinfo;
     if (S_ISDIR(currentStat->st_mode))
@@ -283,7 +292,7 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
 
     char size[21];
     sprintf(size, "%ld", currentStat->st_size);
-    char *record = malloc((200 + strlen(pwsUID->pw_name) + strlen(grpGID->gr_name) + strlen(size)) * sizeof(char));
+    char *record = malloc(200 + strlen(pwsUID->pw_name) + strlen(grpGID->gr_name) + strlen(size));
 
     time_t curtime = time(NULL);
     time(&curtime);
@@ -313,15 +322,15 @@ RecordNode *addFileAnalisis(struct stat *currentStat, char *path, RecordNode *cu
         printf("# %s\n%s\n###\n", path, record);
     }
 
-    curTree = addRecordByPath(curTree, path, strtok(record, "\r\n"));
+    entry = addPathAndAnalisis(entry, path, strtok(record, "\r\n"));
 
     if (opt_info.verbose_flag)
     {
-        printf("\nAnalisi del path %s effettuata correttamente\n", path);
+        printf("Analisi del file effettuata correttamente\n###\n\n");
     }
 
     free(record);
-    return curTree;
+    return entry;
 }
 
 void cleanFile(FILE *output)
@@ -332,11 +341,10 @@ void cleanFile(FILE *output)
     fflush(output);
 }
 
-void printOutput(FILE *output, RecordNode *node)
+void printOnOutput(FILE *output, PathEntry *entry)
 {
     cleanFile(output);
-    printOnFile(node, output);
-    fprintf(output, "###\n", NULL);
+    printOnFile(entry, output);
     fflush(output);
 }
 
@@ -398,10 +406,6 @@ int checkOptions(struct stat *file)
 void updateStats(struct stat *file)
 {
     increaseMonitorati();
-    if (S_ISDIR(file->st_mode))
-    {
-        increaseDirectory();
-    }
     increaseDimTotale(file->st_size);
 }
 
@@ -417,7 +421,7 @@ void printStats()
     printf("Dimensione minima: %ld bytes\n\n", stats.dim_min);
 }
 
-char *find_last_of(char *str, char c)
+char *findLastOf(char *str, char c)
 {
     for (char *i = str + strlen(str); i >= str; i--)
         if (*i == c)
@@ -425,13 +429,13 @@ char *find_last_of(char *str, char c)
     return NULL;
 }
 
-char *getAbsPath(char *path)
+char *getLinkAbsPath(char *path)
 {
     char *name;
     char *tmp;
     char *absPath = malloc(PATH_MAX);
 
-    tmp = find_last_of(path, '/');
+    tmp = findLastOf(path, '/');
     if (tmp == NULL)
     {
         name = strdup(path);
@@ -448,4 +452,73 @@ char *getAbsPath(char *path)
     strcat(absPath, name);
     free(name);
     return absPath;
+}
+
+void printHistory(PathEntry *entry, char *path)
+{
+    PathEntry *pEntry = getPathEntry(entry, path);
+    if (isPathEmpty(pEntry))
+    {
+        printf("Non esiste cronologia di tale file nel file di output specificato\n");
+    }
+    else
+    {
+        printf("### Cronologia del file al path: %s\n", path);
+        for (AnalisisEntry *curanalisis = getFirstAnalisis(entry); !isAnalisisEmpty(curanalisis); curanalisis = getNextAnalisis(curanalisis))
+        {
+            printf("%s\n", curanalisis->analisis);
+        }
+        printf("### Fine cronologia\n");
+    }
+}
+
+void printOnFile(PathEntry *pathentry, FILE *file)
+{
+    for (PathEntry *curpath = pathentry; !isPathEmpty(curpath); curpath = getNextPath(curpath))
+    {
+        fprintf(file, "# %s\n", curpath->path);
+        if (opt_info.noscan_flag)
+        {
+            printf("# %s\n", curpath->path);
+        }
+        for (AnalisisEntry *curanalisis = getFirstAnalisis(curpath); !isAnalisisEmpty(curanalisis); curanalisis = getNextAnalisis(curanalisis))
+        {
+            fprintf(file, "%s\n", curanalisis->analisis);
+            if (opt_info.noscan_flag)
+            {
+                printf("%s\n", curanalisis->analisis);
+            }
+        }
+        fprintf(file, "###\n", NULL);
+        if (opt_info.noscan_flag)
+        {
+            printf("###\n");
+        }
+    }
+    fprintf(file, "###\n", NULL);
+    if (opt_info.noscan_flag)
+    {
+        printf("###\n");
+    }
+}
+
+void freePath(PathEntry *entry)
+{
+    if (!isPathEmpty(entry))
+    {
+        free(entry->path);
+        freeAnalisis(getFirstAnalisis(entry));
+        free(getNextPath(entry));
+        free(entry);
+    }
+}
+
+void freeAnalisis(AnalisisEntry *entry)
+{
+    if (!isAnalisisEmpty(entry))
+    {
+        free(entry->analisis);
+        free(getNextAnalisis(entry));
+        free(entry);
+    }
 }

@@ -4,186 +4,130 @@
 #include "../include/main.h"
 #include <string.h>
 
-RecordNode *addRecord(RecordNode *node, char *path, char *record);
-RecordNode *addPath(RecordNode *node, char *path);
-void printNodeIfAnalisis(RecordNode *node);
+AnalisisEntry *createNewAnalisis(char *an);
+PathEntry *addPath(PathEntry *entry, char *newpath);
+AnalisisEntry *addAnalisisByAnalisisEntry(AnalisisEntry *entry, char *newanalisis);
+PathEntry *addAnalisis(PathEntry *pathentry, char *path, char *newanalisis);
 
-RecordNode *emptyNode()
+AnalisisEntry *emptyAnalisis()
 {
     return NULL;
 }
 
-RecordNode *createNewNode(char *value, int isPath)
+PathEntry *emptyPath()
 {
-    RecordNode *newNode = malloc(sizeof(RecordNode));
-    newNode->value = strdup(value);
-    newNode->nextPath = NULL;
-    newNode->nextRecord = NULL;
-    newNode->isPath = isPath;
-    // printf("Nodo con valore %s aggiunto\n", newNode->value);
-    return newNode;
+    return NULL;
 }
 
-RecordNode *addPath(RecordNode *node, char *path)
+AnalisisEntry *createNewAnalisis(char *an)
 {
-    if (isEmpty(node))
+    AnalisisEntry *newEntry = malloc(sizeof(AnalisisEntry));
+    newEntry->analisis = strdup(an);
+    newEntry->nextAnalisis = emptyAnalisis();
+    return newEntry;
+}
+
+PathEntry *createNewPath(char *pt)
+{
+    PathEntry *newEntry = malloc(sizeof(PathEntry));
+    newEntry->path = strdup(pt);
+    newEntry->analisis = emptyAnalisis();
+    newEntry->nextPath = emptyPath();
+    return newEntry;
+}
+
+int isAnalisisEmpty(AnalisisEntry *entry)
+{
+    return (entry == NULL);
+}
+
+int isPathEmpty(PathEntry *entry)
+{
+    return (entry == NULL);
+}
+
+PathEntry *addPath(PathEntry *entry, char *newpath)
+{
+    if (isPathEmpty(entry))
     {
-        // printf("Il path %s non era presente ed è stato aggiunto\n", path);
-        return createNewNode(path, 1);
+        return createNewPath(newpath);
     }
-    if (strcmp(node->value, path) == 0)
+    else if (strcmp(entry->path, newpath) == 0)
     {
-        // printf("Il path %s era già presente\n", path);
-        return node;
+        return entry;
     }
     else
     {
-        node->nextPath = addPath(node->nextPath, path);
-        return node;
+        entry->nextPath = addPath(entry->nextPath, newpath);
+        return entry;
     }
 }
 
-RecordNode *addRecord(RecordNode *node, char *path, char *record)
+AnalisisEntry *addAnalisisByAnalisisEntry(AnalisisEntry *entry, char *newanalisis)
 {
-    if (isEmpty(node))
+    if (isAnalisisEmpty(entry))
     {
-        // printf("Ho aggiunto %s al percorso: %s\n", record, path);
-        return createNewNode(record, 0);
+        return createNewAnalisis(newanalisis);
     }
-    else
+    if (strcmp(entry->analisis, newanalisis) == 0)
     {
-        if ((strcmp(node->value, path) == 0) || (node->isPath == 0))
-        {
-            node->nextRecord = addRecord(node->nextRecord, path, record);
-            return node;
-        }
-        else
-        {
-            node->nextPath = addRecord(node->nextPath, path, record);
-            return node;
-        }
-    }
-}
-
-RecordNode *addRecordByPath(RecordNode *node, char *path, char *record)
-{
-    node = addPath(node, path);
-    node = addRecord(node, path, record);
-    // printf("Aggiunta analisi a path terminata\n");
-    return node;
-}
-
-int isEmpty(RecordNode *node)
-{
-    return (node == NULL);
-}
-
-void printInOrder(RecordNode *node)
-{
-    if (isEmpty(node))
-    {
-        return;
+        return entry;
     }
     else
     {
-        if (node->isPath)
-        {
-            printf("# ");
-        }
-        printf("%s\n", node->value);
-        if (node->nextRecord == NULL)
-        {
-            printf("###\n");
-        }
-        printInOrder(node->nextRecord);
-        printInOrder(node->nextPath);
+        entry->nextAnalisis = addAnalisisByAnalisisEntry(entry->nextAnalisis, newanalisis);
+        return entry;
     }
 }
 
-RecordNode *getNodeByPath(RecordNode *current, char *value)
+PathEntry *addAnalisis(PathEntry *pathentry, char *path, char *newanalisis)
 {
-    if (isEmpty(current))
+    if (strcmp(pathentry->path, path) == 0)
     {
-        //Il nodo col path cercato non esiste
+        pathentry->analisis = addAnalisisByAnalisisEntry(pathentry->analisis, newanalisis);
+        return pathentry;
+    }
+    else
+    {
+        pathentry->nextPath = addAnalisis(pathentry->nextPath, path, newanalisis);
+        return pathentry;
+    }
+}
+
+PathEntry *addPathAndAnalisis(PathEntry *entry, char *path, char *analisis)
+{
+    entry = addPath(entry, path);
+    entry = addAnalisis(entry, path, analisis);
+    return entry;
+}
+
+PathEntry *getNextPath(PathEntry *entry)
+{
+    return entry->nextPath;
+}
+
+AnalisisEntry *getFirstAnalisis(PathEntry *entry)
+{
+    return entry->analisis;
+}
+
+AnalisisEntry *getNextAnalisis(AnalisisEntry *entry)
+{
+    return entry->nextAnalisis;
+}
+
+PathEntry *getPathEntry(PathEntry *entry, char *path)
+{
+    if (isPathEmpty(entry))
+    {
         return NULL;
     }
-    if (strcmp(current->value, value) == 0)
+    else if (strcmp(entry->path, path) == 0)
     {
-        return current;
+        return entry;
     }
     else
     {
-        return getNodeByPath(current->nextPath, value);
-    }
-}
-
-void freeNode(RecordNode *node)
-{
-    if (node != NULL)
-    {
-        free(node->value);
-        free(node);
-    }
-}
-
-void printOnFile(RecordNode *node, FILE *output)
-{
-    if (isEmpty(node))
-    {
-        return;
-    }
-    else
-    {
-        if (node->isPath)
-        {
-            fprintf(output, "%s ", "#");
-            if (opt_info.noscan_flag)
-            {
-                printf("# ");
-            }
-        }
-        fprintf(output, "%s\n", node->value);
-        RecordNode *nextRecord = node->nextRecord;
-        RecordNode *nextPath = node->nextPath;
-
-        if (opt_info.noscan_flag)
-        {
-            printf("%s\n", node->value);
-        }
-
-        freeNode(node);
-        if (nextRecord == NULL)
-        {
-            fprintf(output, "###\n", NULL);
-            if (opt_info.noscan_flag)
-            {
-                printf("###\n");
-            }
-        }
-        printOnFile(nextRecord, output);
-        printOnFile(nextPath, output);
-    }
-}
-
-void printHistory(RecordNode *root, char *path)
-{
-    printf("Cronologia del file al path %s\n", realpath(path, NULL));
-    RecordNode *current = getNodeByPath(root, realpath(path, NULL));
-    if (current == NULL)
-    {
-        printf("Non esiste cronologia di tale file nel file di output specificato\n");
-    }
-    else
-        while (current != NULL)
-        {
-            printNodeIfAnalisis(current);
-            current = current->nextRecord;
-        }
-}
-
-void printNodeIfAnalisis(RecordNode *node)
-{
-    if(node->isPath == 0){
-        printf("%s\n", node->value);
+        return getPathEntry(entry->nextPath, path);
     }
 }
