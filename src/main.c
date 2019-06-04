@@ -227,12 +227,6 @@ int getHistoryPath(char *arg)
 {
     opt_info.history_path = (char *)calloc(strlen(arg), sizeof(char));
     strcpy(opt_info.history_path, arg);
-
-    if (access(opt_info.history_path, F_OK) == -1)
-    {
-        perror("Il file inserito con -h non esiste in questa directory\n");
-        exit(EXIT_FAILURE);
-    }
     
     return 1;
 }
