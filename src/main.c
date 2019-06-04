@@ -14,19 +14,36 @@
 #define DEFAULT_INPUT_PATH "./filestat.in"
 #define DEFAULT_OUTPUT_PATH "./filestat.db"
 
+/**
+ * Struct in cui viene eseguito lo storage delle possibili opzioni. 
+ */
 OptInfo opt_info = {0, 0, 0, 0, NULL, 0, NULL, 0, NULL, 0, 0, 0, 0};
 
+/**
+ * Puntatori di natura FILE in cui vengono settati i file di I/O che verranno utilizzati. 
+ * Quest'ultimi potranno essere scelti dall'utente o semplicemete impostati di default.
+ */
 static FILE *file_input;
 static FILE *file_output;
 
 struct stat file_stats;
 
+/*
+ * La funzione main() deve sempre essere presente in un programma C ed è la prima funzione a cui viene passato il controllo.
+ * Essa è il cuore pulsante dell'intero parco software realizzato.
+ * A sua volta la funzione main() puo' invocare altre funzioni, come in questo caso richiamndo funzioni di fondamentale importanza
+ * ai fini di un corretto funzionamento del progetto.
+ * Esempi concreti possono essere:
+ * - parsePaths: funzione che determina se si vogliono utilizzare i file di I/O standard o personalizzati
+ * - startScan: funzione che deriva dal file scan.h che esegue lo scan effettivo richiesto dall'utente.
+ * Il programma termina con il termine della funzione main(), oppure quando viene invocata la funzione exit() della libreria standard.
+ */
 int main(int argc, char **argv)
 {
     clock_t timer_app;
     timer_app = clock();
     parsePaths(argc, argv);
-    
+
     if (!parseOpt(argc, argv))
     {
         return -1;
@@ -35,13 +52,13 @@ int main(int argc, char **argv)
     {
         printOpt();
     }
-    
+
     startScan(file_input, file_output);
     fflush(file_input);
     fflush(file_output);
     fclose(file_input);
     fclose(file_output);
-    
+
     if (opt_info.report_flag)
     {
         printf("\nReport finale: \n");
@@ -51,10 +68,13 @@ int main(int argc, char **argv)
         printf("Tempo di elaborazione: %f secondi\n", time_taken);
         printf("Dimensione massima: %ld bytes\n", stats.dim_max);
     }
-    
+
     return 1;
 }
 
+/**
+ * Vengono selezionati i file di I/O in base a quella che è la scelta dell'utente.
+ */
 void parsePaths(int argc, char **argv)
 {
     if ((!((argc > 2) && (access(argv[argc - 2], F_OK) == 0)) || (strcmp(argv[argc - 2], argv[argc - 1]) == 0)))
@@ -77,11 +97,14 @@ void parsePaths(int argc, char **argv)
         file_output = fopen(argv[argc - 1], "a+");
         printf("Come file di output è stato aperto quello specificato come argomento\n");
     }
-    
+
     fseek(file_input, 0, SEEK_SET);
     fseek(file_output, 0, SEEK_SET);
 }
 
+/**
+ * Metodo necessario al debug per la visualizzazione dello struct delle opzioni.
+ */
 void printOpt()
 {
     printf("Verbose Flag: %d\n", opt_info.verbose_flag);
@@ -99,6 +122,9 @@ void printOpt()
     printf("Noscan: %d\n", opt_info.noscan_flag);
 }
 
+/**
+ * Viene effettuata la lettura delle opzioni inserite da linea di comando.
+ */
 int parseOpt(int argc, char **argv)
 {
     static struct option long_options[] = {
@@ -167,9 +193,13 @@ int parseOpt(int argc, char **argv)
     return 1;
 }
 
+/**
+ * Metodo necessario alla lettura dei valori interi che vengono inseriti quando si utilizza l'opzione -l.
+ */ 
 int getLengthArg(char *arg)
 {
     char *token = strtok(arg, ":");
+
     if (arg[0] == ':')
     {
         opt_info.min_length = 0;
@@ -186,17 +216,23 @@ int getLengthArg(char *arg)
         perror("I valori inseriti con -l non vanno bene\n");
         exit(EXIT_FAILURE);
     }
+    
     return 1;
 }
 
+/**
+ * Metodo che restituisce la cronologia dei path analizzati grazie all'opzione -h.
+ */ 
 int getHistoryPath(char *arg)
 {
     opt_info.history_path = (char *)calloc(strlen(arg), sizeof(char));
     strcpy(opt_info.history_path, arg);
+
     if (access(opt_info.history_path, F_OK) == -1)
     {
         perror("Il file inserito con -h non esiste in questa directory\n");
         exit(EXIT_FAILURE);
     }
+    
     return 1;
 }

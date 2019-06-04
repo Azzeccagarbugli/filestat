@@ -1,8 +1,8 @@
 #ifndef _MAINH_
 #define _MAINH_
 
-
 typedef struct oinfo OptInfo;
+
 struct oinfo
 {
     int verbose_flag;

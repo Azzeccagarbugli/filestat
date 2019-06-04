@@ -3,7 +3,9 @@
 #include <sys/stat.h>
 #ifndef _SCANH_
 #define _SCANH_
+
 typedef struct sinfo ScanInfo;
+
 struct sinfo
 {
     long int nr_monitorati;
@@ -17,6 +19,5 @@ struct sinfo
 
 extern ScanInfo stats;
 int startScan(FILE *, FILE *);
-
 
 #endif

@@ -7,10 +7,11 @@
 RecordNode *addRecord(RecordNode *node, char *path, char *record);
 RecordNode *addPath(RecordNode *node, char *path);
 void printNodeIfAnalisis(RecordNode *node);
+
 RecordNode *emptyNode()
 {
     return NULL;
-};
+}
 
 RecordNode *createNewNode(char *value, int isPath)
 {
@@ -21,7 +22,7 @@ RecordNode *createNewNode(char *value, int isPath)
     newNode->isPath = isPath;
     // printf("Nodo con valore %s aggiunto\n", newNode->value);
     return newNode;
-};
+}
 
 RecordNode *addPath(RecordNode *node, char *path)
 {
@@ -70,12 +71,12 @@ RecordNode *addRecordByPath(RecordNode *node, char *path, char *record)
     node = addRecord(node, path, record);
     // printf("Aggiunta analisi a path terminata\n");
     return node;
-};
+}
 
 int isEmpty(RecordNode *node)
 {
     return (node == NULL);
-};
+}
 
 void printInOrder(RecordNode *node)
 {
@@ -114,7 +115,7 @@ RecordNode *getNodeByPath(RecordNode *current, char *value)
     {
         return getNodeByPath(current->nextPath, value);
     }
-};
+}
 
 void freeNode(RecordNode *node)
 {

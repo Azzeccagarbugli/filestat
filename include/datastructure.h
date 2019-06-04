@@ -1,8 +1,8 @@
-
 #ifndef _TREEH_
-
 #define _TREEH_
+
 typedef struct treenode RecordNode;
+
 struct treenode{
     char *value;
     int isPath;
@@ -19,6 +19,5 @@ void printInOrder(RecordNode *node);
 void freeNode(RecordNode *node);
 void printOnFile(RecordNode *node, FILE *output);
 void printHistory(RecordNode *root, char *path);
-
 
 #endif

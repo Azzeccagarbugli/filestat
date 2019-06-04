@@ -11,15 +11,28 @@
 #include "../include/main.h"
 #include "../include/datastructure.h"
 #include <sys/stat.h>
-//#include <sys/types.h>
 #include <dirent.h>
 #include <time.h>
 #include <pwd.h>
 #include <grp.h>
 #include <unistd.h>
 
+/**
+ * Struct di riferimento per le informazioni complessive raccolte sui file, quali:
+ * - numero di file monitorati;
+ * - numero di link;
+ * - numero di directory;
+ * - dimensione totale;
+ * - dimensione media;
+ * - dimensione massima;
+ * - dimensione minima (in byte).
+ */
 ScanInfo stats = {0, 0, 0, 0, 0, 0, 0};
 
+/**
+ * Insieme di metodi che hanno visibilità solamente all'interno di tale codice, rendendoli 
+ * quindi completamente inaccessibili dall'esterno. 
+ */
 RecordNode *readOutputFile(FILE *, RecordNode *);
 RecordNode *readInputFile(FILE *, RecordNode *);
 RecordNode *analisiSingolaRiga(char *, RecordNode *);
@@ -37,23 +50,34 @@ void printStats();
 char *find_last_of(char *str, char c);
 char *getAbsPath(char *path);
 
+/**
+ * Metodo che inzializza la scannerizzazione dei file. Tale metodo 
+ * viene anche richiamato all'interno del main del progetto.
+ */
 int startScan(FILE *input, FILE *output)
 {
     RecordNode *data = malloc(sizeof(RecordNode));
+    
     data = emptyNode();
     data = readOutputFile(output, data);
+    
     if (opt_info.history_flag)
     {
         printHistory(data, opt_info.history_path);
     }
+    
     data = readInputFile(input, data);
     printOutput(output, data);
+    
     if (opt_info.stat_flag)
     {
         printStats();
     }
 }
 
+/**
+ * 
+ */ 
 RecordNode *readOutputFile(FILE *output, RecordNode *data)
 {
     size_t t = 256;
@@ -124,6 +148,7 @@ RecordNode *readInputFile(FILE *input, RecordNode *data)
     {
         data = analisiSingolaRiga(strtok(line, "\r\n"), data);
     }
+
     free(line);
     return data;
 }
