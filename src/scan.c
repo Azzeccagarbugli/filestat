@@ -464,7 +464,7 @@ void printHistory(PathEntry *entry, char *path)
     else
     {
         printf("### Cronologia del file al path: %s\n", path);
-        for (AnalisisEntry *curanalisis = getFirstAnalisis(entry); !isAnalisisEmpty(curanalisis); curanalisis = getNextAnalisis(curanalisis))
+        for (AnalisisEntry *curanalisis = getFirstAnalisis(pEntry); !isAnalisisEmpty(curanalisis); curanalisis = getNextAnalisis(curanalisis))
         {
             printf("%s\n", curanalisis->analisis);
         }
