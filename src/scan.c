@@ -83,7 +83,7 @@ int startScan(FILE *input, FILE *output)
  */
 PathEntry *readOutputFile(FILE *output, PathEntry *data)
 {
-    size_t t = 256;
+    size_t t = 0;
     char *line = NULL;
     char *currentPath = NULL;
     for (ssize_t read = getline(&line, &t, output); read >= 0; read = getline(&line, &t, output))
@@ -145,7 +145,7 @@ void increaseDimTotale(int data)
 
 PathEntry *readInputFile(FILE *input, PathEntry *entry)
 {
-    size_t t = 256;
+    size_t t = 0;
     char *line = NULL;
     for (ssize_t read = getline(&line, &t, input); read >= 0; read = getline(&line, &t, input))
     {
