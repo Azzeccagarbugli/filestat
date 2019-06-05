@@ -474,6 +474,9 @@ void printHistory(PathEntry *entry, char *path)
 
 void printOnFile(PathEntry *pathentry, FILE *file)
 {
+    if(opt_info.noscan_flag)
+        printf("# Verranno stampate di seguito le informazioni presenti sul file di output: \n");
+    
     for (PathEntry *curpath = pathentry; !isPathEmpty(curpath); curpath = getNextPath(curpath))
     {
         fprintf(file, "# %s\n", curpath->path);
@@ -500,6 +503,9 @@ void printOnFile(PathEntry *pathentry, FILE *file)
     {
         printf("###\n");
     }
+
+        if(opt_info.noscan_flag)
+        printf("# Fine della stampa delle informazioni presenti sul file di output\n\n");
 }
 
 void freePath(PathEntry *entry)
