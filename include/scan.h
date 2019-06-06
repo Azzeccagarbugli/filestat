@@ -1,6 +1,5 @@
 
 #include "../include/datastructure.h"
-#include <sys/stat.h>
 #ifndef _SCANH_
 #define _SCANH_
 
@@ -19,5 +18,13 @@ struct sinfo
 
 extern ScanInfo stats;
 int startScan(FILE *, FILE *);
+void increaseDimTotale(int);
+void updateDimMin(int);
+void updateDimMax(int);
+void updateDimMedia();
+void increaseDirectory();
+void increaseLink();
+void increaseMonitorati();
+void updateStats(long int);
 
 #endif

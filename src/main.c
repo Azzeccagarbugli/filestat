@@ -4,12 +4,9 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <unistd.h>
+#include <time.h>
 #include "../include/main.h"
 #include "../include/scan.h"
-#include <time.h>
-
-#define ANSI_COLOR_GREEN "\x1b[32m"
-#define ANSI_COLOR_RESET "\x1b[0m"
 
 #define DEFAULT_INPUT_PATH "./filestat.in"
 #define DEFAULT_OUTPUT_PATH "./filestat.db"
@@ -17,26 +14,18 @@
 /**
  * Struct in cui viene eseguito lo storage delle possibili opzioni. 
  */
-OptInfo opt_info = {0, 0, 0, 0, NULL, 0, NULL, 0, NULL, 0, 0, 0, 0};
+OptInfo options = {0, 0, 0, 0, NULL, 0, NULL, 0, NULL, 0, 0, 0, 0};
 
-/**
+/*
  * Puntatori di natura FILE in cui vengono settati i file di I/O che verranno utilizzati. 
- * Quest'ultimi potranno essere scelti dall'utente o semplicemete impostati di default.
+ * Quest'ultimi potranno essere scelti dall'utente o impostati di default.
  */
 static FILE *file_input;
 static FILE *file_output;
 
-struct stat file_stats;
 
-/*
- * La funzione main() deve sempre essere presente in un programma C ed è la prima funzione a cui viene passato il controllo.
- * Essa è il cuore pulsante dell'intero parco software realizzato.
- * A sua volta la funzione main() puo' invocare altre funzioni, come in questo caso richiamndo funzioni di fondamentale importanza
- * ai fini di un corretto funzionamento del progetto.
- * Esempi concreti possono essere:
- * - parsePaths: funzione che determina se si vogliono utilizzare i file di I/O standard o personalizzati
- * - startScan: funzione che deriva dal file scan.h che esegue lo scan effettivo richiesto dall'utente.
- * Il programma termina con il termine della funzione main(), oppure quando viene invocata la funzione exit() della libreria standard.
+/**
+ * Main necessario all'avvio del programma.
  */
 int main(int argc, char **argv)
 {
@@ -59,7 +48,7 @@ int main(int argc, char **argv)
     fclose(file_input);
     fclose(file_output);
 
-    if (opt_info.report_flag)
+    if (options.report_flag)
     {
         printf("\nReport finale: \n");
         printf("Numero file elaborati: %ld\n", stats.nr_monitorati);
@@ -73,7 +62,9 @@ int main(int argc, char **argv)
 }
 
 /**
- * Vengono selezionati i file di I/O in base a quella che è la scelta dell'utente.
+ * Apertura dei file di input e di output basandosi sulle scelte dell'utente.
+ * :param argc: parametro passato come argomento a main
+ * :param argv: parametro passato come argomento a main
  */
 void parsePaths(int argc, char **argv)
 {
@@ -107,23 +98,27 @@ void parsePaths(int argc, char **argv)
  */
 void printOpt()
 {
-    printf("Verbose Flag: %d\n", opt_info.verbose_flag);
-    printf("Stat Flag: %d\n", opt_info.stat_flag);
-    printf("Report flag: %d\n", opt_info.report_flag);
-    printf("History flag: %d\n", opt_info.history_flag);
-    printf("History path: %s\n", opt_info.history_path);
-    printf("User flag: %d\n", opt_info.user_flag);
-    printf("User ID: %s\n", opt_info.uID);
-    printf("Group flag: %d\n", opt_info.group_flag);
-    printf("Group ID: %s\n", opt_info.gID);
-    printf("Length flag: %d\n", opt_info.length_flag);
-    printf("Min length: %ld\n", opt_info.min_length);
-    printf("Max lenght: %ld\n", opt_info.max_length);
-    printf("Noscan: %d\n", opt_info.noscan_flag);
+    printf("Verbose Flag: %d\n", options.verbose_flag);
+    printf("Stat Flag: %d\n", options.stat_flag);
+    printf("Report flag: %d\n", options.report_flag);
+    printf("History flag: %d\n", options.history_flag);
+    printf("History path: %s\n", options.history_path);
+    printf("User flag: %d\n", options.user_flag);
+    printf("User ID: %s\n", options.uID);
+    printf("Group flag: %d\n", options.group_flag);
+    printf("Group ID: %s\n", options.gID);
+    printf("Length flag: %d\n", options.length_flag);
+    printf("Min length: %ld\n", options.min_length);
+    printf("Max lenght: %ld\n", options.max_length);
+    printf("Noscan: %d\n", options.noscan_flag);
 }
 
 /**
  * Viene effettuata la lettura delle opzioni inserite da linea di comando.
+ * 
+ * :param argc: parametro passato come argomento a main
+ * :param argv: parametro passato come argomento a main
+ * :return: 0 in caso di errore, non-zero in caso di successo
  */
 int parseOpt(int argc, char **argv)
 {
@@ -153,40 +148,42 @@ int parseOpt(int argc, char **argv)
         switch (c)
         {
         case 'v':
-            opt_info.verbose_flag = 1;
+            options.verbose_flag = 1;
             break;
         case 's':
-            opt_info.stat_flag = 1;
+            options.stat_flag = 1;
             break;
         case 'r':
-            opt_info.report_flag = 1;
+            options.report_flag = 1;
             break;
         case 'h':
-            opt_info.history_flag = 1;
+            options.history_flag = 1;
             if (!getHistoryPath(optarg))
             {
                 return 0;
             };
             break;
         case 'u':
-            opt_info.user_flag = 1;
-            opt_info.uID = (char *)calloc(strlen(optarg), sizeof(char));
-            strcpy(opt_info.uID, optarg);
+            options.user_flag = 1;
+            options.uID = (char *)calloc(strlen(optarg), sizeof(char));
+            strcpy(options.uID,
+                   optarg);
             break;
         case 'g':
-            opt_info.group_flag = 1;
-            opt_info.gID = (char *)calloc(strlen(optarg), sizeof(char));
-            strcpy(opt_info.gID, optarg);
+            options.group_flag = 1;
+            options.gID = (char *)calloc(strlen(optarg), sizeof(char));
+            strcpy(options.gID,
+                   optarg);
             break;
         case 'l':
-            opt_info.length_flag = 1;
+            options.length_flag = 1;
             if (!getLengthArg(optarg))
             {
                 return 0;
             };
             break;
         case 'n':
-            opt_info.noscan_flag = 1;
+            options.noscan_flag = 1;
             break;
         }
     }
@@ -194,39 +191,45 @@ int parseOpt(int argc, char **argv)
 }
 
 /**
- * Metodo necessario alla lettura dei valori interi che vengono inseriti quando si utilizza l'opzione -l.
- */ 
+ * Metodo ausiliario all'impostazione del flag -l/--length.
+ * :param arg: puntatore ad un array di caratteri contenente i valori delle lunghezze
+ * :return: 1 in caso di successo
+ */
 int getLengthArg(char *arg)
 {
     char *token = strtok(arg, ":");
 
     if (arg[0] == ':')
     {
-        opt_info.min_length = 0;
-        opt_info.max_length = atoi(token);
+        options.min_length = 0;
+        options.max_length = atoi(token);
     }
     else
     {
-        opt_info.min_length = atoi(token);
+        options.min_length = atoi(token);
         token = strtok(NULL, ":");
-        opt_info.max_length = (token != NULL) ? atoi(token) : 0;
+        options.max_length = (token != NULL) ? atoi(token) : 0;
     }
-    if (opt_info.max_length != 0 && opt_info.min_length > opt_info.max_length)
+    if (options.max_length != 0 &&
+        options.min_length > options.max_length)
     {
         perror("I valori inseriti con -l non vanno bene\n");
         exit(EXIT_FAILURE);
     }
-    
+
     return 1;
 }
 
 /**
- * Metodo che restituisce la cronologia dei path analizzati grazie all'opzione -h.
- */ 
+ * Metodo che restituisce la cronologia dei path analizzati grazie all'opzione -h/--history.
+ * 
+ * :param arg: puntatore ad un array di caratteri contenente il path che si desidera analizzare
+ * :return: 1 in caso di successo
+ */
 int getHistoryPath(char *arg)
 {
-    opt_info.history_path = (char *)calloc(strlen(arg), sizeof(char));
-    strcpy(opt_info.history_path, arg);
-    
+    options.history_path = (char *)malloc(strlen(arg));
+    strcpy(options.history_path,arg);
+
     return 1;
 }

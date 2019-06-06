@@ -6,56 +6,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <errno.h>
 #include "../include/scan.h"
 #include "../include/main.h"
 #include "../include/datastructure.h"
-#include <sys/stat.h>
-#include <dirent.h>
-#include <time.h>
-#include <pwd.h>
-#include <grp.h>
-#include <unistd.h>
+#include "../include/outputscan.h"
+#include "../include/inputscan.h"
+
+void printOnOutput(FILE *, PathEntry *);
+void cleanFile(FILE *);
+void printStats();
+void printHistory(PathEntry *, char *);
+void printOnFile(PathEntry *, FILE *);
+void freeAnalisis(AnalisisEntry *);
+void freePath(PathEntry *);
 
 /**
  * Struct di riferimento per le informazioni complessive raccolte sui file, quali:
  * - numero di file monitorati;
- * - numero di link;
- * - numero di directory;
- * - dimensione totale;
- * - dimensione media;
- * - dimensione massima;
- * - dimensione minima (in byte).
+ * - numero di link incontrati;
+ * - numero di directory incontrate;
+ * - dimensione totale dei file;
+ * - dimensione media dei file;
+ * - dimensione massima dei file;
+ * - dimensione minima (in byte) dei file.
  */
 ScanInfo stats = {0, 0, 0, 0, 0, 0, 0};
 
 /**
- * Insieme di metodi che hanno visibilità solamente all'interno di tale codice, rendendoli 
- * quindi completamente inaccessibili dall'esterno. 
- */
-PathEntry *readOutputFile(FILE *, PathEntry *);
-PathEntry *readInputFile(FILE *, PathEntry *);
-PathEntry *inputLineAnalisis(char *, PathEntry *);
-PathEntry *scanFilePath(char *, int, int, PathEntry *);
-PathEntry *addFileAnalisis(struct stat *, char *, PathEntry *);
-void printOnOutput(FILE *output, PathEntry *node);
-void cleanFile(FILE *output);
-int checkLength(struct stat *file);
-int checkUID(struct stat *file);
-int checkGID(struct stat *file);
-int checkOptions(struct stat *file);
-void updateStats(struct stat *file);
-void printStats();
-char *find_last_of(char *str, char c);
-char *getLinkAbsPath(char *path);
-void printHistory(PathEntry *entry, char *path);
-void printOnFile(PathEntry *pathentry, FILE *file);
-void freeAnalisis(AnalisisEntry *entry);
-void freePath(PathEntry *entry);
-
-/**
- * Metodo che inizializza la scannerizzazione dei file. Tale metodo 
- * viene anche richiamato all'interno del main del progetto.
+ * Avvio delle operazioni di scan e di recupero delle informazioni richieste dal programma.
+ * :param input: puntatore al file di input trattato nel programma
+ * :param output: puntatore al file di output trattato nel programma
  */
 int startScan(FILE *input, FILE *output)
 {
@@ -64,70 +46,70 @@ int startScan(FILE *input, FILE *output)
     data = emptyPath();
     data = readOutputFile(output, data);
 
-    if (opt_info.history_flag)
+    if (options.history_flag)
     {
-        printHistory(data, opt_info.history_path);
+        printHistory(data, options.history_path);
     }
 
     data = readInputFile(input, data);
-    printOnOutput(output, data);
+    printOnFile(output, data);
     freePath(data);
-    if (opt_info.stat_flag)
+    if (options.stat_flag)
     {
         printStats();
     }
 }
 
 /**
- * 
+ * Incremento numero di file monitorati e di cui è stata aggiunta la relativa analisi.
  */
-PathEntry *readOutputFile(FILE *output, PathEntry *data)
-{
-    size_t t = 0;
-    char *line = NULL;
-    char *currentPath = NULL;
-    for (ssize_t read = getline(&line, &t, output); read >= 0; read = getline(&line, &t, output))
-    {
-        if (line[0] == '#' && line[1] == ' ')
-        {
-            free(currentPath);
-            currentPath = strdup(strtok(line + 2, "\r\n"));
-        }
-        else if (line[0] != '#' && line[1] != '#' && line[2] != '#')
-        {
-            data = addPathAndAnalisis(data, currentPath, strtok(line, "\r\n"));
-        }
-    }
-
-    free(line);
-    free(currentPath);
-    return data;
-}
 void increaseMonitorati()
 {
     stats.nr_monitorati++;
-};
+}
+
+/**
+ * Incremento numero di link incontrati.
+ */
 void increaseLink()
 {
     stats.nr_link++;
 }
+
+/**
+ * Incremento numero di directory.
+ */
 void increaseDirectory()
 {
     stats.nr_directory++;
 }
 
+/**
+ * Aggiornamento valore dimensione media dei file monitorati.
+ */
 void updateDimMedia()
 {
     stats.dim_media = stats.dim_totale / stats.nr_monitorati;
 }
 
+/**
+ * Aggiornamento valore dimensione massima dei file monitorati.
+ * 
+ * :param data: valore della dimensione che si desidera aggiungere
+ */
 void updateDimMax(int data)
 {
     if (data > stats.dim_max)
     {
         stats.dim_max = data;
     }
-};
+}
+
+/**
+ * Aggiornamento valore dimensione minima dei file monitorati.
+ * 
+ * :param data: valore della dimensione che si desidera aggiungere
+ */
 void updateDimMin(int data)
 {
     if (data < stats.dim_min)
@@ -135,6 +117,12 @@ void updateDimMin(int data)
         stats.dim_min = data;
     }
 }
+
+/**
+ * Aggiornamento valore dimensione totale dei file monitorati.
+ * 
+ * :param data: valore della dimensione che si desidera aggiungere
+ */
 void increaseDimTotale(int data)
 {
     stats.dim_totale = stats.dim_totale + data;
@@ -143,272 +131,46 @@ void increaseDimTotale(int data)
     updateDimMin(data);
 }
 
-PathEntry *readInputFile(FILE *input, PathEntry *entry)
+/**
+ * Reset completo di un file.
+ * 
+ * :param target: puntatore al file si cui si desidera effettuare i reset
+ */
+void cleanFile(FILE *target)
 {
-    size_t t = 0;
-    char *line = NULL;
-    for (ssize_t read = getline(&line, &t, input); read >= 0; read = getline(&line, &t, input))
-    {
-        entry = inputLineAnalisis(strtok(line, "\r\n"), entry);
-    }
-
-    free(line);
-    return entry;
+    fflush(target);
+    ftruncate(fileno(target), 0);
+    fseek(target, 0, SEEK_SET);
+    fflush(target);
 }
 
-PathEntry *inputLineAnalisis(char *riga, PathEntry *entry)
+/**
+ * Gestione completa della stampa delle informazioni contenute in una struttura PathEntry su un file di output.
+ * 
+ * :param target: puntatore al file di output su cui si vogliono inserire le informazioni
+ * :param entry: puntatore alla struttura dati da cui si vogliono leggere le informazioni da stampare
+ */
+void printOnOutput(FILE *target, PathEntry *entry)
 {
-    char *path;
-    int isR = 0;
-    int isL = 0;
-    int pathRead = 0;
-    char *token;
-    for (token = strtok(riga, " "); token; token = strtok(NULL, " "))
-    {
-        if (strcmp(token, "r") == 0)
-        {
-            isR = 1;
-        }
-        else if (strcmp(token, "l") == 0)
-        {
-            isL = 1;
-        }
-        else if (!pathRead)
-        {
-            path = strdup(token);
-            pathRead = 1;
-        }
-    }
-
-    entry = scanFilePath(path, isR, isL, entry);
-    free(path);
-    return entry;
+    cleanFile(target);
+    printOnFile(entry, target);
+    fflush(target);
 }
 
-PathEntry *scanFilePath(char *path, int isR, int isL, PathEntry *entry)
-{
-    if (opt_info.verbose_flag)
-    {
-        printf("Inizio ad elaborare il file al path: %s\n", path);
-    }
-
-    struct stat *currentStat = (struct stat *)malloc(sizeof(struct stat));
-
-    if (lstat(path, currentStat) < 0)
-    {
-        if (opt_info.verbose_flag)
-            printf("Non sono riuscito ad effettuare l'analisi sul file\n");
-        return entry;
-    }
-
-    if (S_ISLNK(currentStat->st_mode))
-    {
-        if (opt_info.verbose_flag)
-            printf("Il file che sto elaborando è un link\n");
-
-        increaseLink();
-    }
-
-    if (S_ISDIR(currentStat->st_mode))
-    {
-        if (opt_info.verbose_flag)
-            printf("Il file che sto elaborando è una directory\n");
-
-        increaseDirectory();
-    }
-
-    if (isL == 0)
-    {
-        stat(path, currentStat);
-    }
-    if (checkOptions(currentStat) && (!opt_info.noscan_flag))
-    {
-        updateStats(currentStat);
-        entry = S_ISLNK(currentStat->st_mode) ? addFileAnalisis(currentStat, getLinkAbsPath(path), entry) : addFileAnalisis(currentStat, realpath(path, NULL), entry);
-    }
-
-    if (isR && S_ISDIR(currentStat->st_mode))
-    {
-        DIR *dir;
-        struct dirent *ent;
-        dir = opendir(path);
-        if (dir)
-        {
-            while (ent = readdir(dir))
-            {
-                if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
-                    continue;
-
-                char *copy = (char *)malloc(strlen(path) + strlen(ent->d_name) + 2);
-                strcpy(copy, path);
-                if (copy[strlen(path) - 1] != '/')
-                {
-                    strcat(copy, "/");
-                }
-                strcat(copy, ent->d_name);
-                entry = scanFilePath(copy, isR, isL, entry);
-                free(copy);
-            }
-        }
-        closedir(dir);
-    }
-
-    free(currentStat);
-    return entry;
-}
-
-PathEntry *addFileAnalisis(struct stat *currentStat, char *path, PathEntry *entry)
-{
-    char dlinfo;
-    if (S_ISDIR(currentStat->st_mode))
-    {
-        dlinfo = 'd';
-    }
-    else if (S_ISLNK(currentStat->st_mode))
-    {
-        dlinfo = 'l';
-    }
-    else
-    {
-        dlinfo = '-';
-    }
-    char irusr = currentStat->st_mode & S_IRUSR ? 'r' : '-';
-    char iwusr = currentStat->st_mode & S_IWUSR ? 'w' : '-';
-    char ixusr = currentStat->st_mode & S_IXUSR ? 'x' : '-';
-    char irgrp = currentStat->st_mode & S_IRGRP ? 'r' : '-';
-    char iwgrp = currentStat->st_mode & S_IWGRP ? 'w' : '-';
-    char ixgrp = currentStat->st_mode & S_IXGRP ? 'x' : '-';
-    char iroth = currentStat->st_mode & S_IROTH ? 'r' : '-';
-    char iwoth = currentStat->st_mode & S_IWOTH ? 'w' : '-';
-    char ixoth = currentStat->st_mode & S_IXOTH ? 'x' : '-';
-
-    struct passwd *pwsUID = getpwuid(currentStat->st_uid);
-    struct group *grpGID = getgrgid(currentStat->st_gid);
-
-    char current_time[32];
-    char time_last_access[32];
-    char time_last_change[32];
-    char time_last_chmod[32];
-
-    char size[21];
-    sprintf(size, "%ld", currentStat->st_size);
-    char *record = malloc(200 + strlen(pwsUID->pw_name) + strlen(grpGID->gr_name) + strlen(size));
-
-    time_t curtime = time(NULL);
-    time(&curtime);
-
-    sprintf(record, "data - %s | uid - %s | gid - %s | dim - %s| perm - %c%c%c%c%c%c%c%c%c%c | acc - %s | change - %s | mod - %s | nlink - %ld",
-            strtok(ctime_r(&curtime, current_time), "\n"),
-            pwsUID->pw_name,
-            grpGID->gr_name,
-            size,
-            dlinfo,
-            irusr,
-            iwusr,
-            ixusr,
-            irgrp,
-            iwgrp,
-            ixgrp,
-            iroth,
-            iwoth,
-            ixoth,
-            strtok(ctime_r(&currentStat->st_atime, time_last_access), "\n"),
-            strtok(ctime_r(&currentStat->st_mtime, time_last_change), "\n"),
-            strtok(ctime_r(&currentStat->st_ctime, time_last_chmod), "\n"),
-            currentStat->st_nlink);
-
-    if (opt_info.length_flag || opt_info.group_flag || opt_info.user_flag)
-    {
-        printf("# %s\n%s\n###\n", path, record);
-    }
-
-    entry = addPathAndAnalisis(entry, path, strtok(record, "\r\n"));
-
-    if (opt_info.verbose_flag)
-    {
-        printf("Analisi del file effettuata correttamente\n###\n\n");
-    }
-
-    free(record);
-    return entry;
-}
-
-void cleanFile(FILE *output)
-{
-    fflush(output);
-    ftruncate(fileno(output), 0);
-    fseek(output, 0, SEEK_SET);
-    fflush(output);
-}
-
-void printOnOutput(FILE *output, PathEntry *entry)
-{
-    cleanFile(output);
-    printOnFile(entry, output);
-    fflush(output);
-}
-
-int checkLength(struct stat *file)
-{
-    if (!opt_info.length_flag)
-    {
-        return 1;
-    }
-    else if (opt_info.max_length >= file->st_size && opt_info.min_length <= file->st_size)
-    {
-        return 1;
-    }
-    else if (opt_info.max_length == 0 && opt_info.min_length <= file->st_size)
-    {
-        return 1;
-    }
-    else if (opt_info.min_length == 0 && opt_info.max_length >= file->st_size)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-int checkUID(struct stat *file)
-{
-    if (!opt_info.user_flag)
-    {
-        return 1;
-    }
-    else
-    {
-        struct passwd *pwsUID = getpwuid(file->st_uid);
-        return (strcmp(opt_info.uID, pwsUID->pw_name) == 0);
-    }
-}
-
-int checkGID(struct stat *file)
-{
-    if (!opt_info.group_flag)
-    {
-        return 1;
-    }
-    else
-    {
-        struct group *grpGID = getgrgid(file->st_gid);
-        return (strcmp(opt_info.gID, grpGID->gr_name) == 0);
-    }
-}
-
-int checkOptions(struct stat *file)
-{
-    return (checkLength(file) && checkUID(file) && checkGID(file));
-}
-
-void updateStats(struct stat *file)
+/**
+ * Aggiornamento completo di tutte le informazioni riguardo i file che sono stati monitorati.
+ * 
+ * :param size: valore della dimensione che si desidera aggiungere
+ */
+void updateStats(long int size)
 {
     increaseMonitorati();
-    increaseDimTotale(file->st_size);
+    increaseDimTotale(size);
 }
 
+/**
+ * Metodo che stampa a video il report completo delle informazioni acquisite.
+ */
 void printStats()
 {
     printf("\nStats: \n");
@@ -421,39 +183,12 @@ void printStats()
     printf("Dimensione minima: %ld bytes\n\n", stats.dim_min);
 }
 
-char *findLastOf(char *str, char c)
-{
-    for (char *i = str + strlen(str); i >= str; i--)
-        if (*i == c)
-            return i;
-    return NULL;
-}
-
-char *getLinkAbsPath(char *path)
-{
-    char *name;
-    char *tmp;
-    char *absPath = malloc(PATH_MAX);
-
-    tmp = findLastOf(path, '/');
-    if (tmp == NULL)
-    {
-        name = strdup(path);
-        getcwd(absPath, PATH_MAX);
-    }
-    else
-    {
-        name = strdup(tmp + 1);
-        *tmp = '\0';
-        realpath(path, absPath);
-    }
-
-    strcat(absPath, "/");
-    strcat(absPath, name);
-    free(name);
-    return absPath;
-}
-
+/**
+ * Stampa sullo standard output delle informazioni relative alle analisi passate effettuate su un file.
+ * 
+ * :param entry: puntatore alla struttura dati da cui leggere le informazioni
+ * :param path: puntatore all'array di caratteri contenente il associato al file di cui si vuole conoscere la cronologia
+ */
 void printHistory(PathEntry *entry, char *path)
 {
     PathEntry *pEntry = getPathEntry(entry, path);
@@ -472,42 +207,52 @@ void printHistory(PathEntry *entry, char *path)
     }
 }
 
+/**
+ * Stampa completa delle informazioni presenti in una struttura dati PathEntry su di un file.
+ *
+ * :param pathentry: puntatore all'entry associato al file di cui si vogliono stampare le informazioni sullo standard output
+ * :param file: puntatore al il file su cui si vogliono inserire le informazioni
+ */
 void printOnFile(PathEntry *pathentry, FILE *file)
 {
-    if(opt_info.noscan_flag)
+    if (options.noscan_flag)
         printf("# Verranno stampate di seguito le informazioni presenti sul file di output: \n");
-    
+
     for (PathEntry *curpath = pathentry; !isPathEmpty(curpath); curpath = getNextPath(curpath))
     {
         fprintf(file, "# %s\n", curpath->path);
-        if (opt_info.noscan_flag)
+        if (options.noscan_flag)
         {
             printf("# %s\n", curpath->path);
         }
         for (AnalisisEntry *curanalisis = getFirstAnalisis(curpath); !isAnalisisEmpty(curanalisis); curanalisis = getNextAnalisis(curanalisis))
         {
             fprintf(file, "%s\n", curanalisis->analisis);
-            if (opt_info.noscan_flag)
+            if (options.noscan_flag)
             {
                 printf("%s\n", curanalisis->analisis);
             }
         }
         fprintf(file, "###\n", NULL);
-        if (opt_info.noscan_flag)
+        if (options.noscan_flag)
         {
             printf("###\n");
         }
     }
     fprintf(file, "###\n", NULL);
-    if (opt_info.noscan_flag)
+    if (options.noscan_flag)
     {
         printf("###\n");
     }
 
-        if(opt_info.noscan_flag)
+    if (options.noscan_flag)
         printf("# Fine della stampa delle informazioni presenti sul file di output\n\n");
 }
 
+/**
+ * Gestione completa delle operazioni di rilascio delle risorse da operare su una struttura dati PathEntry.
+ * :param entry: puntatore struttura dati su cui effetturare l'operazione completa di rilascio delle risorse
+ */
 void freePath(PathEntry *entry)
 {
     if (!isPathEmpty(entry))
@@ -519,6 +264,10 @@ void freePath(PathEntry *entry)
     }
 }
 
+/**
+ * Gestione completa delle operazioni di rilascio delle risorse da operare su una struttura dati AnalisisEntry.
+ * :param entry: puntatore alla struttura dati su cui effetturare l'operazione completa di rilascio delle risorse
+ */
 void freeAnalisis(AnalisisEntry *entry)
 {
     if (!isAnalisisEmpty(entry))

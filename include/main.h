@@ -25,7 +25,7 @@ struct oinfo
     int noscan_flag;
 };
 
-extern OptInfo opt_info;
+extern OptInfo options;
 
 int getLengthArg(char *);
 int getHistoryPath(char *);
