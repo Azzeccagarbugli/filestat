@@ -5,9 +5,9 @@
 #include <string.h>
 
 AnalisisEntry *createNewAnalisis(char *an);
-PathEntry *addPath(PathEntry *entry, char *newpath);
 AnalisisEntry *addAnalisisByAnalisisEntry(AnalisisEntry *entry, char *newanalisis);
 PathEntry *addAnalisis(PathEntry *pathentry, char *path, char *newanalisis);
+PathEntry *addPath(PathEntry *, char *);
 
 /**
  * Ottenimento di un elemento vuoto della struttura dati AnalisisEntry.

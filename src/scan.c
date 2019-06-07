@@ -21,6 +21,7 @@ void printHistory(PathEntry *, char *);
 void printOnFile(PathEntry *, FILE *);
 void freeAnalisis(AnalisisEntry *);
 void freePath(PathEntry *);
+PathEntry *merge(PathEntry *, PathEntry *);
 
 /**
  * Struct di riferimento per le informazioni complessive raccolte sui file, quali:
@@ -41,19 +42,26 @@ ScanInfo stats = {0, 0, 0, 0, 0, 0, 0};
  */
 int startScan(FILE *input, FILE *output)
 {
-    PathEntry *data = malloc(sizeof(PathEntry));
-
-    data = emptyPath();
-    data = readOutputFile(output, data);
+    PathEntry *outputData = malloc(sizeof(PathEntry));
+    outputData = emptyPath();
+    outputData = readOutputFile(output, outputData);
 
     if (options.history_flag)
     {
-        printHistory(data, options.history_path);
+        printHistory(outputData, options.history_path);
     }
 
-    data = readInputFile(input, data);
-    printOnFile(data, output);
-    freePath(data);
+    if (!options.noscan_flag)
+    {
+        PathEntry *inputData = malloc(sizeof(PathEntry));
+        inputData = emptyPath();
+        inputData = readInputFile(input, inputData);
+        outputData = merge(outputData, inputData);
+        freePath(inputData);
+    }
+
+    printOnOutput(output, outputData);
+    freePath(outputData);
     if (options.stat_flag)
     {
         printStats();
@@ -277,3 +285,21 @@ void freeAnalisis(AnalisisEntry *entry)
         free(entry);
     }
 }
+
+/**
+ * Operazione di merge tra due strutture dati PathEntry
+ * :param out: puntatore a struttura PathEntry in cui collezionare le informazioni relative al merge
+ * :param in: puntatore a struttura PathEntry da cui prendere le informazioni da impiegare dal merge
+ * :return: puntatore a struttura PathEntry in cui sono collezionate le informazioni risultate dal merge
+ */
+PathEntry *merge(PathEntry *out, PathEntry *in)
+{
+    for (PathEntry *curpath = in; !isPathEmpty(curpath); curpath = getNextPath(curpath))
+    {
+        for (AnalisisEntry *curanalisis = getFirstAnalisis(curpath); !isAnalisisEmpty(curanalisis); curanalisis = getNextAnalisis(curanalisis))
+        {
+            out = addPathAndAnalisis(out, curpath->path, curanalisis->analisis);
+        }
+    }
+    return out;
+};

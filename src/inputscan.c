@@ -22,7 +22,7 @@ int checkGID(struct stat *);
 int checkOptions(struct stat *);
 char *findLastOf(char *, char);
 char *getLinkAbsPath(char *);
-PathEntry *directoryAnalisis(struct stat *, PathEntry *, int, int, char*);
+PathEntry *directoryAnalisis(struct stat *, PathEntry *, int, int, char *);
 
 /**
  * Gestione completa delle analisi delle informazioni presenti sul file di input trattato dal programma.
@@ -89,34 +89,13 @@ PathEntry *inputLineAnalisis(char *riga, PathEntry *entry)
  */
 PathEntry *scanFilePath(char *path, int isR, int isL, PathEntry *entry)
 {
-    if (options.verbose_flag)
-    {
-        printf("Inizio ad elaborare il file al path: %s\n", path);
-    }
-
     struct stat *currentStat = (struct stat *)malloc(sizeof(struct stat));
 
     if (lstat(path, currentStat) < 0)
     {
         if (options.verbose_flag)
-            printf("Non sono riuscito ad effettuare l'analisi sul file\n");
+            printf("Non sono riuscito ad effettuare l'analisi sul file al path: %s\n", path);
         return entry;
-    }
-
-    if (S_ISLNK(currentStat->st_mode))
-    {
-        if (options.verbose_flag)
-            printf("Il file che sto elaborando è un link\n");
-
-        increaseLink();
-    }
-
-    if (S_ISDIR(currentStat->st_mode))
-    {
-        if (options.verbose_flag)
-            printf("Il file che sto elaborando è una directory\n");
-
-        increaseDirectory();
     }
 
     if (isL == 0)
@@ -185,66 +164,80 @@ PathEntry *directoryAnalisis(struct stat *dirStat, PathEntry *entry, int isR, in
  */
 PathEntry *addFileAnalisis(struct stat *currentStat, char *path, PathEntry *entry)
 {
-    char dlinfo;
-    if (S_ISDIR(currentStat->st_mode))
+    if (isPathEmpty(getPathEntry(entry, path)))
     {
-        dlinfo = 'd';
+        if (options.verbose_flag)
+        {
+            printf("Inizio ad elaborare il file al path: %s\n", path);
+        }
+        char dlinfo;
+        if (S_ISDIR(currentStat->st_mode))
+        {
+            dlinfo = 'd';
+            if (options.verbose_flag)
+                printf("Il file che sto elaborando è una directory\n");
+
+            increaseDirectory();
+        }
+        else if (S_ISLNK(currentStat->st_mode))
+        {
+            dlinfo = 'l';
+            if (options.verbose_flag)
+                printf("Il file che sto elaborando è un link\n");
+
+            increaseLink();
+        }
+        else
+        {
+            dlinfo = '-';
+        }
+        char irusr = currentStat->st_mode & S_IRUSR ? 'r' : '-';
+        char iwusr = currentStat->st_mode & S_IWUSR ? 'w' : '-';
+        char ixusr = currentStat->st_mode & S_IXUSR ? 'x' : '-';
+        char irgrp = currentStat->st_mode & S_IRGRP ? 'r' : '-';
+        char iwgrp = currentStat->st_mode & S_IWGRP ? 'w' : '-';
+        char ixgrp = currentStat->st_mode & S_IXGRP ? 'x' : '-';
+        char iroth = currentStat->st_mode & S_IROTH ? 'r' : '-';
+        char iwoth = currentStat->st_mode & S_IWOTH ? 'w' : '-';
+        char ixoth = currentStat->st_mode & S_IXOTH ? 'x' : '-';
+
+        struct passwd *pwsUID = getpwuid(currentStat->st_uid);
+        struct group *grpGID = getgrgid(currentStat->st_gid);
+
+        char current_time[32];
+        char time_last_access[32];
+        char time_last_change[32];
+        char time_last_chmod[32];
+
+        char size[21];
+        sprintf(size, "%ld", currentStat->st_size);
+        char *record = malloc(33 + sizeof(pwsUID->pw_name) + sizeof(grpGID->gr_name) + 22 + 11 + 33 + 33 + 33 + 21);
+
+        time_t curtime = time(NULL);
+        time(&curtime);
+
+        sprintf(record, "%s %s %s %s %c%c%c%c%c%c%c%c%c%c %s %s %s %ld",
+                strtok(ctime_r(&curtime, current_time), "\n"), pwsUID->pw_name, grpGID->gr_name, size,
+                dlinfo, irusr, iwusr, ixusr, irgrp, iwgrp, ixgrp, iroth, iwoth, ixoth,
+                strtok(ctime_r(&currentStat->st_atime, time_last_access), "\n"),
+                strtok(ctime_r(&currentStat->st_mtime, time_last_change), "\n"),
+                strtok(ctime_r(&currentStat->st_ctime, time_last_chmod), "\n"),
+                currentStat->st_nlink);
+
+        if (options.length_flag || options.group_flag || options.user_flag)
+        {
+            printf("# %s\n%s\n###\n", path, record);
+        }
+
+        entry = addPathAndAnalisis(entry, path, strtok(record, "\r\n"));
+        updateStats(currentStat->st_size);
+
+        if (options.verbose_flag)
+        {
+            printf("Analisi del file effettuata correttamente\n###\n\n");
+        }
+        free(record);
     }
-    else if (S_ISLNK(currentStat->st_mode))
-    {
-        dlinfo = 'l';
-    }
-    else
-    {
-        dlinfo = '-';
-    }
-    char irusr = currentStat->st_mode & S_IRUSR ? 'r' : '-';
-    char iwusr = currentStat->st_mode & S_IWUSR ? 'w' : '-';
-    char ixusr = currentStat->st_mode & S_IXUSR ? 'x' : '-';
-    char irgrp = currentStat->st_mode & S_IRGRP ? 'r' : '-';
-    char iwgrp = currentStat->st_mode & S_IWGRP ? 'w' : '-';
-    char ixgrp = currentStat->st_mode & S_IXGRP ? 'x' : '-';
-    char iroth = currentStat->st_mode & S_IROTH ? 'r' : '-';
-    char iwoth = currentStat->st_mode & S_IWOTH ? 'w' : '-';
-    char ixoth = currentStat->st_mode & S_IXOTH ? 'x' : '-';
-
-    struct passwd *pwsUID = getpwuid(currentStat->st_uid);
-    struct group *grpGID = getgrgid(currentStat->st_gid);
-
-    char current_time[32];
-    char time_last_access[32];
-    char time_last_change[32];
-    char time_last_chmod[32];
-
-    char size[21];
-    sprintf(size, "%ld", currentStat->st_size);
-    char *record = malloc(33 + sizeof(pwsUID->pw_name) + sizeof(grpGID->gr_name) + 22 + 11 + 33 + 33 + 33 + 21);
-
-    time_t curtime = time(NULL);
-    time(&curtime);
-
-    sprintf(record, "%s %s %s %s %c%c%c%c%c%c%c%c%c%c %s %s %s %ld",
-            strtok(ctime_r(&curtime, current_time), "\n"), pwsUID->pw_name, grpGID->gr_name, size,
-            dlinfo, irusr, iwusr, ixusr, irgrp, iwgrp, ixgrp, iroth, iwoth, ixoth,
-            strtok(ctime_r(&currentStat->st_atime, time_last_access), "\n"),
-            strtok(ctime_r(&currentStat->st_mtime, time_last_change), "\n"),
-            strtok(ctime_r(&currentStat->st_ctime, time_last_chmod), "\n"),
-            currentStat->st_nlink);
-
-    if (options.length_flag || options.group_flag || options.user_flag)
-    {
-        printf("# %s\n%s\n###\n", path, record);
-    }
-
-    entry = addPathAndAnalisis(entry, path, strtok(record, "\r\n"));
-    updateStats(currentStat->st_size);
-
-    if (options.verbose_flag)
-    {
-        printf("Analisi del file effettuata correttamente\n###\n\n");
-    }
-
-    free(record);
     return entry;
 }
 

@@ -20,13 +20,13 @@ struct pathentry
 
 AnalisisEntry *emptyAnalisis();
 PathEntry *emptyPath();
-PathEntry *createNewPath(char *pt);
-int isAnalisisEmpty(AnalisisEntry *entry);
-int isPathEmpty(PathEntry *node);
-PathEntry *addPathAndAnalisis(PathEntry *entry, char *path, char *analisis);
-PathEntry *getNextPath(PathEntry *entry);
-AnalisisEntry *getFirstAnalisis(PathEntry *entry);
-AnalisisEntry *getNextAnalisis(AnalisisEntry *entry);
-PathEntry *getPathEntry(PathEntry *entry, char *path);
+PathEntry *createNewPath(char *);
+int isAnalisisEmpty(AnalisisEntry *);
+int isPathEmpty(PathEntry *);
+PathEntry *addPathAndAnalisis(PathEntry *, char *, char *);
+PathEntry *getNextPath(PathEntry *);
+AnalisisEntry *getFirstAnalisis(PathEntry *);
+AnalisisEntry *getNextAnalisis(AnalisisEntry *);
+PathEntry *getPathEntry(PathEntry *, char *);
 
 #endif
