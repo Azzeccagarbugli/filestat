@@ -22,6 +22,7 @@ int checkGID(struct stat *);
 int checkOptions(struct stat *);
 char *findLastOf(char *, char);
 char *getLinkAbsPath(char *);
+PathEntry *directoryAnalisis(struct stat *, PathEntry *, int, int, char*);
 
 /**
  * Gestione completa delle analisi delle informazioni presenti sul file di input trattato dal programma.
@@ -127,7 +128,26 @@ PathEntry *scanFilePath(char *path, int isR, int isL, PathEntry *entry)
         entry = S_ISLNK(currentStat->st_mode) ? addFileAnalisis(currentStat, getLinkAbsPath(path), entry) : addFileAnalisis(currentStat, realpath(path, NULL), entry);
     }
 
-    if (isR && S_ISDIR(currentStat->st_mode))
+    if (isR)
+    {
+        entry = directoryAnalisis(currentStat, entry, isR, isL, path);
+    }
+
+    free(currentStat);
+    return entry;
+}
+
+/**
+ * Analisi delle entry presenti all'interno di un file directory.
+ * :param dirStat: puntatore all'istanza di struct stat in cui sono contenute le informazioni del file da analizzare
+ * :param entry: puntatore alla struttura dati PathEntry in cui inserire le informazioni recuperate grazie all'analisi del file
+ * :param isR: flag da passare all'analisi dei file referenziati dalle entry del file directory argomento
+ * :param isL: flag da passare all'analisi dei file referenziati dalle entry del file directory argomento
+ * :param path: puntatore all'array di caratteri contenente il pathname associato a dirStat
+ */
+PathEntry *directoryAnalisis(struct stat *dirStat, PathEntry *entry, int isR, int isL, char *path)
+{
+    if (S_ISDIR(dirStat->st_mode))
     {
         DIR *dir;
         struct dirent *ent;
@@ -152,8 +172,6 @@ PathEntry *scanFilePath(char *path, int isR, int isL, PathEntry *entry)
         }
         closedir(dir);
     }
-
-    free(currentStat);
     return entry;
 }
 
@@ -206,8 +224,8 @@ PathEntry *addFileAnalisis(struct stat *currentStat, char *path, PathEntry *entr
     time(&curtime);
 
     sprintf(record, "%s %s %s %s %c%c%c%c%c%c%c%c%c%c %s %s %s %ld",
-            strtok(ctime_r(&curtime, current_time), "\n"),pwsUID->pw_name,grpGID->gr_name, size,
-            dlinfo,irusr, iwusr, ixusr,irgrp,  iwgrp, ixgrp, iroth, iwoth, ixoth,
+            strtok(ctime_r(&curtime, current_time), "\n"), pwsUID->pw_name, grpGID->gr_name, size,
+            dlinfo, irusr, iwusr, ixusr, irgrp, iwgrp, ixgrp, iroth, iwoth, ixoth,
             strtok(ctime_r(&currentStat->st_atime, time_last_access), "\n"),
             strtok(ctime_r(&currentStat->st_mtime, time_last_change), "\n"),
             strtok(ctime_r(&currentStat->st_ctime, time_last_chmod), "\n"),
@@ -297,7 +315,6 @@ int checkGID(struct stat *file)
         return (strcmp(options.gID, grpGID->gr_name) == 0);
     }
 }
-
 
 /**
  * Verifica che un file rispetti le condizioni espresse con i flag -l/--length, -u/--user e -g/--group.
