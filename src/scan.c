@@ -52,7 +52,7 @@ int startScan(FILE *input, FILE *output)
     }
 
     data = readInputFile(input, data);
-    printOnFile(output, data);
+    printOnFile(data, output);
     freePath(data);
     if (options.stat_flag)
     {
