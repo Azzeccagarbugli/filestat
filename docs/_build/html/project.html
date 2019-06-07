@@ -1,0 +1,384 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="it" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="it" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Realizzazione del progetto &mdash; filestat 1.0.0 documentazione</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Indice" href="genindex.html" />
+    <link rel="search" title="Cerca" href="search.html" />
+    <link rel="prev" title="Introduzione" href="introduzione.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> filestat
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduzione.html">Introduzione</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Realizzazione del progetto</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#struttura-e-architettura-del-codice-sviluppato">Struttura e architettura del codice sviluppato</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#struttura-dati-implementata">Struttura dati implementata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#implementazione-delle-funzionalita-richieste">Implementazione delle funzionalità richieste</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#makefile">Makefile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#test-relativi-al-corretto-funzionamento">Test relativi al corretto funzionamento</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">filestat</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Realizzazione del progetto</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/project.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="realizzazione-del-progetto">
+<h1>Realizzazione del progetto<a class="headerlink" href="#realizzazione-del-progetto" title="Link a questa intestazione">¶</a></h1>
+<p>La realizzazione del codice prodotto ha seguito uno standard <strong>preciso</strong> ed <strong>efficente</strong> che ha reso lo sviluppo di quest’ultimo <strong>flessibile</strong> ed <strong>elegante</strong> ai fini
+di aver un’utility di sistema <em>altamente performante</em> grazie alle potenzialità offerte dal <code class="docutils literal notranslate"><span class="pre">C</span></code> stesso.</p>
+<div class="section" id="struttura-e-architettura-del-codice-sviluppato">
+<h2>Struttura e architettura del codice sviluppato<a class="headerlink" href="#struttura-e-architettura-del-codice-sviluppato" title="Link a questa intestazione">¶</a></h2>
+<p>La struttura del progetto si articola fondamentalmente su 5 file sorgente di estensione <code class="docutils literal notranslate"><span class="pre">.c</span></code>, a cui seguono altrettanti file di estensione <code class="docutils literal notranslate"><span class="pre">.h</span></code>, in cui vengono dichiari i metodi da <em>estendere</em>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">main.c</span></code>: contiene il codice di avvio del progetto. Consente il <strong>parse</strong> delle opzioni e la corretta apertura dei file di <code class="docutils literal notranslate"><span class="pre">input</span></code> e dei file di <code class="docutils literal notranslate"><span class="pre">output</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">datastructure.c</span></code>: contiene il codice necessario alla gestione della <strong>struttura dati</strong> impiegata nel progetto per la collezione dei dati relativi ai <strong>file monitorati</strong>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scan.c</span></code>: contiene il codice necessario all’inizializzazione della <strong>struttura</strong> dati tramite la lettura delle informazioni specificate tramite i file di input e output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inputscan.c</span></code>: contiene il codice finalizzato all’analisi del file di <code class="docutils literal notranslate"><span class="pre">input</span></code> e dei file i cui <strong>pathname</strong> sono specificati nel file di <code class="docutils literal notranslate"><span class="pre">input</span></code>. Aggiorna di conseguenza la <strong>struttura dati</strong> con le informazioni relative ai <strong>file monitorati</strong>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">output.c</span></code>: contiene il codice finalizzato all’analisi del file di <code class="docutils literal notranslate"><span class="pre">output</span></code> per poter inserire le informazioni contenute al suo interno nella <strong>struttura dati</strong> specificata in precedenza.</p></li>
+</ul>
+<p>Per l’analisi dei singoli file sorgenti si rimanda alle sezioni dedicate alla spiegazione dei singoli metodi specificati al loro interno.</p>
+<p>Le librerie impiegate all’interno del codice sono:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Libreria</span> <span class="pre">standard</span> <span class="pre">di</span> <span class="pre">C</span></code>: sono stati usati gli header <code class="docutils literal notranslate"><span class="pre">&lt;stdio.h&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;string.h&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;stdlib.h&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;errno.h&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;time.h&gt;</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Libreria</span> <span class="pre">POSIX</span> <span class="pre">C</span></code>: sono stati usati gli header <code class="docutils literal notranslate"><span class="pre">&lt;unistd.h&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;sys/stat.h&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;limits.h&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;pwd.h&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;grp.h&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;dirent.h&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;getopt.h&gt;</span></code>.</p></li>
+</ul>
+</div>
+<div class="section" id="struttura-dati-implementata">
+<h2>Struttura dati implementata<a class="headerlink" href="#struttura-dati-implementata" title="Link a questa intestazione">¶</a></h2>
+<img alt="_images/ssdraw.png" src="_images/ssdraw.png" />
+<p>La struttura dati alla base del funzionamento del progetto è stata definita tramite gli struct <code class="docutils literal notranslate"><span class="pre">pathentry</span></code> e <code class="docutils literal notranslate"><span class="pre">analisisentry</span></code>, entrambi definiti in <code class="docutils literal notranslate"><span class="pre">datastructure.h</span></code> e associati
+ai tipi <code class="docutils literal notranslate"><span class="pre">PathEntry</span></code> e <code class="docutils literal notranslate"><span class="pre">AnalisisEntry</span></code> definiti tramite il costrutto <code class="docutils literal notranslate"><span class="pre">typedef</span></code>.
+Lo struct <code class="docutils literal notranslate"><span class="pre">pathentry</span></code> è indirizzato alla definizione di una lista in cui ogni elemento contiene una stringa, associata ad un pathname, il puntatore ad un elemento <code class="docutils literal notranslate"><span class="pre">AnalisisEntry</span></code>
+ed il puntatore ad un elemento <code class="docutils literal notranslate"><span class="pre">PathEntry</span></code>, l’elemento successivo all’interno della lista. Analogamente lo struct <code class="docutils literal notranslate"><span class="pre">analisisentry</span></code> è puntato alla definizione di una lista i cui elementi
+contentono una stringa associata alle informazioni relative all’analisi di un file ed il puntatore ad un elemento <code class="docutils literal notranslate"><span class="pre">AnalisisEntry</span></code>, elemento successivo nella lista.</p>
+<p>Elementi <code class="docutils literal notranslate"><span class="pre">PathEntry</span></code> e <code class="docutils literal notranslate"><span class="pre">AnalisisEntry</span></code> che non contengono informazioni sono associati al puntatore <strong>NULL</strong>.
+Le funzionalità incluse all’interno del file <code class="docutils literal notranslate"><span class="pre">datastructure.h</span></code> permettono di ottenere puntatori ad elementi vuoti di <code class="docutils literal notranslate"><span class="pre">PathEntry</span></code> e <code class="docutils literal notranslate"><span class="pre">AnalisisEntry</span></code>, di aggiungere ad una lista di <code class="docutils literal notranslate"><span class="pre">PathEntry</span></code>
+nuovi elementi tramite il passaggio di stringhe contenenti pathname e le informazioni derivate dall’analisi dei file associati a tali pathname, di verificare che una lista di <code class="docutils literal notranslate"><span class="pre">PathEntry</span></code>
+o di <code class="docutils literal notranslate"><span class="pre">AnalisisEntry</span></code> risulti vuota, di ottenere gli elementi successivi all’interno di una lista <code class="docutils literal notranslate"><span class="pre">PathEntry</span></code> o <code class="docutils literal notranslate"><span class="pre">AnalisisEntry</span></code> dato il puntatore ad un elemento delle due liste e di ottenere
+il riferimento al primo elemento della lista di <code class="docutils literal notranslate"><span class="pre">AnalisisEntry</span></code> associata ad un dato elemento di una lista di <code class="docutils literal notranslate"><span class="pre">PathEntry</span></code>.
+Per ulteriori informazioni si rimanda alla sezione dedicata a <code class="docutils literal notranslate"><span class="pre">datastructure.c</span></code>, in cui sono presenti le definizioni dei metodi dichiarati in <code class="docutils literal notranslate"><span class="pre">datastructure.h</span></code> e in <code class="docutils literal notranslate"><span class="pre">datastructure.c</span></code>.</p>
+<p>Essendo la struttura dati alla base del progetto basata su due implementazioni di una lista la sua complessità risulta essere:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">O(P)</span></code> quando è necessario aggiungere o recuperare le informazioni da uno specifico elemento <code class="docutils literal notranslate"><span class="pre">PathEntry</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">O(P</span> <span class="pre">x</span> <span class="pre">A)</span></code> quando è necessario aggiungere o recuperare le informazioni da uno specifico elemento <code class="docutils literal notranslate"><span class="pre">AnalisisEntry</span></code>.</p></li>
+</ul>
+<p>Dove <code class="docutils literal notranslate"><span class="pre">P</span></code> rappresenta il numero di elementi <code class="docutils literal notranslate"><span class="pre">PathEntry</span></code> presenti nella struttura dati e <code class="docutils literal notranslate"><span class="pre">A</span></code> il numero massimo di elementi <code class="docutils literal notranslate"><span class="pre">AnalisisEntry</span></code> associati ad un <code class="docutils literal notranslate"><span class="pre">PathEntry</span></code>.</p>
+</div>
+<div class="section" id="implementazione-delle-funzionalita-richieste">
+<h2>Implementazione delle funzionalità richieste<a class="headerlink" href="#implementazione-delle-funzionalita-richieste" title="Link a questa intestazione">¶</a></h2>
+<p>L’esecuzione del programma porta ad un aggiornamento complessivo delle informazioni contenute all’interno del file output, aggiungendo <code class="docutils literal notranslate"><span class="pre">pathname</span></code> se non già presenti e
+analisi delle informazioni relative ai file referenziati dai <code class="docutils literal notranslate"><span class="pre">pathname</span></code> presenti e aggiunti. Al termine dell’esecuzione il file di <code class="docutils literal notranslate"><span class="pre">output</span></code> risulterà pertanto aggiornato e
+non interamente sovrascritto. I pathname aggiunti al file di output gestito dal programma sono tutti assoluti per permettere la portabilità di tale file.</p>
+<p>Per la gestione delle decisioni dell’utente circa l’uso di file di <code class="docutils literal notranslate"><span class="pre">input</span></code> e di <code class="docutils literal notranslate"><span class="pre">output</span></code> che non siano quelli di default si è deciso di assicurare le funzionalità del programma
+solo in presenza o in assenza dei <code class="docutils literal notranslate"><span class="pre">pathname</span></code> associati ad <strong>entrambi</strong> i file. L’inclusione di un singolo <code class="docutils literal notranslate"><span class="pre">pathname</span></code> all’interno della sinossi di avvio del programma porterà
+all’avvio del programma con l’impiego dei file di <code class="docutils literal notranslate"><span class="pre">input</span></code> e di <code class="docutils literal notranslate"><span class="pre">output</span></code> di default.</p>
+<p>L’uso dell’opzione <code class="docutils literal notranslate"><span class="pre">-v/--verbose</span></code> porterà alla stampa sullo <strong>standard output</strong> di informazioni circa i file analizzati, quali il loro <code class="docutils literal notranslate"><span class="pre">pathname</span></code> relativo (che diventa assoluto nel caso il file
+analizzato sia un file referenziato da un link), l’eventuale natura di link o di directory e la corretta riuscita dell’operazione di analisi delle informazioni.
+L’implementazione delle opzioni <code class="docutils literal notranslate"><span class="pre">-s/--stat</span></code> e <code class="docutils literal notranslate"><span class="pre">-r/--report</span></code> risulta la medesima e consiste nella stampa sullo <strong>standard output</strong> delle informazioni richieste alla fine dell’elaborazione generale.
+L’uso dell’opzione <code class="docutils literal notranslate"><span class="pre">-h/--history</span></code>, seguita dal pathname del file di cui si vuole ottenere la cronologia, porterà alla stampa sullo <strong>standard output</strong> delle informazioni relative al file associato a tale pathname.
+Se il pathname non è presente all’interno del file di output gestito dal programma verrà effettuata una notifica sullo <strong>standard output</strong> di tale mancanza. Non sono ovviamente incluse le informazioni
+aggiunte tramite l’esecuzione del programma in corso.
+L’implementazione di <code class="docutils literal notranslate"><span class="pre">-u/--user</span></code> e <code class="docutils literal notranslate"><span class="pre">-g/--group</span></code> consiste in un <strong>filtro</strong> effettivo su quelli che sono i file da monitorare e di cui aggiungere informazioni nel file di <code class="docutils literal notranslate"><span class="pre">output</span></code>.
+L’inclusione di un file all’interno dell’operazione di analisi effettuata dal programma, <em>in presenza di tali opzioni</em>, porta alla stampa sullo <strong>standard output</strong> del pathname assoluto del file incluso nell’analisi
+e delle relative informazioni collezionate.
+Il medesimo discorso si applica anche all’implementazione di <code class="docutils literal notranslate"><span class="pre">-l/--length</span></code>.
+Infine, per l’implementazione di <code class="docutils literal notranslate"><span class="pre">--noscan</span></code> si è deciso di effettuare comunque l’operazione di popolamento della struttura dati con le informazioni derivate dal file di output evitando ogni tipo
+di operazione di analisi su ulteriori file, come quelli specificati dai pathname presenti nel file di input, e portando alla stampa sullo <strong>standard output</strong> delle informazioni presenti all’interno della struttura
+dati al termine delle operazioni del programma.</p>
+</div>
+<div class="section" id="makefile">
+<h2>Makefile<a class="headerlink" href="#makefile" title="Link a questa intestazione">¶</a></h2>
+<blockquote>
+<div><p>Il make è un’utility, sviluppata sui sistemi operativi della famiglia UNIX, ma disponibile su un’ampia gamma di sistemi, che automatizza
+il processo di creazione di file che dipendono da altri file, risolvendo le dipendenze e invocando programmi esterni per il lavoro necessario.</p>
+</div></blockquote>
+<p>Tale utility nel nostro caso è stata utilizzata per la compilazione di <strong>codice sorgente</strong> in <strong>codice oggetto</strong>, unendo e poi linkando il codice oggetto
+in un programma eseguibile chiamato <code class="docutils literal notranslate"><span class="pre">filestat</span></code>.</p>
+<p>Essa usa file chiamati <code class="docutils literal notranslate"><span class="pre">makefile</span></code> per determinare il grado delle dipendenze per un particolare output, e gli script
+necessari per la compilazione da passare alla shell.</p>
+<p>I <em>task</em> che mette a disposizione sono i seguenti:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">filestat</span></code>: converte il codice sorgente realizzato, <em>con le librerie a lui annesse</em>, in un codice oggetto eseguibile lanciando il comando <code class="docutils literal notranslate"><span class="pre">./filestat</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean</span></code>: elimina il contenuto delle directory indicate al suo interno per ottenere sempre un ambiente di lavoro pulito e privo di file obsoleti</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test</span></code>: generazione della cartella principale <code class="docutils literal notranslate"><span class="pre">folder_testing</span></code> in grado di dare all’utente <strong>la possibilità</strong> di testare il corretto funzionamento dell’utility <code class="docutils literal notranslate"><span class="pre">filestat</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="test-relativi-al-corretto-funzionamento">
+<h2>Test relativi al corretto funzionamento<a class="headerlink" href="#test-relativi-al-corretto-funzionamento" title="Link a questa intestazione">¶</a></h2>
+<p>Per avere una stima rispetto al corretto funzionamento del codice sono stati effettuati, in primo luogo,
+dei test molto <em>spartani</em> mediante i comandi <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">-l</span></code>, <code class="docutils literal notranslate"><span class="pre">du</span> <span class="pre">-sh</span> <span class="pre">file_path</span></code> e utilizzando l”<em>explorer</em> di sistema fornito dall’OS.</p>
+<p>Quest’ultimi ci restituivano infatti le informazioni <strong>corrette</strong> rispetto ai dati che analizzavamo, e in
+maniera banale, li confrontavamo con quelli che l’utility produceva. Una volta confermato il corretto funzionamento
+dell’utility si è deciso quindi di produrre una script per <code class="docutils literal notranslate"><span class="pre">bash</span></code> che fosse in grado di generare in maniera del tutto
+casuale file, link e directory, che a loro volta contenevano altrettanti elementi, per testare in maniera definitiva
+l’utility stessa e dimostrare in maniera oggettiva il suo funzionamento.</p>
+<p>Da questa premessa nasce infatti <code class="docutils literal notranslate"><span class="pre">folder_testing.sh</span></code>.</p>
+<p>Lo script in questione, disponibile all’interno della main direcotry del progetto, attinge a risorse di sistema localizzate
+in <code class="docutils literal notranslate"><span class="pre">/dev/urandom</span></code> per produrre dei contenuti di natura <strong>random</strong> relativi ai nomi dei file e delle directory e
+per popolare il loro contenuto.</p>
+<p>L’esecuzione di tale script quindi genera una nuova direcotry <code class="docutils literal notranslate"><span class="pre">folder_testing</span></code> al cui interno sarà possibile
+trovare i file - <em>e le direcotry</em> - nati da tale generazione.</p>
+<p>Per avviare tale processo sarà necessario lanciare il comando:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">test</span>
+</pre></div>
+</div>
+<p>Infatti all’interno del <strong>Makefile</strong> di cui si è parlato nella sezione relativa a codesto argomento è possibile reperire tale informazione.</p>
+<p>È interessante poi vedere come l’implementazione e il lancio di tale script produca subito un risultato tangibile che attesti il numero di file
+e directory generate, così come il numero di link presenti e in particolar modo la somma complessiva del peso di tali file.</p>
+<p>Di seguito è possibile apprezzare la bontà e la comodità di tale <code class="docutils literal notranslate"><span class="pre">script</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>./folder_testing
+├── [       4096]  ICcJo
+│   ├── [       4096]  2ymehX
+│   │   └── [       4096]  QP
+│   │       ├── [       4026]  8qR1g46s.bin
+│   │       ├── [      16086]  bdkx0.bin
+│   │       └── [       3837]  ezK6fiUW3dAR.bin
+│   ├── [       4096]  87
+│   │   ├── [       4096]  QP
+│   │   ├── [       2109]  tdzY.bin
+│   │   └── [      16310]  YpdiX.bin
+│   └── [       4096]  JmqQ
+│       └── [       4096]  QP
+│           ├── [       3652]  Prdg0.bin
+│           └── [        861]  yMutQoBsI.bin
+├── [       4096]  Si1
+│   ├── [       4096]  Aw
+│   │   ├── [       4096]  0BxaN
+│   │   │   ├── [       6707]  nq.bin
+│   │   │   └── [      11253]  pWIsm.bin
+│   │   ├── [       4096]  aG
+│   │   │   └── [       9555]  ZbioiWDOw.bin
+│   │   ├── [       4096]  h3n1
+│   │   │   └── [       2694]  8m.bin
+│   │   ├── [       4096]  rFes
+│   │   │   ├── [      19273]  RRP.bin
+│   │   │   └── [       8035]  YpaCzp.bin
+│   │   └── [        677]  QT0Dwlb3.bin
+│   ├── [       4096]  fkXD
+│   │   ├── [       4096]  0BxaN
+│   │   │   └── [       2503]  aIqEChA.bin
+│   │   ├── [       4096]  aG
+│   │   │   └── [       1507]  G5MF0.bin
+│   │   ├── [       4096]  h3n1
+│   │   │   └── [       3017]  1YF3kYej9P.bin
+│   │   ├── [       4096]  rFes
+│   │   ├── [       6573]  07b.bin
+│   │   └── [       3764]  qBbF.bin
+│   ├── [       4096]  l jPwu3
+│   │   ├── [       4096]  0BxaN
+│   │   │   ├── [       9030]  h5FDXIsn.bin
+│   │   │   └── [       2658]  XomM4.bin
+│   │   ├── [       4096]  aG
+│   │   │   ├── [       2980]  QUWYJY.bin
+│   │   │   └── [      10209]  RgziPE7jj.bin
+│   │   ├── [       4096]  h3n1
+│   │   │   └── [       3405]  xKFZ6j.bin
+│   │   ├── [       4096]  rFes
+│   │   │   ├── [      11185]  17s.bin
+│   │   │   └── [       6144]  uJW1U.bin
+│   │   ├── [       8663]  Df8rs.bin
+│   │   └── [      12494]  Vqo8R.bin
+│   ├── [       4096]  M F
+│   │   ├── [       4096]  0BxaN
+│   │   │   └── [      14186]  rCt35X.bin
+│   │   ├── [       4096]  aG
+│   │   │   └── [        359]  j0Bl7jx.bin
+│   │   ├── [       4096]  h3n1
+│   │   │   ├── [      17973]  SE4XX8ExlK.bin
+│   │   │   └── [       4964]  sfiq0Q.bin
+│   │   └── [       4096]  rFes
+│   │       └── [      13436]  P9hWuujV.bin
+│   ├── [       1663]  G6G0n8W7.bin
+│   └── [      10078]  RjpHS.bin
+├── [          7]  link_0 -&gt; Mru.bin
+└── [       5795]  Mru.bin
+
+28 directories, 37 files
+Dimensione totale dei file: 376452      ./folder_testing
+</pre></div>
+</div>
+<p>Dopo aver lanciato tale comando infatti basterà modificare il percorso da analizzare all’interno del file di input fornito
+per poi confrontarle con quelle restituire dall’utility prodotta.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="introduzione.html" class="btn btn-neutral float-left" title="Introduzione" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Francesco Pio Stelluti, Francesco Coppola
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
