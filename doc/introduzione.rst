@@ -34,13 +34,20 @@ La descrizione è la seguente:
 * ``--verbose|-v``: durante l'esecuzione il programma mostra a video le informazioni sui file elaborati, ed i dati raccolti;
 
 * ``--stat|-s``: vengono mostrate sullo standard output le seguenti statistiche:
-    - numero di file monitorati;
-    - numero di link;
-    - numero di directory;
-    - dimensione totale;
-    - dimensione media;
-    - dimensione massima;
-    - dimensione minima (in byte). 
+    
+    * numero di file monitorati;
+    
+    * numero di link;
+    
+    * numero di directory;
+    
+    * dimensione totale;
+    
+    * dimensione media;
+    
+    * dimensione massima;
+    
+    * dimensione minima (in byte). 
 
 * ``--report|-r``: al termine dell'esecuzione vengono mostrati sullo standard output le informazioni riguardanti numero di file elaborati, tempo di elaborazione, dimensione massima del file;
 
@@ -96,14 +103,14 @@ Successivamente si trovano una sequenza di righe (una per ogni analisi svolta) d
 
 Dove::
 
-  ``<data>`` indica ora-data in cui sono recuperate le informazioni;
-  ``<uid>`` è l'id dell'utente proprietario del file;
-  ``<gid>`` è l'id del gruppo del file;
-  ``<perm>`` è la stringa con i diritti di accesso al file;
-  ``<acc>`` data dell'ultimo accesso;
-  ``<change>`` data dell'ultimo cambiamento;
-  ``<mod>`` data dell'ultima modifica dei permessi;
-  ``<nlink>`` numero di link verso il file.
+  <data> indica ora-data in cui sono recuperate le informazioni;
+  <uid> è l'id dell'utente proprietario del file;
+  <gid> è l'id del gruppo del file;
+  <perm> è la stringa con i diritti di accesso al file;
+  <acc> data dell'ultimo accesso;
+  <change> data dell'ultimo cambiamento;
+  <mod> data dell'ultima modifica dei permessi;
+  <nlink> numero di link verso il file.
 
 Le informazioni terminano con la riga::
 
