@@ -30,29 +30,29 @@ Le possibili opzioni sono::
     --noscan
 
 La descrizione è la seguente:
-    
-    * ``--verbose|-v``: durante l'esecuzione il programma mostra a video le informazioni sui file elaborati, ed i dati raccolti;
-    
-    * ``--stat|-s``: vengono mostrate sullo standard output le seguenti statistiche:
-      - numero di file monitorati;
-      - numero di link;
-      - numero di directory;
-      - dimensione totale;
-      - dimensione media;
-      - dimensione massima;
-      - dimensione minima (in byte). 
-    
-    * ``--report|-r``: al termine dell'esecuzione vengono mostrati sullo standard output le informazioni riguardanti numero di file elaborati, tempo di elaborazione, dimensione massima del file;
-    
-    * ``--history|-h <filepah>``: stampa sullo standard output la cronologia delle informazioni riguardanti il file ``<filepah>``;
-    
-    * ``--user|-u <userId>``: stampa sullo standard output le informazioni di tutti i file di proprietà di ``<userId>``
-    
-    * ``--group|-g <groupId>``: stampa sullo standard output le informazioni di tutti i file di proprietà di ``<groupId>``
-    
-    * ``--length|-l <min>:<max>``: stampa sullo schermo le informazioni di tutti i file di dimensione (in byte) compresa tra ``<min>`` e ``<max>`` (``:<max>`` indica ogni file di dimensione al più ``<max>``, ``<min>:`` e ``<min>`` indicano ogni file di dimensione almeno ``<min>``)
-    
-    * ``--noscan``: se presente questa opzione non viene effettuata la raccolta dei dati, ma vengono presentati solo le informazioni presenti del file di output.  
+
+* ``--verbose|-v``: durante l'esecuzione il programma mostra a video le informazioni sui file elaborati, ed i dati raccolti;
+
+* ``--stat|-s``: vengono mostrate sullo standard output le seguenti statistiche:
+    - numero di file monitorati;
+    - numero di link;
+    - numero di directory;
+    - dimensione totale;
+    - dimensione media;
+    - dimensione massima;
+    - dimensione minima (in byte). 
+
+* ``--report|-r``: al termine dell'esecuzione vengono mostrati sullo standard output le informazioni riguardanti numero di file elaborati, tempo di elaborazione, dimensione massima del file;
+
+* ``--history|-h <filepah>``: stampa sullo standard output la cronologia delle informazioni riguardanti il file ``<filepah>``;
+
+* ``--user|-u <userId>``: stampa sullo standard output le informazioni di tutti i file di proprietà di ``<userId>``
+
+* ``--group|-g <groupId>``: stampa sullo standard output le informazioni di tutti i file di proprietà di ``<groupId>``
+
+* ``--length|-l <min>:<max>``: stampa sullo schermo le informazioni di tutti i file di dimensione (in byte) compresa tra ``<min>`` e ``<max>`` (``:<max>`` indica ogni file di dimensione al più ``<max>``, ``<min>:`` e ``<min>`` indicano ogni file di dimensione almeno ``<min>``)
+
+* ``--noscan``: se presente questa opzione non viene effettuata la raccolta dei dati, ma vengono presentati solo le informazioni presenti del file di output.  
 
 Formato del file di input
 ----------------------------
@@ -94,24 +94,16 @@ Successivamente si trovano una sequenza di righe (una per ogni analisi svolta) d
 
     <data> <uid> <gid> <dim> <perm> <acc> <change> <mod> <nlink>
 
-
 Dove::
 
-  * ``<data>`` indica ora-data in cui sono recuperate le informazioni;
-  
-  * ``<uid>`` è l'id dell'utente proprietario del file;
-  
-  * ``<gid>`` è l'id del gruppo del file;
-  
-  * ``<perm>`` è la stringa con i diritti di accesso al file;
-  
-  * ``<acc>`` data dell'ultimo accesso;
-  
-  * ``<change>`` data dell'ultimo cambiamento;
-  
-  * ``<mod>`` data dell'ultima modifica dei permessi;
-  
-  * ``<nlink>`` numero di link verso il file.
+  ``<data>`` indica ora-data in cui sono recuperate le informazioni;
+  ``<uid>`` è l'id dell'utente proprietario del file;
+  ``<gid>`` è l'id del gruppo del file;
+  ``<perm>`` è la stringa con i diritti di accesso al file;
+  ``<acc>`` data dell'ultimo accesso;
+  ``<change>`` data dell'ultimo cambiamento;
+  ``<mod>`` data dell'ultima modifica dei permessi;
+  ``<nlink>`` numero di link verso il file.
 
 Le informazioni terminano con la riga::
 
@@ -175,11 +167,27 @@ Dove ``P`` rappresenta il numero di elementi ``PathEntry`` presenti nella strutt
 Implementazione delle funzionalità richieste
 ---------------------------------------------
 
+L'esecuzione del programma porta ad un aggiornamento complessivo delle informazioni contenute all'interno del file output, aggiungendo ``pathname`` se non già presenti e
+analisi delle informazioni relative ai file referenziati dai ``pathname`` presenti e aggiunti. Al termine dell'esecuzione il file di ``output`` risulterà pertanto aggiornato e 
+non interamente sovrascritto. I pathname aggiunti al file di output gestito dal programma sono tutti assoluti per permettere la portabilità di tale file. 
 
+Per la gestione delle decisioni dell'utente circa l'uso di file di ``input`` e di ``output`` che non siano quelli di default si è deciso di assicurare le funzionalità del programma 
+solo in presenza o in assenza dei ``pathname`` associati ad **entrambi** i file. L'inclusione di un singolo ``pathname`` all'interno della sinossi di avvio del programma porterà
+all'avvio del programma con l'impiego dei file di ``input`` e di ``output`` di default. 
 
-
-
-
+L'uso dell'opzione ``-v/--verbose`` porterà alla stampa sullo **standard output** di informazioni circa i file analizzati, quali il loro ``pathname`` relativo (che diventa assoluto nel caso il file
+analizzato sia un file referenziato da un link), l'eventuale natura di link o di directory e la corretta riuscita dell'operazione di analisi delle informazioni. 
+L'implementazione delle opzioni ``-s/--stat`` e ``-r/--report`` risulta la medesima e consiste nella stampa sullo **standard output** delle informazioni richieste alla fine dell'elaborazione generale. 
+L'uso dell'opzione ``-h/--history``, seguita dal pathname del file di cui si vuole ottenere la cronologia, porterà alla stampa sullo **standard output** delle informazioni relative al file associato a tale pathname.
+Se il pathname non è presente all'interno del file di output gestito dal programma verrà effettuata una notifica sullo **standard output** di tale mancanza. Non sono ovviamente incluse le informazioni
+aggiunte tramite l'esecuzione del programma in corso. 
+L'implementazione di ``-u/--user`` e ``-g/--group`` consiste in un **filtro** effettivo su quelli che sono i file da monitorare e di cui aggiungere informazioni nel file di ``output``. 
+L'inclusione di un file all'interno dell'operazione di analisi effettuata dal programma, *in presenza di tali opzioni*, porta alla stampa sullo **standard output** del pathname assoluto del file incluso nell'analisi
+e delle relative informazioni collezionate. 
+Il medesimo discorso si applica anche all'implementazione di ``-l/--length``.
+Infine, per l'implementazione di ``--noscan`` si è deciso di effettuare comunque l'operazione di popolamento della struttura dati con le informazioni derivate dal file di output evitando ogni tipo
+di operazione di analisi su ulteriori file, come quelli specificati dai pathname presenti nel file di input, e portando alla stampa sullo **standard output** delle informazioni presenti all'interno della struttura
+dati al termine delle operazioni del programma. 
 
 
 Makefile
@@ -188,13 +196,13 @@ Makefile
     Il make è un'utility, sviluppata sui sistemi operativi della famiglia UNIX, ma disponibile su un'ampia gamma di sistemi, che automatizza 
     il processo di creazione di file che dipendono da altri file, risolvendo le dipendenze e invocando programmi esterni per il lavoro necessario.
 
-Tale utility nel nostro caso è stata utlizzata per la compilazione di **codice sorgente** in **codice oggetto**, unendo e poi linkando il codice oggetto 
+Tale utility nel nostro caso è stata utilizzata per la compilazione di **codice sorgente** in **codice oggetto**, unendo e poi linkando il codice oggetto 
 in un programma eseguibile chiamato ``filestat``. 
 
 Essa usa file chiamati ``makefile`` per determinare il grado delle dipendenze per un particolare output, e gli script 
 necessari per la compilazione da passare alla shell.
 
-I *task* che mette a dispozione sono i seguenti:
+I *task* che mette a disposizione sono i seguenti:
 
 * ``make filestat``: converte il codice sorgente realizzato, *con le librerie a lui annesse*, in un codice oggetto eseguibile lanciando il comando ``./filestat``
 
@@ -220,8 +228,8 @@ Lo script in questione, disponibile all'interno della main direcotry del progett
 in ``/dev/urandom`` per produrre dei contenuti di natura **random** relativi ai nomi dei file e delle directory e 
 per popolare il loro contenuto.
 
-L'esecuzione di tale script quindi genera una ``sub folder`` ``folder_testing`` al cui interno sarà possibile
-trovare i file *(e le direcotry)* nati da tale generazione.
+L'esecuzione di tale script quindi genera una nuova direcotry ``folder_testing`` al cui interno sarà possibile
+trovare i file - *e le direcotry* - nati da tale generazione.
 
 Per avviare tale processo sarà necessario lanciare il comando::
 
@@ -232,7 +240,7 @@ Infatti all'interno del **Makefile** di cui si è parlato nella sezione relativa
 È interessante poi vedere come l'implementazione e il lancio di tale script produca subito un risultato tangibile che attesti il numero di file
 e directory generate, così come il numero di link presenti e in particolar modo la somma complessiva del peso di tali file.
 
-Di seguito è possibile apprezzare la bontà e la comodità di tale script::
+Di seguito è possibile apprezzare la bontà e la comodità di tale ``script``::
 
     ./folder_testing
     ├── [       4096]  ICcJo
@@ -305,6 +313,6 @@ Di seguito è possibile apprezzare la bontà e la comodità di tale script::
     Dimensione totale dei file: 376452      ./folder_testing
 
 Dopo aver lanciato tale comando infatti basterà modificare il percorso da analizzare all'interno del file di input fornito
-per poi confrontarle con quelle restitutire dall'utility prodotta. 
+per poi confrontarle con quelle restituire dall'utility prodotta. 
 
 
