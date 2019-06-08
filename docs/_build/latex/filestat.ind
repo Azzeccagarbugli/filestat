@@ -1,0 +1,41 @@
+\begin{sphinxtheindex}
+\let\bigletter\sphinxstyleindexlettergroup
+\let\spxpagem \sphinxstyleindexpagemain
+\let\spxentry \sphinxstyleindexentry
+\let\spxextra \sphinxstyleindexextra
+
+  \bigletter A
+  \item \spxentry{addFileAnalisis}\spxextra{funzione C}, \hyperpage{12}
+
+  \indexspace
+  \bigletter C
+  \item \spxentry{checkGID}\spxextra{funzione C}, \hyperpage{12}
+  \item \spxentry{checkLength}\spxextra{funzione C}, \hyperpage{12}
+  \item \spxentry{checkOptions}\spxextra{funzione C}, \hyperpage{12}
+  \item \spxentry{checkUID}\spxextra{funzione C}, \hyperpage{12}
+
+  \indexspace
+  \bigletter D
+  \item \spxentry{directoryAnalisis}\spxextra{funzione C}, \hyperpage{12}
+
+  \indexspace
+  \bigletter F
+  \item \spxentry{findLastOf}\spxextra{funzione C}, \hyperpage{13}
+
+  \indexspace
+  \bigletter G
+  \item \spxentry{getLinkAbsPath}\spxextra{funzione C}, \hyperpage{13}
+
+  \indexspace
+  \bigletter I
+  \item \spxentry{inputLineAnalisis}\spxextra{funzione C}, \hyperpage{11}
+
+  \indexspace
+  \bigletter R
+  \item \spxentry{readInputFile}\spxextra{funzione C}, \hyperpage{11}
+
+  \indexspace
+  \bigletter S
+  \item \spxentry{scanFilePath}\spxextra{funzione C}, \hyperpage{11}
+
+\end{sphinxtheindex}

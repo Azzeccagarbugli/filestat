@@ -293,6 +293,9 @@ INPUT ./ssdraw.png
 INPUT ./ssdraw.png
 INPUT ssdraw.png
 INPUT ./ssdraw.png
+INPUT /usr/share/texmf-dist/fonts/tfm/adobe/courier/pcrb8t.tfm
+INPUT /usr/share/texmf-dist/fonts/vf/adobe/courier/pcrb8t.vf
+INPUT /usr/share/texmf-dist/fonts/tfm/adobe/courier/pcrb8r.tfm
 INPUT filestat.ind
 INPUT filestat.ind
 INPUT filestat.aux

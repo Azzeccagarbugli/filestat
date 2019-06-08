@@ -25,6 +25,8 @@ PathEntry *merge(PathEntry *, PathEntry *);
 
 /**
  * Struct di riferimento per le informazioni complessive raccolte sui file, quali:
+ * 
+ * 
  * - numero di file monitorati;
  * - numero di link incontrati;
  * - numero di directory incontrate;
@@ -37,8 +39,11 @@ ScanInfo stats = {0, 0, 0, 0, 0, 0, 0};
 
 /**
  * Avvio delle operazioni di scan e di recupero delle informazioni richieste dal programma.
+ * 
+ * 
  * :param input: puntatore al file di input trattato nel programma
  * :param output: puntatore al file di output trattato nel programma
+ * :return: 1 in caso di successo
  */
 int startScan(FILE *input, FILE *output)
 {
@@ -67,6 +72,8 @@ int startScan(FILE *input, FILE *output)
 
 /**
  * Incremento numero di file monitorati e di cui è stata aggiunta la relativa analisi.
+ * 
+ * 
  */
 void increaseMonitorati()
 {
@@ -75,6 +82,8 @@ void increaseMonitorati()
 
 /**
  * Incremento numero di link incontrati.
+ * 
+ * 
  */
 void increaseLink()
 {
@@ -83,6 +92,8 @@ void increaseLink()
 
 /**
  * Incremento numero di directory.
+ * 
+ * 
  */
 void increaseDirectory()
 {
@@ -91,6 +102,8 @@ void increaseDirectory()
 
 /**
  * Aggiornamento valore dimensione media dei file monitorati.
+ * 
+ * 
  */
 void updateDimMedia()
 {
@@ -99,6 +112,7 @@ void updateDimMedia()
 
 /**
  * Aggiornamento valore dimensione massima dei file monitorati.
+ * 
  * 
  * :param data: valore della dimensione che si desidera aggiungere
  */
@@ -113,6 +127,7 @@ void updateDimMax(int data)
 /**
  * Aggiornamento valore dimensione minima dei file monitorati.
  * 
+ * 
  * :param data: valore della dimensione che si desidera aggiungere
  */
 void updateDimMin(int data)
@@ -125,6 +140,7 @@ void updateDimMin(int data)
 
 /**
  * Aggiornamento valore dimensione totale dei file monitorati.
+ * 
  * 
  * :param data: valore della dimensione che si desidera aggiungere
  */
@@ -139,6 +155,7 @@ void increaseDimTotale(int data)
 /**
  * Reset completo di un file.
  * 
+ * 
  * :param target: puntatore al file si cui si desidera effettuare i reset
  */
 void cleanFile(FILE *target)
@@ -151,6 +168,7 @@ void cleanFile(FILE *target)
 
 /**
  * Gestione completa della stampa delle informazioni contenute in una struttura PathEntry su un file di output.
+ * 
  * 
  * :param target: puntatore al file di output su cui si vogliono inserire le informazioni
  * :param entry: puntatore alla struttura dati da cui si vogliono leggere le informazioni da stampare
@@ -165,6 +183,7 @@ void printOnOutput(FILE *target, PathEntry *entry)
 /**
  * Aggiornamento completo di tutte le informazioni riguardo i file che sono stati monitorati.
  * 
+ * 
  * :param size: valore della dimensione che si desidera aggiungere
  */
 void updateStats(long int size)
@@ -175,6 +194,8 @@ void updateStats(long int size)
 
 /**
  * Metodo che stampa a video il report completo delle informazioni acquisite.
+ * 
+ * 
  */
 void printStats()
 {
@@ -190,6 +211,7 @@ void printStats()
 
 /**
  * Stampa sullo standard output delle informazioni relative alle analisi passate effettuate su un file.
+ * 
  * 
  * :param entry: puntatore alla struttura dati da cui leggere le informazioni
  * :param path: puntatore all'array di caratteri contenente il associato al file di cui si vuole conoscere la cronologia
@@ -215,6 +237,7 @@ void printHistory(PathEntry *entry, char *path)
 /**
  * Stampa completa delle informazioni presenti in una struttura dati PathEntry su di un file.
  *
+ * 
  * :param pathentry: puntatore all'entry associato al file di cui si vogliono stampare le informazioni sullo standard output
  * :param file: puntatore al il file su cui si vogliono inserire le informazioni
  */
@@ -234,6 +257,8 @@ void printOnFile(PathEntry *pathentry, FILE *file)
 
 /**
  * Gestione completa delle operazioni di rilascio delle risorse da operare su una struttura dati PathEntry.
+ *
+ * 
  * :param entry: puntatore struttura dati su cui effetturare l'operazione completa di rilascio delle risorse
  */
 void freePath(PathEntry *entry)
@@ -249,6 +274,8 @@ void freePath(PathEntry *entry)
 
 /**
  * Gestione completa delle operazioni di rilascio delle risorse da operare su una struttura dati AnalisisEntry.
+ *
+ * 
  * :param entry: puntatore alla struttura dati su cui effetturare l'operazione completa di rilascio delle risorse
  */
 void freeAnalisis(AnalisisEntry *entry)
@@ -262,7 +289,9 @@ void freeAnalisis(AnalisisEntry *entry)
 }
 
 /**
- * Operazione di merge tra due strutture dati PathEntry
+ * Operazione di merge tra due strutture dati PathEntry.
+ * 
+ * 
  * :param out: puntatore a struttura PathEntry in cui collezionare le informazioni relative al merge
  * :param in: puntatore a struttura PathEntry da cui prendere le informazioni da impiegare dal merge
  * :return: puntatore a struttura PathEntry in cui sono collezionate le informazioni risultate dal merge

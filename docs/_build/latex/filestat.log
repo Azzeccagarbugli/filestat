@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.5.9)  8 JUN 2019 00:41
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.5.9)  8 JUN 2019 16:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -892,7 +892,7 @@ LaTeX Font Info:    Try loading font information for TS1+pcr on input line 249.
 File: ts1pcr.fd 2001/06/04 font definitions for TS1/pcr.
 ) [4]
 Capitolo 2.
-<ssdraw.png, id=94, 784.9325pt x 748.7975pt>
+<ssdraw.png, id=104, 784.9325pt x 748.7975pt>
 File: ssdraw.png Graphic file (type png)
 <use ssdraw.png>
 Package pdftex.def Info: ssdraw.png  used on input line 313.
@@ -911,24 +911,42 @@ Underfull \vbox (badness 10000) detected at line 496
 Overfull \vbox (2.68169pt too high) detected at line 496
  []
 
-[9] (./filestat.ind)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 505.
- [10]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 505.
+[9] [10]
+Capitolo 3.
+LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <10> not available
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 506.
+
+Package Fancyhdr Warning: \fancyfoot's `E' option without twoside option is use
+less on input line 571.
+
+[11
+
+] [12] (./filestat.ind [13]
+
+Package Fancyhdr Warning: \fancyfoot's `E' option without twoside option is use
+less on input line 41.
+
+[14
+
+
+
+])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 754.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 754.
  (./filestat.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 505.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 505.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 754.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 754.
 Package rerunfilecheck Info: File `filestat.out' has not changed.
-(rerunfilecheck)             Checksum: 6F223557AAA1927C69A654B101184268;2016.
+(rerunfilecheck)             Checksum: D136959B9073A994401C074B1C711DA3;2206.
  ) 
 Here is how much of TeX's memory you used:
- 13756 strings out of 492616
- 189733 string characters out of 6135178
- 447909 words of memory out of 5000000
- 17332 multiletter control sequences out of 15000+600000
- 52823 words of font info for 74 fonts, out of 8000000 for 9000
+ 13794 strings out of 492616
+ 190383 string characters out of 6135178
+ 448418 words of memory out of 5000000
+ 17351 multiletter control sequences out of 15000+600000
+ 53444 words of font info for 76 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
- 37i,12n,45p,811b,488s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 37i,12n,45p,811b,599s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texmf-dist/fon
 ts/type1/urw/courier/ucrb8a.pfb></usr/share/texmf-dist/fonts/type1/urw/courier/
 ucrr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/courier/ucrro8a.pfb></usr/sha
@@ -937,10 +955,10 @@ type1/urw/helvetic/uhvbo8a.pfb></usr/share/texmf-dist/fonts/type1/urw/helvetic/
 uhvr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/
 texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-dist/fonts/type1/
 urw/times/utmri8a.pfb>
-Output written on filestat.pdf (12 pages, 154043 bytes).
+Output written on filestat.pdf (16 pages, 167771 bytes).
 PDF statistics:
- 161 PDF objects out of 1000 (max. 8388607)
- 129 compressed objects within 2 object streams
- 24 named destinations out of 1000 (max. 500000)
- 106 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 215 PDF objects out of 1000 (max. 8388607)
+ 179 compressed objects within 2 object streams
+ 41 named destinations out of 1000 (max. 500000)
+ 122 words of extra memory for PDF output out of 10000 (max. 10000000)
 

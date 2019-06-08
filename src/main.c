@@ -16,7 +16,7 @@
  */
 OptInfo options = {0, 0, 0, 0, NULL, 0, NULL, 0, NULL, 0, 0, 0, 0};
 
-/*
+/**
  * Puntatori di natura FILE in cui vengono settati i file di I/O che verranno utilizzati. 
  * Quest'ultimi potranno essere scelti dall'utente o impostati di default.
  */

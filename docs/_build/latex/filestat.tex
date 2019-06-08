@@ -499,6 +499,255 @@ Dopo aver lanciato tale comando infatti basterà modificare il percorso da anali
 per poi confrontarle con quelle restituire dall’utility prodotta.
 
 
+\chapter{Documentazione}
+\label{\detokenize{documentazione:documentazione}}\label{\detokenize{documentazione::doc}}\index{readInputFile (funzione C)@\spxentry{readInputFile}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{documentazione:c.readInputFile}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{readInputFile}}}{FILE *\sphinxstyleemphasis{ input}, PathEntry *\sphinxstyleemphasis{ entry}}{}
+Gestione completa delle analisi delle informazioni presenti sul file di input trattato dal programma.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{input}} \textendash{} puntatore al file di input da cui leggere le informazioni sulle analisi passate
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{entry}} \textendash{} puntatore alla struttura dati PathEntry in cui inserire le informazioni recuperate grazie al file di input
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+puntatore alla struttura dati PathEntry aggiornata
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{inputLineAnalisis (funzione C)@\spxentry{inputLineAnalisis}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{documentazione:c.inputLineAnalisis}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{inputLineAnalisis}}}{char *\sphinxstyleemphasis{ riga}, PathEntry *\sphinxstyleemphasis{ entry}}{}
+Metodo che legge interamente le linee presenti all’interno del file di input.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{riga}} \textendash{} puntatore all’array di caratteri contenente la riga del file desiderata di cui si vuole effettuare la lettura
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{entry}} \textendash{} puntatore alla struttura dati PathEntry in cui inserire le informazioni recuperate grazie all’analisi della riga
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+puntatore alla struttura dati PathEntry aggiornata
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{scanFilePath (funzione C)@\spxentry{scanFilePath}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{documentazione:c.scanFilePath}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{scanFilePath}}}{char *\sphinxstyleemphasis{ path}, int\sphinxstyleemphasis{ isR}, int\sphinxstyleemphasis{ isL}, PathEntry *\sphinxstyleemphasis{ entry}}{}
+Analisi completa di un singolo file.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{path}} \textendash{} puntatore all’array di caratteri contenente path del file da analizzare
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{isR}} \textendash{} flag per l’analisi ricorsiva del file in caso sia una directory
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{isL}} \textendash{} flag utile in caso il file analizzato sia un link, di cui vengono analizzate le informazioni senza far riferimento al file referenziato
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{entry}} \textendash{} puntatore alla struttura dati PathEntry in cui inserire le informazioni recuperate grazie all’analisi del file
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+puntatore alla struttura dati PathEntry aggiornata
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{directoryAnalisis (funzione C)@\spxentry{directoryAnalisis}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{documentazione:c.directoryAnalisis}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{directoryAnalisis}}}{struct stat *\sphinxstyleemphasis{ dirStat}, PathEntry *\sphinxstyleemphasis{ entry}, int\sphinxstyleemphasis{ isR}, int\sphinxstyleemphasis{ isL}, char *\sphinxstyleemphasis{ path}}{}
+Analisi delle entry presenti all’interno di un file directory.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{dirStat}} \textendash{} puntatore all’istanza di struct stat in cui sono contenute le informazioni del file da analizzare
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{entry}} \textendash{} puntatore alla struttura dati PathEntry in cui inserire le informazioni recuperate grazie all’analisi del file
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{isR}} \textendash{} flag da passare all’analisi dei file referenziati dalle entry del file directory argomento
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{isL}} \textendash{} flag da passare all’analisi dei file referenziati dalle entry del file directory argomento
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{path}} \textendash{} puntatore all’array di caratteri contenente il pathname associato a dirStat
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+puntatore alla struttura dati PathEntry aggiornata
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{addFileAnalisis (funzione C)@\spxentry{addFileAnalisis}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{documentazione:c.addFileAnalisis}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{addFileAnalisis}}}{struct stat *\sphinxstyleemphasis{ currentStat}, char *\sphinxstyleemphasis{ path}, PathEntry *\sphinxstyleemphasis{ entry}}{}
+Aggiunta delle informazioni associate all’analisi di un file ad una struttura dati PathEntry.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{currentStat}} \textendash{} puntatore all’istanza di struct stat in cui sono contenute le informazioni del file da analizzare
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{path}} \textendash{} puntatore all’array di caratteri associato al file da analizzare
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{entry}} \textendash{} puntatore alla struttura dati PathEntry in cui inserire le informazioni recuperate grazie all’analisi del file
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+puntatore alla struttura dati PathEntry aggiornata
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{checkLength (funzione C)@\spxentry{checkLength}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{documentazione:c.checkLength}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{checkLength}}}{struct stat *\sphinxstyleemphasis{ file}}{}
+Verifica che un file rispetti le condizioni espresse con il flag \sphinxcode{\sphinxupquote{-l/-{-}length}}.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{file}} \textendash{} puntatore al file di cui verificare le condizioni
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+0 in caso di esito negativo della verifica, 1 in caso di esito positivo della verifica
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{checkUID (funzione C)@\spxentry{checkUID}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{documentazione:c.checkUID}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{checkUID}}}{struct stat *\sphinxstyleemphasis{ file}}{}
+Verifica che un file rispetti le condizioni espresse con il flag \sphinxcode{\sphinxupquote{-u/-{-}user}}.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{file}} \textendash{} puntatore file di cui verificare le condizioni
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+0 in caso di esito negativo della verifica, 1 in caso di esito positivo della verifica
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{checkGID (funzione C)@\spxentry{checkGID}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{documentazione:c.checkGID}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{checkGID}}}{struct stat *\sphinxstyleemphasis{ file}}{}
+Verifica che un file rispetti le condizioni espresse con il flag \sphinxcode{\sphinxupquote{-g/-{-}group}}.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{file}} \textendash{} puntatore al file di cui verificare le condizioni
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+0 in caso di esito negativo della verifica, 1 in caso di esito positivo della verifica
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{checkOptions (funzione C)@\spxentry{checkOptions}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{documentazione:c.checkOptions}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{checkOptions}}}{struct stat *\sphinxstyleemphasis{ file}}{}
+Verifica che un file rispetti le condizioni espresse con i flag \sphinxcode{\sphinxupquote{-l/-{-}length}}, \sphinxcode{\sphinxupquote{-u/-{-}user}} e \sphinxcode{\sphinxupquote{-g/-{-}group}}.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{file}} \textendash{} puntatore al file di cui verificare le condizioni
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+0 in caso di esito negativo della verifica, 1 in caso di esito positivo della verifica
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{findLastOf (funzione C)@\spxentry{findLastOf}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{documentazione:c.findLastOf}}\pysiglinewithargsret{char * \sphinxbfcode{\sphinxupquote{findLastOf}}}{char *\sphinxstyleemphasis{ str}, char\sphinxstyleemphasis{ c}}{}
+Permette di ottenere il puntatore all’ultima occorrenza di un carattere presente in una stringa.
+Metodo ausiliario a \sphinxcode{\sphinxupquote{getLinkAbsPath(char*)}}.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{str}} \textendash{} puntetore all’array di caratteri di cui effettuare l’analisi
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{c}} \textendash{} carattere di cui si vuole ottenere il puntatore all’ultima occorrenza
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+puntatore all’ultima occorrenza all’interno della stringa passata come argomento del carattere passato come argomento
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{getLinkAbsPath (funzione C)@\spxentry{getLinkAbsPath}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{documentazione:c.getLinkAbsPath}}\pysiglinewithargsret{char * \sphinxbfcode{\sphinxupquote{getLinkAbsPath}}}{char *\sphinxstyleemphasis{ path}}{}
+Metodo necessario al get del pathname assoluto di un link.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{path}} \textendash{} puntatore all’array di caratteri contentente il filename del link di cui si vuole ottenere il percorso assoluto
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+la stringa contenente il percorso assoluto del link passato come parametro locale
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+
 
 \renewcommand{\indexname}{Indice}
 \printindex
