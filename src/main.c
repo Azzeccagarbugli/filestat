@@ -68,7 +68,10 @@ int main(int argc, char **argv)
  */
 void parsePaths(int argc, char **argv)
 {
-    if ((!((argc > 2) && (access(argv[argc - 2], F_OK) == 0)) || (strcmp(argv[argc - 2], argv[argc - 1]) == 0) || (strcmp("-h", argv[argc - 3]) == 0)))
+    if (!((argc > 2) && (access(argv[argc - 2], F_OK) == 0)) 
+    || (strcmp(argv[argc - 2], argv[argc - 1]) == 0) 
+    || (strcmp("-h", argv[argc - 3]) == 0) 
+    || (strcmp("--history", argv[argc - 3]) == 0))
     {
         file_input = fopen(DEFAULT_INPUT_PATH, "a+");
         printf("Come file di input è stato aperto il predefinito\n");
@@ -78,7 +81,10 @@ void parsePaths(int argc, char **argv)
         file_input = fopen(argv[argc - 2], "a+");
         printf("Come file di input è stato aperto quello specificato come argomento\n");
     }
-    if ((!((argc > 2) && (access(argv[argc - 1], F_OK) == 0)) || (strcmp(argv[argc - 2], argv[argc - 1]) == 0) || (strcmp("-h", argv[argc - 2]) == 0) || (strcmp("--history", argv[argc - 2]) == 0)))
+    if (!((argc > 2) && (access(argv[argc - 1], F_OK) == 0)) 
+    || (strcmp(argv[argc - 2], argv[argc - 1]) == 0) 
+    || (strcmp("-h", argv[argc - 2]) == 0) 
+    || (strcmp("--history", argv[argc - 2]) == 0))
     {
         file_output = fopen(DEFAULT_OUTPUT_PATH, "a+");
         printf("Come file di output è stato aperto il predefinito\n");
