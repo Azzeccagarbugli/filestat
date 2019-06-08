@@ -47,9 +47,7 @@ int startScan(FILE *input, FILE *output)
     outputData = readOutputFile(output, outputData);
 
     if (options.history_flag)
-    {
         printHistory(outputData, options.history_path);
-    }
 
     if (!options.noscan_flag)
     {
@@ -60,12 +58,11 @@ int startScan(FILE *input, FILE *output)
         freePath(inputData);
     }
 
-    printOnOutput(output, outputData);
+    if (!options.noscan_flag)
+        printOnOutput(output, outputData);
     freePath(outputData);
     if (options.stat_flag)
-    {
         printStats();
-    }
 }
 
 /**
@@ -202,16 +199,16 @@ void printHistory(PathEntry *entry, char *path)
     PathEntry *pEntry = getPathEntry(entry, path);
     if (isPathEmpty(pEntry))
     {
-        printf("Non esiste cronologia di tale file nel file di output specificato\n");
+        printf("\nNon esiste cronologia di tale file nel file di output specificato\n\n");
     }
     else
     {
-        printf("### Cronologia del file al path: %s\n", path);
+        printf("\n### Cronologia del file al path: %s\n", path);
         for (AnalisisEntry *curanalisis = getFirstAnalisis(pEntry); !isAnalisisEmpty(curanalisis); curanalisis = getNextAnalisis(curanalisis))
         {
             printf("%s\n", curanalisis->analisis);
         }
-        printf("### Fine cronologia\n");
+        printf("### Fine cronologia\n\n");
     }
 }
 
@@ -223,38 +220,16 @@ void printHistory(PathEntry *entry, char *path)
  */
 void printOnFile(PathEntry *pathentry, FILE *file)
 {
-    if (options.noscan_flag)
-        printf("# Verranno stampate di seguito le informazioni presenti sul file di output: \n");
-
     for (PathEntry *curpath = pathentry; !isPathEmpty(curpath); curpath = getNextPath(curpath))
     {
         fprintf(file, "# %s\n", curpath->path);
-        if (options.noscan_flag)
-        {
-            printf("# %s\n", curpath->path);
-        }
         for (AnalisisEntry *curanalisis = getFirstAnalisis(curpath); !isAnalisisEmpty(curanalisis); curanalisis = getNextAnalisis(curanalisis))
         {
             fprintf(file, "%s\n", curanalisis->analisis);
-            if (options.noscan_flag)
-            {
-                printf("%s\n", curanalisis->analisis);
-            }
         }
         fprintf(file, "###\n", NULL);
-        if (options.noscan_flag)
-        {
-            printf("###\n");
-        }
     }
     fprintf(file, "###\n", NULL);
-    if (options.noscan_flag)
-    {
-        printf("###\n");
-    }
-
-    if (options.noscan_flag)
-        printf("# Fine della stampa delle informazioni presenti sul file di output\n\n");
 }
 
 /**

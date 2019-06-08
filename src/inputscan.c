@@ -60,13 +60,9 @@ PathEntry *inputLineAnalisis(char *riga, PathEntry *entry)
     for (token = strtok(riga, " "); token; token = strtok(NULL, " "))
     {
         if (strcmp(token, "r") == 0)
-        {
             isR = 1;
-        }
         else if (strcmp(token, "l") == 0)
-        {
             isL = 1;
-        }
         else if (!pathRead)
         {
             path = strdup(token);
@@ -99,18 +95,12 @@ PathEntry *scanFilePath(char *path, int isR, int isL, PathEntry *entry)
     }
 
     if (isL == 0)
-    {
         stat(path, currentStat);
-    }
-    if (checkOptions(currentStat) && (!options.noscan_flag))
-    {
+    if (checkOptions(currentStat))
         entry = S_ISLNK(currentStat->st_mode) ? addFileAnalisis(currentStat, getLinkAbsPath(path), entry) : addFileAnalisis(currentStat, realpath(path, NULL), entry);
-    }
 
     if (isR)
-    {
         entry = directoryAnalisis(currentStat, entry, isR, isL, path);
-    }
 
     free(currentStat);
     return entry;
@@ -140,10 +130,10 @@ PathEntry *directoryAnalisis(struct stat *dirStat, PathEntry *entry, int isR, in
 
                 char *copy = (char *)malloc(strlen(path) + strlen(ent->d_name) + 2);
                 strcpy(copy, path);
+
                 if (copy[strlen(path) - 1] != '/')
-                {
                     strcat(copy, "/");
-                }
+
                 strcat(copy, ent->d_name);
                 entry = scanFilePath(copy, isR, isL, entry);
                 free(copy);
@@ -167,9 +157,7 @@ PathEntry *addFileAnalisis(struct stat *currentStat, char *path, PathEntry *entr
     if (isPathEmpty(getPathEntry(entry, path)))
     {
         if (options.verbose_flag)
-        {
             printf("Inizio ad elaborare il file al path: %s\n", path);
-        }
         char dlinfo;
         if (S_ISDIR(currentStat->st_mode))
         {
@@ -225,17 +213,13 @@ PathEntry *addFileAnalisis(struct stat *currentStat, char *path, PathEntry *entr
                 currentStat->st_nlink);
 
         if (options.length_flag || options.group_flag || options.user_flag)
-        {
-            printf("# %s\n%s\n###\n", path, record);
-        }
+            printf("# Analisi effettuata su: %s\n%s\n", path, record);
 
         entry = addPathAndAnalisis(entry, path, strtok(record, "\r\n"));
         updateStats(currentStat->st_size);
 
         if (options.verbose_flag)
-        {
-            printf("Analisi del file effettuata correttamente\n###\n\n");
-        }
+            printf("Analisi del file effettuata correttamente\n\n");
         free(record);
     }
     return entry;

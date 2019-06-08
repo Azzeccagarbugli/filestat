@@ -68,7 +68,7 @@ int main(int argc, char **argv)
  */
 void parsePaths(int argc, char **argv)
 {
-    if ((!((argc > 2) && (access(argv[argc - 2], F_OK) == 0)) || (strcmp(argv[argc - 2], argv[argc - 1]) == 0)))
+    if ((!((argc > 2) && (access(argv[argc - 2], F_OK) == 0)) || (strcmp(argv[argc - 2], argv[argc - 1]) == 0) || (strcmp("-h", argv[argc - 3]) == 0)))
     {
         file_input = fopen(DEFAULT_INPUT_PATH, "a+");
         printf("Come file di input è stato aperto il predefinito\n");
@@ -228,6 +228,7 @@ int getLengthArg(char *arg)
  */
 int getHistoryPath(char *arg)
 {
+    printf("LOL\n");
     options.history_path = (char *)malloc(strlen(arg));
     strcpy(options.history_path,arg);
 
