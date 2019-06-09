@@ -78,7 +78,7 @@ void parsePaths(int argc, char **argv)
     }
     else
     {
-        file_input = fopen(argv[argc - 2], "a+");
+        file_input = fopen(argv[argc - 2], "r");
         printf("Come file di input è stato aperto quello specificato come argomento\n");
     }
     if (!((argc > 2) && (access(argv[argc - 1], F_OK) == 0)) 
@@ -91,7 +91,7 @@ void parsePaths(int argc, char **argv)
     }
     else
     {
-        file_output = fopen(argv[argc - 1], "a+");
+        file_output = fopen(argv[argc - 1], "r+");
         printf("Come file di output è stato aperto quello specificato come argomento\n");
     }
 
