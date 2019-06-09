@@ -10,7 +10,6 @@
 /**
  * Gestione completa delle analisi delle informazioni presenti sul file di output trattato dal programma.
  * 
- * 
  * :param output: puntatore al file di output da cui leggere le informazioni sulle analisi passate
  * :param data: puntatore alla struttura dati PathEntry in cui inserire le informazioni recuperate dal file di output
  * :return: puntatore alla struttura dati PathEntry aggiornata

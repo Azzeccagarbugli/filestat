@@ -11,24 +11,27 @@ PathEntry *addPath(PathEntry *, char *);
 
 /**
  * Ottenimento di un elemento vuoto della struttura dati AnalisisEntry.
+ * 
  * :return: puntatore ad un'istanza vuota di AnalisisEntry
  */
-AnalisisEntry *emptyAnalisis()
+AnalisisEntry *emptyAnalisis(void)
 {
     return NULL;
 }
 
 /**
  * Ottenimento di un elemento vuoto della struttura dati PathEntry.
+ * 
  * :return: puntatore ad un'istanza vuota di PathEntry
  */
-PathEntry *emptyPath()
+PathEntry *emptyPath(void)
 {
     return NULL;
 }
 
 /**
  * Creazione di un nuovo elemento della struttura dati AnalisisEntry.
+ * 
  * :param an: puntatore all'array di caratteri contenente la stringa contentente l'analisi da inserire all'interno dell'elemento
  * :return: puntatore ad un nuovo elemento di AnalisisEntry
  */
@@ -42,6 +45,7 @@ AnalisisEntry *createNewAnalisis(char *an)
 
 /**
  * Creazione di un nuovo elemento della struttura dati PathEntry.
+ * 
  * :param pt: puntatore all'array di caratteri contenente il path da inserire all'interno dell'elemento
  * :return: puntatore ad un nuovo elemento di PathEntry
  */
@@ -56,6 +60,7 @@ PathEntry *createNewPath(char *pt)
 
 /**
  * Verifica che un puntatore ad AnalisisEntry corrisponda ad un elemento vuoto.
+ * 
  * :param entry: puntatore all'elemento AnalisisENtry da analizzare
  * :return: 0 in caso di errore, non-zero in caso di successo
  */
@@ -66,6 +71,7 @@ int isAnalisisEmpty(AnalisisEntry *entry)
 
 /**
  * Verifica che un puntatore ad PathEntry corrisponda ad un elemento vuoto.
+ * 
  * :param entry: puntatore all'elemento PathEntry da analizzare
  * :return: 0 in caso di errore, non-zero in caso di successo
  */

@@ -28,7 +28,6 @@ PathEntry *directoryAnalisis(struct stat *, PathEntry *, int, int, char *);
 /**
  * Gestione completa delle analisi delle informazioni presenti sul file di input trattato dal programma.
  * 
- * 
  * :param input: puntatore al file di input da cui leggere le informazioni sulle analisi passate
  * :param entry: puntatore alla struttura dati PathEntry in cui inserire le informazioni recuperate grazie al file di input
  * :return: puntatore alla struttura dati PathEntry aggiornata
@@ -48,7 +47,6 @@ PathEntry *readInputFile(FILE *input, PathEntry *entry)
 
 /**
  * Metodo che legge interamente le linee presenti all'interno del file di input.
- * 
  * 
  * :param riga: puntatore all'array di caratteri contenente la riga del file desiderata di cui si vuole effettuare la lettura
  * :param entry: puntatore alla struttura dati PathEntry in cui inserire le informazioni recuperate grazie all'analisi della riga
@@ -82,7 +80,6 @@ PathEntry *inputLineAnalisis(char *riga, PathEntry *entry)
 /**
  * Analisi completa di un singolo file.
  * 
- * 
  * :param path: puntatore all'array di caratteri contenente path del file da analizzare
  * :param isR: flag per l'analisi ricorsiva del file in caso sia una directory
  * :param isL: flag utile in caso il file analizzato sia un link, di cui vengono analizzate le informazioni senza far riferimento al file referenziato
@@ -114,7 +111,6 @@ PathEntry *scanFilePath(char *path, int isR, int isL, PathEntry *entry)
 
 /**
  * Analisi delle entry presenti all'interno di un file directory.
- * 
  * 
  * :param dirStat: puntatore all'istanza di struct stat in cui sono contenute le informazioni del file da analizzare
  * :param entry: puntatore alla struttura dati PathEntry in cui inserire le informazioni recuperate grazie all'analisi del file
@@ -155,7 +151,6 @@ PathEntry *directoryAnalisis(struct stat *dirStat, PathEntry *entry, int isR, in
 
 /**
  * Aggiunta delle informazioni associate all'analisi di un file ad una struttura dati PathEntry.
- * 
  * 
  * :param currentStat: puntatore all'istanza di struct stat in cui sono contenute le informazioni del file da analizzare
  * :param path: puntatore all'array di caratteri associato al file da analizzare
@@ -238,7 +233,6 @@ PathEntry *addFileAnalisis(struct stat *currentStat, char *path, PathEntry *entr
 /**
  * Verifica che un file rispetti le condizioni espresse con il flag ``-l/--length``.
  * 
- * 
  * :param file: puntatore al file di cui verificare le condizioni
  * :return: 0 in caso di esito negativo della verifica, 1 in caso di esito positivo della verifica
  */
@@ -269,7 +263,6 @@ int checkLength(struct stat *file)
 /**
  * Verifica che un file rispetti le condizioni espresse con il flag ``-u/--user``.
  * 
- * 
  * :param file: puntatore file di cui verificare le condizioni
  * :return: 0 in caso di esito negativo della verifica, 1 in caso di esito positivo della verifica
  */
@@ -288,7 +281,6 @@ int checkUID(struct stat *file)
 
 /**
  * Verifica che un file rispetti le condizioni espresse con il flag ``-g/--group``.
- * 
  * 
  * :param file: puntatore al file di cui verificare le condizioni
  * :return: 0 in caso di esito negativo della verifica, 1 in caso di esito positivo della verifica
@@ -309,8 +301,6 @@ int checkGID(struct stat *file)
 /**
  * Verifica che un file rispetti le condizioni espresse con i flag ``-l/--length``, ``-u/--user`` e ``-g/--group``.
  * 
- * 
- * 
  * :param file: puntatore al file di cui verificare le condizioni
  * :return: 0 in caso di esito negativo della verifica, 1 in caso di esito positivo della verifica
  */
@@ -322,7 +312,6 @@ int checkOptions(struct stat *file)
 /**
  * Permette di ottenere il puntatore all'ultima occorrenza di un carattere presente in una stringa.
  * Metodo ausiliario a ``getLinkAbsPath(char*)``.
- * 
  * 
  * :param str:  puntetore all'array di caratteri di cui effettuare l'analisi
  * :param c: carattere di cui si vuole ottenere il puntatore all'ultima occorrenza
@@ -338,7 +327,6 @@ char *findLastOf(char *str, char c)
 
 /**
  * Metodo necessario al get del pathname assoluto di un link.
- * 
  * 
  * :param path: puntatore all'array di caratteri contentente il filename del link di cui si vuole ottenere il percorso assoluto
  * :return: la stringa contenente il percorso assoluto del link passato come parametro locale

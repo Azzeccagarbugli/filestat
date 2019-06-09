@@ -63,6 +63,7 @@ int main(int argc, char **argv)
 
 /**
  * Apertura dei file di input e di output basandosi sulle scelte dell'utente.
+ * 
  * :param argc: parametro passato come argomento a main
  * :param argv: parametro passato come argomento a main
  */
@@ -102,7 +103,7 @@ void parsePaths(int argc, char **argv)
 /**
  * Metodo necessario al debug per la visualizzazione dello struct delle opzioni.
  */
-void printOpt()
+void printOpt(void)
 {
     printf("Verbose Flag: %d\n", options.verbose_flag);
     printf("Stat Flag: %d\n", options.stat_flag);
@@ -197,7 +198,8 @@ int parseOpt(int argc, char **argv)
 }
 
 /**
- * Metodo ausiliario all'impostazione del flag -l/--length.
+ * Metodo ausiliario all'impostazione del flag ``-l/--length``.
+ * 
  * :param arg: puntatore ad un array di caratteri contenente i valori delle lunghezze
  * :return: 1 in caso di successo
  */
@@ -227,7 +229,7 @@ int getLengthArg(char *arg)
 }
 
 /**
- * Metodo che restituisce la cronologia dei path analizzati grazie all'opzione -h/--history.
+ * Metodo che restituisce la cronologia dei path analizzati grazie all'opzione ``-h/--history``.
  * 
  * :param arg: puntatore ad un array di caratteri contenente il path che si desidera analizzare
  * :return: 1 in caso di successo

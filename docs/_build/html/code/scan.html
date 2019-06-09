@@ -1,0 +1,426 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="it" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="it" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>scan.c &mdash; filestat 1.0.0 documentazione</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script type="text/javascript" src="../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Indice" href="../genindex.html" />
+    <link rel="search" title="Cerca" href="../search.html" />
+    <link rel="next" title="inputscan.c" href="inputscan.html" />
+    <link rel="prev" title="main.c" href="main.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> filestat
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduzione.html">Introduzione</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project.html">Realizzazione del progetto</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../documentazione.html">Documentazione</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="main.html">main.c</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">scan.c</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inputscan.html">inputscan.c</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputscan.html">outputscan.c</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datastructure.html">datastructure.c</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">filestat</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../documentazione.html">Documentazione</a> &raquo;</li>
+        
+      <li>scan.c</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/code/scan.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="scan-c">
+<h1>scan.c<a class="headerlink" href="#scan-c" title="Link a questa intestazione">¶</a></h1>
+<dl class="var">
+<dt id="c.stats">
+ScanInfo <code class="descname">stats</code><a class="headerlink" href="#c.stats" title="Link a questa definizione">¶</a></dt>
+<dd><p>Struct di riferimento per le informazioni complessive raccolte sui file, quali:</p>
+<ul class="simple">
+<li><p>numero di file monitorati;</p></li>
+<li><p>numero di link incontrati;</p></li>
+<li><p>numero di directory incontrate;</p></li>
+<li><p>dimensione totale dei file;</p></li>
+<li><p>dimensione media dei file;</p></li>
+<li><p>dimensione massima dei file;</p></li>
+<li><p>dimensione minima (in byte) dei file.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.startScan">
+int <code class="descname">startScan</code><span class="sig-paren">(</span>FILE *<em> input</em>, FILE *<em> output</em><span class="sig-paren">)</span><a class="headerlink" href="#c.startScan" title="Link a questa definizione">¶</a></dt>
+<dd><p>Avvio delle operazioni di scan e di recupero delle informazioni richieste dal programma.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametri</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> – puntatore al file di input trattato nel programma</p></li>
+<li><p><strong>output</strong> – puntatore al file di output trattato nel programma</p></li>
+</ul>
+</dd>
+<dt class="field-even">Ritorna</dt>
+<dd class="field-even"><p>1 in caso di successo</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.increaseMonitorati">
+void <code class="descname">increaseMonitorati</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.increaseMonitorati" title="Link a questa definizione">¶</a></dt>
+<dd><p>Incremento numero di file monitorati e di cui è stata aggiunta la relativa analisi.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.increaseLink">
+void <code class="descname">increaseLink</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.increaseLink" title="Link a questa definizione">¶</a></dt>
+<dd><p>Incremento numero di link incontrati.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.increaseDirectory">
+void <code class="descname">increaseDirectory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.increaseDirectory" title="Link a questa definizione">¶</a></dt>
+<dd><p>Incremento numero di directory.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.updateDimMedia">
+void <code class="descname">updateDimMedia</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.updateDimMedia" title="Link a questa definizione">¶</a></dt>
+<dd><p>Aggiornamento valore dimensione media dei file monitorati.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.updateDimMax">
+void <code class="descname">updateDimMax</code><span class="sig-paren">(</span>int<em> data</em><span class="sig-paren">)</span><a class="headerlink" href="#c.updateDimMax" title="Link a questa definizione">¶</a></dt>
+<dd><p>Aggiornamento valore dimensione massima dei file monitorati.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametri</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – valore della dimensione che si desidera aggiungere</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.updateDimMin">
+void <code class="descname">updateDimMin</code><span class="sig-paren">(</span>int<em> data</em><span class="sig-paren">)</span><a class="headerlink" href="#c.updateDimMin" title="Link a questa definizione">¶</a></dt>
+<dd><p>Aggiornamento valore dimensione minima dei file monitorati.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametri</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – valore della dimensione che si desidera aggiungere</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.increaseDimTotale">
+void <code class="descname">increaseDimTotale</code><span class="sig-paren">(</span>int<em> data</em><span class="sig-paren">)</span><a class="headerlink" href="#c.increaseDimTotale" title="Link a questa definizione">¶</a></dt>
+<dd><p>Aggiornamento valore dimensione totale dei file monitorati.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametri</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – valore della dimensione che si desidera aggiungere</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.cleanFile">
+void <code class="descname">cleanFile</code><span class="sig-paren">(</span>FILE *<em> target</em><span class="sig-paren">)</span><a class="headerlink" href="#c.cleanFile" title="Link a questa definizione">¶</a></dt>
+<dd><p>Reset completo di un file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametri</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – puntatore al file si cui si desidera effettuare i reset</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.printOnOutput">
+void <code class="descname">printOnOutput</code><span class="sig-paren">(</span>FILE *<em> target</em>, PathEntry *<em> entry</em><span class="sig-paren">)</span><a class="headerlink" href="#c.printOnOutput" title="Link a questa definizione">¶</a></dt>
+<dd><p>Gestione completa della stampa delle informazioni contenute in una struttura PathEntry su un file di output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametri</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – puntatore al file di output su cui si vogliono inserire le informazioni</p></li>
+<li><p><strong>entry</strong> – puntatore alla struttura dati da cui si vogliono leggere le informazioni da stampare</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.updateStats">
+void <code class="descname">updateStats</code><span class="sig-paren">(</span>long<em> size</em><span class="sig-paren">)</span><a class="headerlink" href="#c.updateStats" title="Link a questa definizione">¶</a></dt>
+<dd><p>Aggiornamento completo di tutte le informazioni riguardo i file che sono stati monitorati.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametri</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> – valore della dimensione che si desidera aggiungere</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.printStats">
+void <code class="descname">printStats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.printStats" title="Link a questa definizione">¶</a></dt>
+<dd><p>Metodo che stampa a video il report completo delle informazioni acquisite.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.printHistory">
+void <code class="descname">printHistory</code><span class="sig-paren">(</span>PathEntry *<em> entry</em>, char *<em> path</em><span class="sig-paren">)</span><a class="headerlink" href="#c.printHistory" title="Link a questa definizione">¶</a></dt>
+<dd><p>Stampa sullo standard output delle informazioni relative alle analisi passate effettuate su un file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametri</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entry</strong> – puntatore alla struttura dati da cui leggere le informazioni</p></li>
+<li><p><strong>path</strong> – puntatore all’array di caratteri contenente il associato al file di cui si vuole conoscere la cronologia</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.printOnFile">
+void <code class="descname">printOnFile</code><span class="sig-paren">(</span>PathEntry *<em> pathentry</em>, FILE *<em> file</em><span class="sig-paren">)</span><a class="headerlink" href="#c.printOnFile" title="Link a questa definizione">¶</a></dt>
+<dd><p>Stampa completa delle informazioni presenti in una struttura dati PathEntry su di un file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametri</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pathentry</strong> – puntatore all’entry associato al file di cui si vogliono stampare le informazioni sullo standard output</p></li>
+<li><p><strong>file</strong> – puntatore al il file su cui si vogliono inserire le informazioni</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.freePath">
+void <code class="descname">freePath</code><span class="sig-paren">(</span>PathEntry *<em> entry</em><span class="sig-paren">)</span><a class="headerlink" href="#c.freePath" title="Link a questa definizione">¶</a></dt>
+<dd><p>Gestione completa delle operazioni di rilascio delle risorse da operare su una struttura dati PathEntry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametri</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entry</strong> – puntatore struttura dati su cui effetturare l’operazione completa di rilascio delle risorse</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.freeAnalisis">
+void <code class="descname">freeAnalisis</code><span class="sig-paren">(</span>AnalisisEntry *<em> entry</em><span class="sig-paren">)</span><a class="headerlink" href="#c.freeAnalisis" title="Link a questa definizione">¶</a></dt>
+<dd><p>Gestione completa delle operazioni di rilascio delle risorse da operare su una struttura dati AnalisisEntry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametri</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entry</strong> – puntatore alla struttura dati su cui effetturare l’operazione completa di rilascio delle risorse</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.merge">
+PathEntry * <code class="descname">merge</code><span class="sig-paren">(</span>PathEntry *<em> out</em>, PathEntry *<em> in</em><span class="sig-paren">)</span><a class="headerlink" href="#c.merge" title="Link a questa definizione">¶</a></dt>
+<dd><p>Operazione di merge tra due strutture dati PathEntry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametri</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out</strong> – puntatore a struttura PathEntry in cui collezionare le informazioni relative al merge</p></li>
+<li><p><strong>in</strong> – puntatore a struttura PathEntry da cui prendere le informazioni da impiegare dal merge</p></li>
+</ul>
+</dd>
+<dt class="field-even">Ritorna</dt>
+<dd class="field-even"><p>puntatore a struttura PathEntry in cui sono collezionate le informazioni risultate dal merge</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="inputscan.html" class="btn btn-neutral float-right" title="inputscan.c" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="main.html" class="btn btn-neutral float-left" title="main.c" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Francesco Pio Stelluti, Francesco Coppola
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

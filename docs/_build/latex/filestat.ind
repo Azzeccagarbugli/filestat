@@ -5,37 +5,93 @@
 \let\spxextra \sphinxstyleindexextra
 
   \bigletter A
-  \item \spxentry{addFileAnalisis}\spxextra{funzione C}, \hyperpage{12}
+  \item \spxentry{addAnalisis}\spxextra{funzione C}, \hyperpage{19}
+  \item \spxentry{addAnalisisByAnalisisEntry}\spxextra{funzione C}, \hyperpage{19}
+  \item \spxentry{addFileAnalisis}\spxextra{funzione C}, \hyperpage{17}
+  \item \spxentry{addPath}\spxextra{funzione C}, \hyperpage{19}
+  \item \spxentry{addPathAndAnalisis}\spxextra{funzione C}, \hyperpage{19}
 
   \indexspace
   \bigletter C
-  \item \spxentry{checkGID}\spxextra{funzione C}, \hyperpage{12}
-  \item \spxentry{checkLength}\spxextra{funzione C}, \hyperpage{12}
-  \item \spxentry{checkOptions}\spxextra{funzione C}, \hyperpage{12}
-  \item \spxentry{checkUID}\spxextra{funzione C}, \hyperpage{12}
+  \item \spxentry{checkGID}\spxextra{funzione C}, \hyperpage{17}
+  \item \spxentry{checkLength}\spxextra{funzione C}, \hyperpage{17}
+  \item \spxentry{checkOptions}\spxextra{funzione C}, \hyperpage{17}
+  \item \spxentry{checkUID}\spxextra{funzione C}, \hyperpage{17}
+  \item \spxentry{cleanFile}\spxextra{funzione C}, \hyperpage{15}
+  \item \spxentry{createNewAnalisis}\spxextra{funzione C}, \hyperpage{18}
+  \item \spxentry{createNewPath}\spxextra{funzione C}, \hyperpage{19}
 
   \indexspace
   \bigletter D
-  \item \spxentry{directoryAnalisis}\spxextra{funzione C}, \hyperpage{12}
+  \item \spxentry{directoryAnalisis}\spxextra{funzione C}, \hyperpage{17}
+
+  \indexspace
+  \bigletter E
+  \item \spxentry{emptyAnalisis}\spxextra{funzione C}, \hyperpage{18}
+  \item \spxentry{emptyPath}\spxextra{funzione C}, \hyperpage{18}
 
   \indexspace
   \bigletter F
-  \item \spxentry{findLastOf}\spxextra{funzione C}, \hyperpage{13}
+  \item \spxentry{file\_input}\spxextra{variabile C}, \hyperpage{13}
+  \item \spxentry{findLastOf}\spxextra{funzione C}, \hyperpage{18}
+  \item \spxentry{freeAnalisis}\spxextra{funzione C}, \hyperpage{16}
+  \item \spxentry{freePath}\spxextra{funzione C}, \hyperpage{15}
 
   \indexspace
   \bigletter G
-  \item \spxentry{getLinkAbsPath}\spxextra{funzione C}, \hyperpage{13}
+  \item \spxentry{getFirstAnalisis}\spxextra{funzione C}, \hyperpage{20}
+  \item \spxentry{getHistoryPath}\spxextra{funzione C}, \hyperpage{14}
+  \item \spxentry{getLengthArg}\spxextra{funzione C}, \hyperpage{13}
+  \item \spxentry{getLinkAbsPath}\spxextra{funzione C}, \hyperpage{18}
+  \item \spxentry{getNextAnalisis}\spxextra{funzione C}, \hyperpage{20}
+  \item \spxentry{getNextPath}\spxextra{funzione C}, \hyperpage{20}
+  \item \spxentry{getPathEntry}\spxextra{funzione C}, \hyperpage{20}
 
   \indexspace
   \bigletter I
-  \item \spxentry{inputLineAnalisis}\spxextra{funzione C}, \hyperpage{11}
+  \item \spxentry{increaseDimTotale}\spxextra{funzione C}, \hyperpage{15}
+  \item \spxentry{increaseDirectory}\spxextra{funzione C}, \hyperpage{14}
+  \item \spxentry{increaseLink}\spxextra{funzione C}, \hyperpage{14}
+  \item \spxentry{increaseMonitorati}\spxextra{funzione C}, \hyperpage{14}
+  \item \spxentry{inputLineAnalisis}\spxextra{funzione C}, \hyperpage{16}
+  \item \spxentry{isAnalisisEmpty}\spxextra{funzione C}, \hyperpage{19}
+  \item \spxentry{isPathEmpty}\spxextra{funzione C}, \hyperpage{19}
+
+  \indexspace
+  \bigletter M
+  \item \spxentry{main}\spxextra{funzione C}, \hyperpage{13}
+  \item \spxentry{merge}\spxextra{funzione C}, \hyperpage{16}
+
+  \indexspace
+  \bigletter O
+  \item \spxentry{options}\spxextra{variabile C}, \hyperpage{13}
+
+  \indexspace
+  \bigletter P
+  \item \spxentry{parseOpt}\spxextra{funzione C}, \hyperpage{13}
+  \item \spxentry{parsePaths}\spxextra{funzione C}, \hyperpage{13}
+  \item \spxentry{printHistory}\spxextra{funzione C}, \hyperpage{15}
+  \item \spxentry{printOnFile}\spxextra{funzione C}, \hyperpage{15}
+  \item \spxentry{printOnOutput}\spxextra{funzione C}, \hyperpage{15}
+  \item \spxentry{printOpt}\spxextra{funzione C}, \hyperpage{13}
+  \item \spxentry{printStats}\spxextra{funzione C}, \hyperpage{15}
 
   \indexspace
   \bigletter R
-  \item \spxentry{readInputFile}\spxextra{funzione C}, \hyperpage{11}
+  \item \spxentry{readInputFile}\spxextra{funzione C}, \hyperpage{16}
+  \item \spxentry{readOutputFile}\spxextra{funzione C}, \hyperpage{18}
 
   \indexspace
   \bigletter S
-  \item \spxentry{scanFilePath}\spxextra{funzione C}, \hyperpage{11}
+  \item \spxentry{scanFilePath}\spxextra{funzione C}, \hyperpage{16}
+  \item \spxentry{startScan}\spxextra{funzione C}, \hyperpage{14}
+  \item \spxentry{stats}\spxextra{variabile C}, \hyperpage{14}
+
+  \indexspace
+  \bigletter U
+  \item \spxentry{updateDimMax}\spxextra{funzione C}, \hyperpage{14}
+  \item \spxentry{updateDimMedia}\spxextra{funzione C}, \hyperpage{14}
+  \item \spxentry{updateDimMin}\spxextra{funzione C}, \hyperpage{15}
+  \item \spxentry{updateStats}\spxextra{funzione C}, \hyperpage{15}
 
 \end{sphinxtheindex}

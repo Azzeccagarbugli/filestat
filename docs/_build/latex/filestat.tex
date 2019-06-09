@@ -73,7 +73,7 @@
 
 
 \title{filestat}
-\date{08 giu 2019}
+\date{10 giu 2019}
 \release{1.0.0}
 \author{Francesco Pio Stelluti, Francesco Coppola}
 \newcommand{\sphinxlogo}{\vbox{}}
@@ -499,11 +499,464 @@ Dopo aver lanciato tale comando infatti basterà modificare il percorso da anali
 per poi confrontarle con quelle restituire dall’utility prodotta.
 
 
+\chapter{Sphinx e le sue potenzialità}
+\label{\detokenize{sphinx:sphinx-e-le-sue-potenzialita}}\label{\detokenize{sphinx::doc}}
+L’intera documentazione generata della quale si sta usufruendo è frutto dell’unione tra \sphinxstylestrong{Sphinx} e \sphinxstylestrong{hawkmoth}, due strumenti
+dedicati alla generazione di testi a partire da del mero e puro codice.
+
+
+\section{Strumenti con cui è stata realizzata}
+\label{\detokenize{sphinx:strumenti-con-cui-e-stata-realizzata}}
+Solitamente quando si affronta il tema della generazione di una documentazione per un progetto di natura C
+si incappa in una serie di difficoltà dettate dall’assenza di uno standard noto per la stesura dei commenti
+relativi ai metodi e alle variabili presenti nel codice stesso.
+
+Per soccombere a tale problematiche si è deciso di usufruire di un’estensione per \sphinxstylestrong{Sphinx} %
+\begin{footnote}[1]\sphinxAtStartFootnote
+\sphinxstyleemphasis{Software Open Source per l’autogenerazione di documentazioni a partire da un codice sorgente generico}
+%
+\end{footnote} che fosse in grado
+di convertire uno standard noto in una sintassi facilmente interpolabile da Sphinx stesso per
+ottenere una documentazione \sphinxstyleemphasis{elegante} e \sphinxstyleemphasis{facilmente usufruibile}.
+
+Tale estensione è chiamata \sphinxstylestrong{hawkmoth}, software realizzato in \sphinxstylestrong{Pyhton} il quale si basa su un progetto \sphinxstylestrong{Open Source} disponibile su GitHub.
+
+
+\section{Autogenerazione della sintassi convertita da C a Sphinx}
+\label{\detokenize{sphinx:autogenerazione-della-sintassi-convertita-da-c-a-sphinx}}
+Una volta installata la dipendenza mediante \sphinxcode{\sphinxupquote{pip}}, attraverso il seguente comando:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYGZdl{} sudo pip install hawkmoth
+\end{sphinxVerbatim}
+
+Sarà possibile integrarla nel file \sphinxcode{\sphinxupquote{conf.py}} e adattare la propria documentazione nel codice
+sorgente seguendo un noto tipo di standard.
+
+Quest’ultimi sono molteplici e si possono facilmente reperire all’interno delle specifiche del progetto
+online.
+
+Vi è per esempio la possibilità di scrivere commenti in \sphinxcode{\sphinxupquote{JavaDoc}} %
+\begin{footnote}[2]\sphinxAtStartFootnote
+\sphinxstyleemphasis{Javadoc è un applicativo incluso nel Java Development Kit della Sun Microsystems, utilizzato per la generazione automatica della documentazione del codice sorgente scritto in linguaggio Java}
+%
+\end{footnote} per un codice che in
+realtà col Java a ben poco in comune.
+
+
 \chapter{Documentazione}
-\label{\detokenize{documentazione:documentazione}}\label{\detokenize{documentazione::doc}}\index{readInputFile (funzione C)@\spxentry{readInputFile}\spxextra{funzione C}}
+\label{\detokenize{documentazione:documentazione}}\label{\detokenize{documentazione::doc}}
+Nei seguenti paragrafi sarà possibile accedere alla \sphinxstylestrong{documentazione} prodotta per l’utility di
+sistema \sphinxstylestrong{filestat}.
+
+
+\section{main.c}
+\label{\detokenize{code/main:main-c}}\label{\detokenize{code/main::doc}}\index{options (variabile C)@\spxentry{options}\spxextra{variabile C}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{documentazione:c.readInputFile}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{readInputFile}}}{FILE *\sphinxstyleemphasis{ input}, PathEntry *\sphinxstyleemphasis{ entry}}{}
+\phantomsection\label{\detokenize{code/main:c.options}}\pysigline{OptInfo \sphinxbfcode{\sphinxupquote{options}}}
+Struct in cui viene eseguito lo storage delle possibili opzioni.
+
+\end{fulllineitems}
+
+\index{file\_input (variabile C)@\spxentry{file\_input}\spxextra{variabile C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/main:c.file_input}}\pysigline{FILE * \sphinxbfcode{\sphinxupquote{file\_input}}}
+Puntatori di natura FILE in cui vengono settati i file di I/O che verranno utilizzati.
+Quest’ultimi potranno essere scelti dall’utente o impostati di default.
+
+\end{fulllineitems}
+
+\index{main (funzione C)@\spxentry{main}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/main:c.main}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{main}}}{int\sphinxstyleemphasis{ argc}, char **\sphinxstyleemphasis{ argv}}{}
+Main necessario all’avvio del programma.
+
+\end{fulllineitems}
+
+\index{parsePaths (funzione C)@\spxentry{parsePaths}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/main:c.parsePaths}}\pysiglinewithargsret{void \sphinxbfcode{\sphinxupquote{parsePaths}}}{int\sphinxstyleemphasis{ argc}, char **\sphinxstyleemphasis{ argv}}{}
+Apertura dei file di input e di output basandosi sulle scelte dell’utente.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{argc}} \textendash{} parametro passato come argomento a main
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{argv}} \textendash{} parametro passato come argomento a main
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{printOpt (funzione C)@\spxentry{printOpt}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/main:c.printOpt}}\pysiglinewithargsret{void \sphinxbfcode{\sphinxupquote{printOpt}}}{}{}
+Metodo necessario al debug per la visualizzazione dello struct delle opzioni.
+
+\end{fulllineitems}
+
+\index{parseOpt (funzione C)@\spxentry{parseOpt}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/main:c.parseOpt}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{parseOpt}}}{int\sphinxstyleemphasis{ argc}, char **\sphinxstyleemphasis{ argv}}{}
+Viene effettuata la lettura delle opzioni inserite da linea di comando.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{argc}} \textendash{} parametro passato come argomento a main
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{argv}} \textendash{} parametro passato come argomento a main
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+0 in caso di errore, non-zero in caso di successo
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{getLengthArg (funzione C)@\spxentry{getLengthArg}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/main:c.getLengthArg}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{getLengthArg}}}{char *\sphinxstyleemphasis{ arg}}{}
+Metodo ausiliario all’impostazione del flag \sphinxcode{\sphinxupquote{-l/-{-}length}}.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{arg}} \textendash{} puntatore ad un array di caratteri contenente i valori delle lunghezze
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+1 in caso di successo
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{getHistoryPath (funzione C)@\spxentry{getHistoryPath}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/main:c.getHistoryPath}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{getHistoryPath}}}{char *\sphinxstyleemphasis{ arg}}{}
+Metodo che restituisce la cronologia dei path analizzati grazie all’opzione \sphinxcode{\sphinxupquote{-h/-{-}history}}.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{arg}} \textendash{} puntatore ad un array di caratteri contenente il path che si desidera analizzare
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+1 in caso di successo
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+
+\section{scan.c}
+\label{\detokenize{code/scan:scan-c}}\label{\detokenize{code/scan::doc}}\index{stats (variabile C)@\spxentry{stats}\spxextra{variabile C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/scan:c.stats}}\pysigline{ScanInfo \sphinxbfcode{\sphinxupquote{stats}}}
+Struct di riferimento per le informazioni complessive raccolte sui file, quali:
+\begin{itemize}
+\item {} 
+numero di file monitorati;
+
+\item {} 
+numero di link incontrati;
+
+\item {} 
+numero di directory incontrate;
+
+\item {} 
+dimensione totale dei file;
+
+\item {} 
+dimensione media dei file;
+
+\item {} 
+dimensione massima dei file;
+
+\item {} 
+dimensione minima (in byte) dei file.
+
+\end{itemize}
+
+\end{fulllineitems}
+
+\index{startScan (funzione C)@\spxentry{startScan}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/scan:c.startScan}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{startScan}}}{FILE *\sphinxstyleemphasis{ input}, FILE *\sphinxstyleemphasis{ output}}{}
+Avvio delle operazioni di scan e di recupero delle informazioni richieste dal programma.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{input}} \textendash{} puntatore al file di input trattato nel programma
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{output}} \textendash{} puntatore al file di output trattato nel programma
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+1 in caso di successo
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{increaseMonitorati (funzione C)@\spxentry{increaseMonitorati}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/scan:c.increaseMonitorati}}\pysiglinewithargsret{void \sphinxbfcode{\sphinxupquote{increaseMonitorati}}}{}{}
+Incremento numero di file monitorati e di cui è stata aggiunta la relativa analisi.
+
+\end{fulllineitems}
+
+\index{increaseLink (funzione C)@\spxentry{increaseLink}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/scan:c.increaseLink}}\pysiglinewithargsret{void \sphinxbfcode{\sphinxupquote{increaseLink}}}{}{}
+Incremento numero di link incontrati.
+
+\end{fulllineitems}
+
+\index{increaseDirectory (funzione C)@\spxentry{increaseDirectory}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/scan:c.increaseDirectory}}\pysiglinewithargsret{void \sphinxbfcode{\sphinxupquote{increaseDirectory}}}{}{}
+Incremento numero di directory.
+
+\end{fulllineitems}
+
+\index{updateDimMedia (funzione C)@\spxentry{updateDimMedia}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/scan:c.updateDimMedia}}\pysiglinewithargsret{void \sphinxbfcode{\sphinxupquote{updateDimMedia}}}{}{}
+Aggiornamento valore dimensione media dei file monitorati.
+
+\end{fulllineitems}
+
+\index{updateDimMax (funzione C)@\spxentry{updateDimMax}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/scan:c.updateDimMax}}\pysiglinewithargsret{void \sphinxbfcode{\sphinxupquote{updateDimMax}}}{int\sphinxstyleemphasis{ data}}{}
+Aggiornamento valore dimensione massima dei file monitorati.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{data}} \textendash{} valore della dimensione che si desidera aggiungere
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{updateDimMin (funzione C)@\spxentry{updateDimMin}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/scan:c.updateDimMin}}\pysiglinewithargsret{void \sphinxbfcode{\sphinxupquote{updateDimMin}}}{int\sphinxstyleemphasis{ data}}{}
+Aggiornamento valore dimensione minima dei file monitorati.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{data}} \textendash{} valore della dimensione che si desidera aggiungere
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{increaseDimTotale (funzione C)@\spxentry{increaseDimTotale}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/scan:c.increaseDimTotale}}\pysiglinewithargsret{void \sphinxbfcode{\sphinxupquote{increaseDimTotale}}}{int\sphinxstyleemphasis{ data}}{}
+Aggiornamento valore dimensione totale dei file monitorati.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{data}} \textendash{} valore della dimensione che si desidera aggiungere
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{cleanFile (funzione C)@\spxentry{cleanFile}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/scan:c.cleanFile}}\pysiglinewithargsret{void \sphinxbfcode{\sphinxupquote{cleanFile}}}{FILE *\sphinxstyleemphasis{ target}}{}
+Reset completo di un file.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{target}} \textendash{} puntatore al file si cui si desidera effettuare i reset
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{printOnOutput (funzione C)@\spxentry{printOnOutput}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/scan:c.printOnOutput}}\pysiglinewithargsret{void \sphinxbfcode{\sphinxupquote{printOnOutput}}}{FILE *\sphinxstyleemphasis{ target}, PathEntry *\sphinxstyleemphasis{ entry}}{}
+Gestione completa della stampa delle informazioni contenute in una struttura PathEntry su un file di output.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{target}} \textendash{} puntatore al file di output su cui si vogliono inserire le informazioni
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{entry}} \textendash{} puntatore alla struttura dati da cui si vogliono leggere le informazioni da stampare
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{updateStats (funzione C)@\spxentry{updateStats}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/scan:c.updateStats}}\pysiglinewithargsret{void \sphinxbfcode{\sphinxupquote{updateStats}}}{long\sphinxstyleemphasis{ size}}{}
+Aggiornamento completo di tutte le informazioni riguardo i file che sono stati monitorati.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{size}} \textendash{} valore della dimensione che si desidera aggiungere
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{printStats (funzione C)@\spxentry{printStats}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/scan:c.printStats}}\pysiglinewithargsret{void \sphinxbfcode{\sphinxupquote{printStats}}}{}{}
+Metodo che stampa a video il report completo delle informazioni acquisite.
+
+\end{fulllineitems}
+
+\index{printHistory (funzione C)@\spxentry{printHistory}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/scan:c.printHistory}}\pysiglinewithargsret{void \sphinxbfcode{\sphinxupquote{printHistory}}}{PathEntry *\sphinxstyleemphasis{ entry}, char *\sphinxstyleemphasis{ path}}{}
+Stampa sullo standard output delle informazioni relative alle analisi passate effettuate su un file.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{entry}} \textendash{} puntatore alla struttura dati da cui leggere le informazioni
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{path}} \textendash{} puntatore all’array di caratteri contenente il associato al file di cui si vuole conoscere la cronologia
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{printOnFile (funzione C)@\spxentry{printOnFile}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/scan:c.printOnFile}}\pysiglinewithargsret{void \sphinxbfcode{\sphinxupquote{printOnFile}}}{PathEntry *\sphinxstyleemphasis{ pathentry}, FILE *\sphinxstyleemphasis{ file}}{}
+Stampa completa delle informazioni presenti in una struttura dati PathEntry su di un file.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{pathentry}} \textendash{} puntatore all’entry associato al file di cui si vogliono stampare le informazioni sullo standard output
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{file}} \textendash{} puntatore al il file su cui si vogliono inserire le informazioni
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{freePath (funzione C)@\spxentry{freePath}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/scan:c.freePath}}\pysiglinewithargsret{void \sphinxbfcode{\sphinxupquote{freePath}}}{PathEntry *\sphinxstyleemphasis{ entry}}{}
+Gestione completa delle operazioni di rilascio delle risorse da operare su una struttura dati PathEntry.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{entry}} \textendash{} puntatore struttura dati su cui effetturare l’operazione completa di rilascio delle risorse
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{freeAnalisis (funzione C)@\spxentry{freeAnalisis}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/scan:c.freeAnalisis}}\pysiglinewithargsret{void \sphinxbfcode{\sphinxupquote{freeAnalisis}}}{AnalisisEntry *\sphinxstyleemphasis{ entry}}{}
+Gestione completa delle operazioni di rilascio delle risorse da operare su una struttura dati AnalisisEntry.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{entry}} \textendash{} puntatore alla struttura dati su cui effetturare l’operazione completa di rilascio delle risorse
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{merge (funzione C)@\spxentry{merge}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/scan:c.merge}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{merge}}}{PathEntry *\sphinxstyleemphasis{ out}, PathEntry *\sphinxstyleemphasis{ in}}{}
+Operazione di merge tra due strutture dati PathEntry.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{out}} \textendash{} puntatore a struttura PathEntry in cui collezionare le informazioni relative al merge
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{in}} \textendash{} puntatore a struttura PathEntry da cui prendere le informazioni da impiegare dal merge
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+puntatore a struttura PathEntry in cui sono collezionate le informazioni risultate dal merge
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+
+\section{inputscan.c}
+\label{\detokenize{code/inputscan:inputscan-c}}\label{\detokenize{code/inputscan::doc}}\index{readInputFile (funzione C)@\spxentry{readInputFile}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/inputscan:c.readInputFile}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{readInputFile}}}{FILE *\sphinxstyleemphasis{ input}, PathEntry *\sphinxstyleemphasis{ entry}}{}
 Gestione completa delle analisi delle informazioni presenti sul file di input trattato dal programma.
 \begin{quote}\begin{description}
 \item[{Parametri}] \leavevmode\begin{itemize}
@@ -525,7 +978,7 @@ puntatore alla struttura dati PathEntry aggiornata
 \index{inputLineAnalisis (funzione C)@\spxentry{inputLineAnalisis}\spxextra{funzione C}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{documentazione:c.inputLineAnalisis}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{inputLineAnalisis}}}{char *\sphinxstyleemphasis{ riga}, PathEntry *\sphinxstyleemphasis{ entry}}{}
+\phantomsection\label{\detokenize{code/inputscan:c.inputLineAnalisis}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{inputLineAnalisis}}}{char *\sphinxstyleemphasis{ riga}, PathEntry *\sphinxstyleemphasis{ entry}}{}
 Metodo che legge interamente le linee presenti all’interno del file di input.
 \begin{quote}\begin{description}
 \item[{Parametri}] \leavevmode\begin{itemize}
@@ -547,7 +1000,7 @@ puntatore alla struttura dati PathEntry aggiornata
 \index{scanFilePath (funzione C)@\spxentry{scanFilePath}\spxextra{funzione C}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{documentazione:c.scanFilePath}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{scanFilePath}}}{char *\sphinxstyleemphasis{ path}, int\sphinxstyleemphasis{ isR}, int\sphinxstyleemphasis{ isL}, PathEntry *\sphinxstyleemphasis{ entry}}{}
+\phantomsection\label{\detokenize{code/inputscan:c.scanFilePath}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{scanFilePath}}}{char *\sphinxstyleemphasis{ path}, int\sphinxstyleemphasis{ isR}, int\sphinxstyleemphasis{ isL}, PathEntry *\sphinxstyleemphasis{ entry}}{}
 Analisi completa di un singolo file.
 \begin{quote}\begin{description}
 \item[{Parametri}] \leavevmode\begin{itemize}
@@ -575,7 +1028,7 @@ puntatore alla struttura dati PathEntry aggiornata
 \index{directoryAnalisis (funzione C)@\spxentry{directoryAnalisis}\spxextra{funzione C}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{documentazione:c.directoryAnalisis}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{directoryAnalisis}}}{struct stat *\sphinxstyleemphasis{ dirStat}, PathEntry *\sphinxstyleemphasis{ entry}, int\sphinxstyleemphasis{ isR}, int\sphinxstyleemphasis{ isL}, char *\sphinxstyleemphasis{ path}}{}
+\phantomsection\label{\detokenize{code/inputscan:c.directoryAnalisis}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{directoryAnalisis}}}{struct stat *\sphinxstyleemphasis{ dirStat}, PathEntry *\sphinxstyleemphasis{ entry}, int\sphinxstyleemphasis{ isR}, int\sphinxstyleemphasis{ isL}, char *\sphinxstyleemphasis{ path}}{}
 Analisi delle entry presenti all’interno di un file directory.
 \begin{quote}\begin{description}
 \item[{Parametri}] \leavevmode\begin{itemize}
@@ -606,7 +1059,7 @@ puntatore alla struttura dati PathEntry aggiornata
 \index{addFileAnalisis (funzione C)@\spxentry{addFileAnalisis}\spxextra{funzione C}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{documentazione:c.addFileAnalisis}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{addFileAnalisis}}}{struct stat *\sphinxstyleemphasis{ currentStat}, char *\sphinxstyleemphasis{ path}, PathEntry *\sphinxstyleemphasis{ entry}}{}
+\phantomsection\label{\detokenize{code/inputscan:c.addFileAnalisis}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{addFileAnalisis}}}{struct stat *\sphinxstyleemphasis{ currentStat}, char *\sphinxstyleemphasis{ path}, PathEntry *\sphinxstyleemphasis{ entry}}{}
 Aggiunta delle informazioni associate all’analisi di un file ad una struttura dati PathEntry.
 \begin{quote}\begin{description}
 \item[{Parametri}] \leavevmode\begin{itemize}
@@ -631,7 +1084,7 @@ puntatore alla struttura dati PathEntry aggiornata
 \index{checkLength (funzione C)@\spxentry{checkLength}\spxextra{funzione C}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{documentazione:c.checkLength}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{checkLength}}}{struct stat *\sphinxstyleemphasis{ file}}{}
+\phantomsection\label{\detokenize{code/inputscan:c.checkLength}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{checkLength}}}{struct stat *\sphinxstyleemphasis{ file}}{}
 Verifica che un file rispetti le condizioni espresse con il flag \sphinxcode{\sphinxupquote{-l/-{-}length}}.
 \begin{quote}\begin{description}
 \item[{Parametri}] \leavevmode\begin{itemize}
@@ -650,7 +1103,7 @@ Verifica che un file rispetti le condizioni espresse con il flag \sphinxcode{\sp
 \index{checkUID (funzione C)@\spxentry{checkUID}\spxextra{funzione C}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{documentazione:c.checkUID}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{checkUID}}}{struct stat *\sphinxstyleemphasis{ file}}{}
+\phantomsection\label{\detokenize{code/inputscan:c.checkUID}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{checkUID}}}{struct stat *\sphinxstyleemphasis{ file}}{}
 Verifica che un file rispetti le condizioni espresse con il flag \sphinxcode{\sphinxupquote{-u/-{-}user}}.
 \begin{quote}\begin{description}
 \item[{Parametri}] \leavevmode\begin{itemize}
@@ -669,7 +1122,7 @@ Verifica che un file rispetti le condizioni espresse con il flag \sphinxcode{\sp
 \index{checkGID (funzione C)@\spxentry{checkGID}\spxextra{funzione C}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{documentazione:c.checkGID}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{checkGID}}}{struct stat *\sphinxstyleemphasis{ file}}{}
+\phantomsection\label{\detokenize{code/inputscan:c.checkGID}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{checkGID}}}{struct stat *\sphinxstyleemphasis{ file}}{}
 Verifica che un file rispetti le condizioni espresse con il flag \sphinxcode{\sphinxupquote{-g/-{-}group}}.
 \begin{quote}\begin{description}
 \item[{Parametri}] \leavevmode\begin{itemize}
@@ -688,7 +1141,7 @@ Verifica che un file rispetti le condizioni espresse con il flag \sphinxcode{\sp
 \index{checkOptions (funzione C)@\spxentry{checkOptions}\spxextra{funzione C}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{documentazione:c.checkOptions}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{checkOptions}}}{struct stat *\sphinxstyleemphasis{ file}}{}
+\phantomsection\label{\detokenize{code/inputscan:c.checkOptions}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{checkOptions}}}{struct stat *\sphinxstyleemphasis{ file}}{}
 Verifica che un file rispetti le condizioni espresse con i flag \sphinxcode{\sphinxupquote{-l/-{-}length}}, \sphinxcode{\sphinxupquote{-u/-{-}user}} e \sphinxcode{\sphinxupquote{-g/-{-}group}}.
 \begin{quote}\begin{description}
 \item[{Parametri}] \leavevmode\begin{itemize}
@@ -707,7 +1160,7 @@ Verifica che un file rispetti le condizioni espresse con i flag \sphinxcode{\sph
 \index{findLastOf (funzione C)@\spxentry{findLastOf}\spxextra{funzione C}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{documentazione:c.findLastOf}}\pysiglinewithargsret{char * \sphinxbfcode{\sphinxupquote{findLastOf}}}{char *\sphinxstyleemphasis{ str}, char\sphinxstyleemphasis{ c}}{}
+\phantomsection\label{\detokenize{code/inputscan:c.findLastOf}}\pysiglinewithargsret{char * \sphinxbfcode{\sphinxupquote{findLastOf}}}{char *\sphinxstyleemphasis{ str}, char\sphinxstyleemphasis{ c}}{}
 Permette di ottenere il puntatore all’ultima occorrenza di un carattere presente in una stringa.
 Metodo ausiliario a \sphinxcode{\sphinxupquote{getLinkAbsPath(char*)}}.
 \begin{quote}\begin{description}
@@ -730,7 +1183,7 @@ puntatore all’ultima occorrenza all’interno della stringa passata come argom
 \index{getLinkAbsPath (funzione C)@\spxentry{getLinkAbsPath}\spxextra{funzione C}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{documentazione:c.getLinkAbsPath}}\pysiglinewithargsret{char * \sphinxbfcode{\sphinxupquote{getLinkAbsPath}}}{char *\sphinxstyleemphasis{ path}}{}
+\phantomsection\label{\detokenize{code/inputscan:c.getLinkAbsPath}}\pysiglinewithargsret{char * \sphinxbfcode{\sphinxupquote{getLinkAbsPath}}}{char *\sphinxstyleemphasis{ path}}{}
 Metodo necessario al get del pathname assoluto di un link.
 \begin{quote}\begin{description}
 \item[{Parametri}] \leavevmode\begin{itemize}
@@ -741,6 +1194,312 @@ Metodo necessario al get del pathname assoluto di un link.
 
 \item[{Ritorna}] \leavevmode
 la stringa contenente il percorso assoluto del link passato come parametro locale
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+
+\section{outputscan.c}
+\label{\detokenize{code/outputscan:outputscan-c}}\label{\detokenize{code/outputscan::doc}}\index{readOutputFile (funzione C)@\spxentry{readOutputFile}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/outputscan:c.readOutputFile}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{readOutputFile}}}{FILE *\sphinxstyleemphasis{ output}, PathEntry *\sphinxstyleemphasis{ data}}{}
+Gestione completa delle analisi delle informazioni presenti sul file di output trattato dal programma.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{output}} \textendash{} puntatore al file di output da cui leggere le informazioni sulle analisi passate
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{data}} \textendash{} puntatore alla struttura dati PathEntry in cui inserire le informazioni recuperate dal file di output
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+puntatore alla struttura dati PathEntry aggiornata
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+
+\section{datastructure.c}
+\label{\detokenize{code/datastructure:datastructure-c}}\label{\detokenize{code/datastructure::doc}}\index{emptyAnalisis (funzione C)@\spxentry{emptyAnalisis}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/datastructure:c.emptyAnalisis}}\pysiglinewithargsret{AnalisisEntry * \sphinxbfcode{\sphinxupquote{emptyAnalisis}}}{}{}
+Ottenimento di un elemento vuoto della struttura dati AnalisisEntry.
+\begin{quote}\begin{description}
+\item[{Ritorna}] \leavevmode
+puntatore ad un’istanza vuota di AnalisisEntry
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{emptyPath (funzione C)@\spxentry{emptyPath}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/datastructure:c.emptyPath}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{emptyPath}}}{}{}
+Ottenimento di un elemento vuoto della struttura dati PathEntry.
+\begin{quote}\begin{description}
+\item[{Ritorna}] \leavevmode
+puntatore ad un’istanza vuota di PathEntry
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{createNewAnalisis (funzione C)@\spxentry{createNewAnalisis}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/datastructure:c.createNewAnalisis}}\pysiglinewithargsret{AnalisisEntry * \sphinxbfcode{\sphinxupquote{createNewAnalisis}}}{char *\sphinxstyleemphasis{ an}}{}
+Creazione di un nuovo elemento della struttura dati AnalisisEntry.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{an}} \textendash{} puntatore all’array di caratteri contenente la stringa contentente l’analisi da inserire all’interno dell’elemento
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+puntatore ad un nuovo elemento di AnalisisEntry
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{createNewPath (funzione C)@\spxentry{createNewPath}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/datastructure:c.createNewPath}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{createNewPath}}}{char *\sphinxstyleemphasis{ pt}}{}
+Creazione di un nuovo elemento della struttura dati PathEntry.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{pt}} \textendash{} puntatore all’array di caratteri contenente il path da inserire all’interno dell’elemento
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+puntatore ad un nuovo elemento di PathEntry
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{isAnalisisEmpty (funzione C)@\spxentry{isAnalisisEmpty}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/datastructure:c.isAnalisisEmpty}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{isAnalisisEmpty}}}{AnalisisEntry *\sphinxstyleemphasis{ entry}}{}
+Verifica che un puntatore ad AnalisisEntry corrisponda ad un elemento vuoto.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{entry}} \textendash{} puntatore all’elemento AnalisisENtry da analizzare
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+0 in caso di errore, non-zero in caso di successo
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{isPathEmpty (funzione C)@\spxentry{isPathEmpty}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/datastructure:c.isPathEmpty}}\pysiglinewithargsret{int \sphinxbfcode{\sphinxupquote{isPathEmpty}}}{PathEntry *\sphinxstyleemphasis{ entry}}{}
+Verifica che un puntatore ad PathEntry corrisponda ad un elemento vuoto.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{entry}} \textendash{} puntatore all’elemento PathEntry da analizzare
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+0 in caso di errore, non-zero in caso di successo
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{addPath (funzione C)@\spxentry{addPath}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/datastructure:c.addPath}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{addPath}}}{PathEntry *\sphinxstyleemphasis{ entry}, char *\sphinxstyleemphasis{ newpath}}{}
+Aggiunta di un nuovo path all’interno di una struttura dati PathEntry.
+Metodo ausiliario ad addPathAndAnalisis(PathEntry*, char*, char*).
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{entry}} \textendash{} puntatore alla struttura dati PathEntry da aggiornare
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{newpath}} \textendash{} puntatore all’array di caratteri contenente il path da inserire
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+puntatore alla struttura PathEntry aggiornata
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{addAnalisisByAnalisisEntry (funzione C)@\spxentry{addAnalisisByAnalisisEntry}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/datastructure:c.addAnalisisByAnalisisEntry}}\pysiglinewithargsret{AnalisisEntry * \sphinxbfcode{\sphinxupquote{addAnalisisByAnalisisEntry}}}{AnalisisEntry *\sphinxstyleemphasis{ entry}, char *\sphinxstyleemphasis{ newanalisis}}{}
+Aggiunta di una nuova analisi all’interno di una struttura AnalisisEntry.
+Metodo ausiliario ad addAnalisis(PathEntry*, char*, char*).
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{entry}} \textendash{} puntatore alla struttura dati AnalisisEntry da aggiornare
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{newanalisis}} \textendash{} puntatore all’array di caratteri contenente l’analisi da inserire
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+puntatore alla struttura AnalisisEntry aggiornata
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{addAnalisis (funzione C)@\spxentry{addAnalisis}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/datastructure:c.addAnalisis}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{addAnalisis}}}{PathEntry *\sphinxstyleemphasis{ pathentry}, char *\sphinxstyleemphasis{ path}, char *\sphinxstyleemphasis{ newanalisis}}{}
+Aggiunta di una nuova analisi all’interno di una struttura dati PathEntry dato il path a cui corrisponde.
+Metodo ausiliario ad addPathAndAnalisis(PathEntry*, char*, char*).
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{pathentry}} \textendash{} puntatore alla struttura dati PathEntry da aggiornare
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{path}} \textendash{} puntatore all’array di caratteri contenente il path associato all’analisi da inserire
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{newanalisis}} \textendash{} ountatore alla stringa contenente l’analisi da inserire
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+puntatore alla struttura PathEntry aggiornata
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{addPathAndAnalisis (funzione C)@\spxentry{addPathAndAnalisis}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/datastructure:c.addPathAndAnalisis}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{addPathAndAnalisis}}}{PathEntry *\sphinxstyleemphasis{ entry}, char *\sphinxstyleemphasis{ path}, char *\sphinxstyleemphasis{ analisis}}{}
+Aggiunta di una nuova analisi all’interno di una struttura dati PathEntry dato il path a cui corrisponde.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{pathentry}} \textendash{} puntatore alla struttura dati PathEntry da aggiornare
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{path}} \textendash{} puntatore all’array di caratteri contenente il path associato all’analisi da inserire
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{newanalisis}} \textendash{} stringa contenente l’analisi da inserire
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+puntatore alla struttura PathEntry aggiornata
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{getNextPath (funzione C)@\spxentry{getNextPath}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/datastructure:c.getNextPath}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{getNextPath}}}{PathEntry *\sphinxstyleemphasis{ entry}}{}
+Metodo che restituisce l’elemento contentente il path successivo a quello contenuto in un elemento di PathEntry.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{entry}} \textendash{} puntatore al PathEntry di cui si vuole ottenere il successivo
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+puntatore alla struttura PathEntry richiesta
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{getFirstAnalisis (funzione C)@\spxentry{getFirstAnalisis}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/datastructure:c.getFirstAnalisis}}\pysiglinewithargsret{AnalisisEntry * \sphinxbfcode{\sphinxupquote{getFirstAnalisis}}}{PathEntry *\sphinxstyleemphasis{ entry}}{}
+Metodo che restituisce la prima analisi all’interno della struttura associata al path passato come argomento.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{entry}} \textendash{} puntatore ll PathEntry di cui si vuole analizzare la prima analisi associata
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+puntatore alla struttura AnalisisEntry richiesta
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{getNextAnalisis (funzione C)@\spxentry{getNextAnalisis}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/datastructure:c.getNextAnalisis}}\pysiglinewithargsret{AnalisisEntry * \sphinxbfcode{\sphinxupquote{getNextAnalisis}}}{AnalisisEntry *\sphinxstyleemphasis{ entry}}{}
+Metodo che restituisce l’elemento contentente l’analisi successiva a quella contenuto in un elemento di AnalisisEntry.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{entry}} \textendash{} puntatore all’elemento AnalisisEntry di cui si vuole ottenere il successivo
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+puntatore all’elemento AnalisisEntry richiesta
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{getPathEntry (funzione C)@\spxentry{getPathEntry}\spxextra{funzione C}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{code/datastructure:c.getPathEntry}}\pysiglinewithargsret{PathEntry * \sphinxbfcode{\sphinxupquote{getPathEntry}}}{PathEntry *\sphinxstyleemphasis{ entry}, char *\sphinxstyleemphasis{ path}}{}
+Metodo per ottenere il puntatore all’elemento della struttura dati PathEntry contenente un determinato path.
+\begin{quote}\begin{description}
+\item[{Parametri}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{entry}} \textendash{} puntatore alla struttura dati in cui effettuare la ricerca
+
+\item {} 
+\sphinxstyleliteralstrong{\sphinxupquote{char}} \textendash{} stringa contenente il pathname di cui si vuole ottenere il relativo elemento di PathEntry
+
+\end{itemize}
+
+\item[{Ritorna}] \leavevmode
+puntatore alla struttura PathEntry richiesta
 
 \end{description}\end{quote}
 

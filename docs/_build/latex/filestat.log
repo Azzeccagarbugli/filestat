@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.5.9)  8 JUN 2019 16:07
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.5.9)  10 JUN 2019 01:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -892,7 +892,7 @@ LaTeX Font Info:    Try loading font information for TS1+pcr on input line 249.
 File: ts1pcr.fd 2001/06/04 font definitions for TS1/pcr.
 ) [4]
 Capitolo 2.
-<ssdraw.png, id=104, 784.9325pt x 748.7975pt>
+<ssdraw.png, id=144, 784.9325pt x 748.7975pt>
 File: ssdraw.png Graphic file (type png)
 <use ssdraw.png>
 Package pdftex.def Info: ssdraw.png  used on input line 313.
@@ -913,38 +913,52 @@ Overfull \vbox (2.68169pt too high) detected at line 496
 
 [9] [10]
 Capitolo 3.
-LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <10> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 506.
 
 Package Fancyhdr Warning: \fancyfoot's `E' option without twoside option is use
-less on input line 571.
+less on input line 547.
 
 [11
 
-] [12] (./filestat.ind [13]
+] [12]
+Capitolo 4.
+LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <10> not available
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 557.
 
 Package Fancyhdr Warning: \fancyfoot's `E' option without twoside option is use
-less on input line 41.
+less on input line 633.
 
-[14
+[13
 
+] [14] [15] [16] [17] [18]
+Underfull \hbox (badness 5036) in paragraph at lines 1336--1338
+\T1/ptm/m/n/10 Aggiunta di un nuo-vo path al-l'in-ter-no di una strut-tu-ra da-
+ti Pa-thEn-try. Me-to-do au-si-lia-rio ad
+ []
+
+[19] (./filestat.ind [20]
+
+Package Fancyhdr Warning: \fancyfoot's `E' option without twoside option is use
+less on input line 97.
+
+[21
 
 
 ])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 754.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 754.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1513.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1513.
  (./filestat.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 754.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 754.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1513.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1513.
+
 Package rerunfilecheck Info: File `filestat.out' has not changed.
-(rerunfilecheck)             Checksum: D136959B9073A994401C074B1C711DA3;2206.
+(rerunfilecheck)             Checksum: CA298D05542E8239AE91F2622E9391EF;3534.
  ) 
 Here is how much of TeX's memory you used:
- 13794 strings out of 492616
- 190383 string characters out of 6135178
- 448418 words of memory out of 5000000
- 17351 multiletter control sequences out of 15000+600000
- 53444 words of font info for 76 fonts, out of 8000000 for 9000
+ 13951 strings out of 492616
+ 193103 string characters out of 6135178
+ 450567 words of memory out of 5000000
+ 17429 multiletter control sequences out of 15000+600000
+ 64836 words of font info for 94 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
  37i,12n,45p,811b,599s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texmf-dist/fon
@@ -955,10 +969,10 @@ type1/urw/helvetic/uhvbo8a.pfb></usr/share/texmf-dist/fonts/type1/urw/helvetic/
 uhvr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/
 texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-dist/fonts/type1/
 urw/times/utmri8a.pfb>
-Output written on filestat.pdf (16 pages, 167771 bytes).
+Output written on filestat.pdf (23 pages, 189739 bytes).
 PDF statistics:
- 215 PDF objects out of 1000 (max. 8388607)
- 179 compressed objects within 2 object streams
- 41 named destinations out of 1000 (max. 500000)
- 122 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 383 PDF objects out of 1000 (max. 8388607)
+ 338 compressed objects within 4 object streams
+ 99 named destinations out of 1000 (max. 500000)
+ 186 words of extra memory for PDF output out of 10000 (max. 10000000)
 
