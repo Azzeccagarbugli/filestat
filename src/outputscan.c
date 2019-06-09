@@ -25,19 +25,23 @@ PathEntry *readOutputFile(FILE *output, PathEntry *data)
     {
         if (line[0] == '#' && line[1] == ' ')
         {
-            free(currentPath);
             currentPath = strdup(strtok(line + 2, "\r\n"));
             if (options.noscan_flag)
                 printf("# %s\n", currentPath);
         }
-        else if (line[0] != '#' && line[1] != '#' && line[2] != '#')
+        else if (line[0] != '#' && line[1] != '#' && line[2] != '#' && currentPath != NULL)
         {
             if (options.noscan_flag)
                 printf("%s", line);
             data = addPathAndAnalisis(data, currentPath, strtok(line, "\r\n"));
         }
-        else if (options.noscan_flag)
-            printf("%s", line);
+        else
+        {
+            if (options.noscan_flag)
+                printf("###\n");
+            free(currentPath);
+            currentPath = NULL;
+        }
     }
 
     if (options.noscan_flag)
