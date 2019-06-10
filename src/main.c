@@ -11,6 +11,8 @@
 #define DEFAULT_INPUT_PATH "./filestat.in"
 #define DEFAULT_OUTPUT_PATH "./filestat.db"
 
+void printOpt();
+
 /**
  * Struct in cui viene eseguito lo storage delle possibili opzioni. 
  */
@@ -36,10 +38,6 @@ int main(int argc, char **argv)
     if (!parseOpt(argc, argv))
     {
         return -1;
-    }
-    else
-    {
-        printOpt();
     }
 
     startScan(file_input, file_output);
@@ -75,12 +73,12 @@ void parsePaths(int argc, char **argv)
     || (strcmp("--history", argv[argc - 3]) == 0))
     {
         file_input = fopen(DEFAULT_INPUT_PATH, "a+");
-        printf("Come file di input è stato aperto il predefinito\n");
+        printf("Come file di input è stato aperto il predefinito\n\n");
     }
     else
     {
         file_input = fopen(argv[argc - 2], "r");
-        printf("Come file di input è stato aperto quello specificato come argomento\n");
+        printf("Come file di input è stato aperto quello specificato come argomento\n\n");
     }
     if (!((argc > 2) && (access(argv[argc - 1], F_OK) == 0)) 
     || (strcmp(argv[argc - 2], argv[argc - 1]) == 0) 
@@ -88,12 +86,12 @@ void parsePaths(int argc, char **argv)
     || (strcmp("--history", argv[argc - 2]) == 0))
     {
         file_output = fopen(DEFAULT_OUTPUT_PATH, "a+");
-        printf("Come file di output è stato aperto il predefinito\n");
+        printf("Come file di output è stato aperto il predefinito\n\n");
     }
     else
     {
         file_output = fopen(argv[argc - 1], "r+");
-        printf("Come file di output è stato aperto quello specificato come argomento\n");
+        printf("Come file di output è stato aperto quello specificato come argomento\n\n");
     }
 
     fseek(file_input, 0, SEEK_SET);
