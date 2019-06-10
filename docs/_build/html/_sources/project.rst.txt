@@ -42,6 +42,12 @@ Le funzionalità incluse all'interno del file ``datastructure.h`` permettono di 
 nuovi elementi tramite il passaggio di stringhe contenenti pathname e le informazioni derivate dall'analisi dei file associati a tali pathname, di verificare che una lista di ``PathEntry`` 
 o di ``AnalisisEntry`` risulti vuota, di ottenere gli elementi successivi all'interno di una lista ``PathEntry`` o ``AnalisisEntry`` dato il puntatore ad un elemento delle due liste e di ottenere 
 il riferimento al primo elemento della lista di ``AnalisisEntry`` associata ad un dato elemento di una lista di ``PathEntry``. 
+
+Abbiamo impiegato due istanze della struttura dati definita da ``PathEntry``, una per collezionare le informazioni presenti all'interno del file di output,
+utili ad esempio per la gestione dell'opzione ``-h/--history``, ed una per raccogliere le informazioni derivate dall'analisi dei file i cui pathname sono stati
+definiti all'interno del file di input. Una volta effettuato il corretto utilizzo delle due strutture dati si procede quindi al loro **merge** per la successiva
+scrittura delle nuove informazioni raccolte sul file di output specificato.
+
 Per ulteriori informazioni si rimanda alla sezione dedicata a ``datastructure.c``, in cui sono presenti le definizioni dei metodi dichiarati in ``datastructure.h`` e in ``datastructure.c``. 
 
 Essendo la struttura dati alla base del progetto basata su due implementazioni di una lista la sua complessità risulta essere:
@@ -65,17 +71,20 @@ all'avvio del programma con l'impiego dei file di ``input`` e di ``output`` di d
 
 L'uso dell'opzione ``-v/--verbose`` porterà alla stampa sullo **standard output** di informazioni circa i file analizzati, quali il loro ``pathname`` relativo (che diventa assoluto nel caso il file
 analizzato sia un file referenziato da un link), l'eventuale natura di link o di directory e la corretta riuscita dell'operazione di analisi delle informazioni. 
+
 L'implementazione delle opzioni ``-s/--stat`` e ``-r/--report`` risulta la medesima e consiste nella stampa sullo **standard output** delle informazioni richieste alla fine dell'elaborazione generale. 
 L'uso dell'opzione ``-h/--history``, seguita dal pathname del file di cui si vuole ottenere la cronologia, porterà alla stampa sullo **standard output** delle informazioni relative al file associato a tale pathname.
 Se il pathname non è presente all'interno del file di output gestito dal programma verrà effettuata una notifica sullo **standard output** di tale mancanza. Non sono ovviamente incluse le informazioni
 aggiunte tramite l'esecuzione del programma in corso. 
+
 L'implementazione di ``-u/--user`` e ``-g/--group`` consiste in un **filtro** effettivo su quelli che sono i file da monitorare e di cui aggiungere informazioni nel file di ``output``. 
 L'inclusione di un file all'interno dell'operazione di analisi effettuata dal programma, *in presenza di tali opzioni*, porta alla stampa sullo **standard output** del pathname assoluto del file incluso nell'analisi
 e delle relative informazioni collezionate. 
 Il medesimo discorso si applica anche all'implementazione di ``-l/--length``.
+
 Infine, per l'implementazione di ``--noscan`` si è deciso di effettuare comunque l'operazione di popolamento della struttura dati con le informazioni derivate dal file di output evitando ogni tipo
-di operazione di analisi su ulteriori file, come quelli specificati dai pathname presenti nel file di input, e portando alla stampa sullo **standard output** delle informazioni presenti all'interno della struttura
-dati al termine delle operazioni del programma. 
+di operazione di analisi su ulteriori file, come quelli specificati dai pathname presenti nel file di input con conseguente popolamento della struttura dati dedicata,
+e portando alla stampa sullo **standard output** delle informazioni presenti all'interno della struttura dati riferita al file di output al termine delle operazioni del programma. 
 
 
 Makefile

@@ -28,5 +28,6 @@ PathEntry *getNextPath(PathEntry *);
 AnalisisEntry *getFirstAnalisis(PathEntry *);
 AnalisisEntry *getNextAnalisis(AnalisisEntry *);
 PathEntry *getPathEntry(PathEntry *, char *);
+int containsPath(PathEntry *, char *);
 
 #endif

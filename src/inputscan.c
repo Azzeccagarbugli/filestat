@@ -159,7 +159,7 @@ PathEntry *directoryAnalisis(struct stat *dirStat, PathEntry *entry, int isR, in
  */
 PathEntry *addFileAnalisis(struct stat *currentStat, char *path, PathEntry *entry)
 {
-    if (isPathEmpty(getPathEntry(entry, path)))
+    if (!containsPath(entry, path))
     {
         if (options.verbose_flag)
             printf("Inizio ad elaborare il file al path: %s\n", path);

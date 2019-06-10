@@ -83,6 +83,7 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduzione.html">Introduzione</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../project.html">Realizzazione del progetto</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sphinx.html">Sphinx e le sue potenzialità</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../documentazione.html">Documentazione</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="main.html">main.c</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scan.html">scan.c</a></li>
@@ -379,6 +380,23 @@ PathEntry * <code class="descname">getPathEntry</code><span class="sig-paren">(<
 </dd>
 <dt class="field-even">Ritorna</dt>
 <dd class="field-even"><p>puntatore alla struttura PathEntry richiesta</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.containsPath">
+int <code class="descname">containsPath</code><span class="sig-paren">(</span>PathEntry *<em> entry</em>, char *<em> path</em><span class="sig-paren">)</span><a class="headerlink" href="#c.containsPath" title="Link a questa definizione">¶</a></dt>
+<dd><p>Verifica che una struttura dati PathEntry contenga al suo interno un elemento con un path specificato.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametri</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entry</strong> – puntatore alla struttura dati in cui effettuare la ricerca</p></li>
+<li><p><strong>char</strong> – stringa contenente il pathname di cui si vuole verificare la presenza in un elemento PathEntry</p></li>
+</ul>
+</dd>
+<dt class="field-even">Ritorna</dt>
+<dd class="field-even"><p>1 se il path è presente in un elemento PathEntry, 0 altrimenti</p>
 </dd>
 </dl>
 </dd></dl>

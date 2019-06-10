@@ -18,6 +18,7 @@
   \item \spxentry{checkOptions}\spxextra{funzione C}, \hyperpage{17}
   \item \spxentry{checkUID}\spxextra{funzione C}, \hyperpage{17}
   \item \spxentry{cleanFile}\spxextra{funzione C}, \hyperpage{15}
+  \item \spxentry{containsPath}\spxextra{funzione C}, \hyperpage{20}
   \item \spxentry{createNewAnalisis}\spxextra{funzione C}, \hyperpage{18}
   \item \spxentry{createNewPath}\spxextra{funzione C}, \hyperpage{19}
 

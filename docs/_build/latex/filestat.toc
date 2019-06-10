@@ -8,7 +8,7 @@
 \contentsline {section}{\numberline {2.1}Struttura e architettura del codice sviluppato}{5}{section.2.1}% 
 \contentsline {section}{\numberline {2.2}Struttura dati implementata}{6}{section.2.2}% 
 \contentsline {section}{\numberline {2.3}Implementazione delle funzionalit\IeC {\`a} richieste}{7}{section.2.3}% 
-\contentsline {section}{\numberline {2.4}Makefile}{7}{section.2.4}% 
+\contentsline {section}{\numberline {2.4}Makefile}{8}{section.2.4}% 
 \contentsline {section}{\numberline {2.5}Test relativi al corretto funzionamento}{8}{section.2.5}% 
 \contentsline {chapter}{\numberline {3}Sphinx e le sue potenzialit\IeC {\`a}}{11}{chapter.3}% 
 \contentsline {section}{\numberline {3.1}Strumenti con cui \IeC {\`e} stata realizzata}{11}{section.3.1}% 
@@ -19,4 +19,4 @@
 \contentsline {section}{\numberline {4.3}inputscan.c}{16}{section.4.3}% 
 \contentsline {section}{\numberline {4.4}outputscan.c}{18}{section.4.4}% 
 \contentsline {section}{\numberline {4.5}datastructure.c}{18}{section.4.5}% 
-\contentsline {chapter}{Indice}{21}{section*.55}% 
+\contentsline {chapter}{Indice}{21}{section*.56}% 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.5.9)  10 JUN 2019 01:36
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.5.9)  10 JUN 2019 21:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -904,33 +904,33 @@ less on input line 315.
 [5
 
 ] [6 <./ssdraw.png>] [7] [8]
-Underfull \vbox (badness 10000) detected at line 496
+Underfull \vbox (badness 10000) detected at line 505
  []
 
 
-Overfull \vbox (2.68169pt too high) detected at line 496
+Underfull \vbox (badness 10000) detected at line 505
  []
 
 [9] [10]
 Capitolo 3.
 
 Package Fancyhdr Warning: \fancyfoot's `E' option without twoside option is use
-less on input line 547.
+less on input line 556.
 
 [11
 
 ] [12]
 Capitolo 4.
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <10> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 557.
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 566.
 
 Package Fancyhdr Warning: \fancyfoot's `E' option without twoside option is use
-less on input line 633.
+less on input line 642.
 
 [13
 
 ] [14] [15] [16] [17] [18]
-Underfull \hbox (badness 5036) in paragraph at lines 1336--1338
+Underfull \hbox (badness 5036) in paragraph at lines 1345--1347
 \T1/ptm/m/n/10 Aggiunta di un nuo-vo path al-l'in-ter-no di una strut-tu-ra da-
 ti Pa-thEn-try. Me-to-do au-si-lia-rio ad
  []
@@ -938,26 +938,26 @@ ti Pa-thEn-try. Me-to-do au-si-lia-rio ad
 [19] (./filestat.ind [20]
 
 Package Fancyhdr Warning: \fancyfoot's `E' option without twoside option is use
-less on input line 97.
+less on input line 98.
 
 [21
 
 
 ])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1513.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1513.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1544.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1544.
  (./filestat.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1513.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1513.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1544.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1544.
 
 Package rerunfilecheck Info: File `filestat.out' has not changed.
-(rerunfilecheck)             Checksum: CA298D05542E8239AE91F2622E9391EF;3534.
+(rerunfilecheck)             Checksum: 1648E8A61F9E986BCFE8F19A9A5EA6B9;3534.
  ) 
 Here is how much of TeX's memory you used:
- 13951 strings out of 492616
- 193103 string characters out of 6135178
- 450567 words of memory out of 5000000
- 17429 multiletter control sequences out of 15000+600000
+ 13953 strings out of 492616
+ 193149 string characters out of 6135178
+ 461610 words of memory out of 5000000
+ 17430 multiletter control sequences out of 15000+600000
  64836 words of font info for 94 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
  37i,12n,45p,811b,599s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -969,10 +969,10 @@ type1/urw/helvetic/uhvbo8a.pfb></usr/share/texmf-dist/fonts/type1/urw/helvetic/
 uhvr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/
 texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-dist/fonts/type1/
 urw/times/utmri8a.pfb>
-Output written on filestat.pdf (23 pages, 189739 bytes).
+Output written on filestat.pdf (23 pages, 190216 bytes).
 PDF statistics:
- 383 PDF objects out of 1000 (max. 8388607)
- 338 compressed objects within 4 object streams
- 99 named destinations out of 1000 (max. 500000)
+ 385 PDF objects out of 1000 (max. 8388607)
+ 340 compressed objects within 4 object streams
+ 100 named destinations out of 1000 (max. 500000)
  186 words of extra memory for PDF output out of 10000 (max. 10000000)
 

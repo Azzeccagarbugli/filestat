@@ -163,7 +163,8 @@ PathEntry *addAnalisis(PathEntry *pathentry, char *path, char *newanalisis)
  */
 PathEntry *addPathAndAnalisis(PathEntry *entry, char *path, char *analisis)
 {
-    entry = addPath(entry, path);
+    if (!containsPath(entry, path))
+        entry = addPath(entry, path);
     entry = addAnalisis(entry, path, analisis);
     return entry;
 }
@@ -222,4 +223,16 @@ PathEntry *getPathEntry(PathEntry *entry, char *path)
     {
         return getPathEntry(entry->nextPath, path);
     }
+}
+
+/**
+ * Verifica che una struttura dati PathEntry contenga al suo interno un elemento con un path specificato.
+ * 
+ * :param entry: puntatore alla struttura dati in cui effettuare la ricerca
+ * :param char: stringa contenente il pathname di cui si vuole verificare la presenza in un elemento PathEntry
+ * :return: 1 se il path è presente in un elemento PathEntry, 0 altrimenti
+ */
+int containsPath(PathEntry *entry, char *path)
+{
+    return !(isPathEmpty(getPathEntry(entry, path)));
 }
