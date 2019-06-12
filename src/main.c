@@ -234,7 +234,6 @@ int getLengthArg(char *arg)
  */
 int getHistoryPath(char *arg)
 {
-    printf("LOL\n");
     options.history_path = (char *)malloc(strlen(arg));
     strcpy(options.history_path,arg);
 

@@ -57,7 +57,7 @@ PathEntry *inputLineAnalisis(char *riga, PathEntry *entry)
     char *path;
     int isR = 0;
     int isL = 0;
-    int pathRead = 0;
+    int spaceRead = 0;
     char *token;
     for (token = strtok(riga, " "); token; token = strtok(NULL, " "))
     {
@@ -65,10 +65,21 @@ PathEntry *inputLineAnalisis(char *riga, PathEntry *entry)
             isR = 1;
         else if (strcmp(token, "l") == 0)
             isL = 1;
-        else if (!pathRead)
+        else if (!spaceRead)
         {
             path = strdup(token);
-            pathRead = 1;
+            if (path[strlen(path) - 1] == '\\')
+            {
+                spaceRead = 1;
+                path[strlen(path) - 1] = ' ';
+            }
+        }
+        else
+        {
+            if (token[strlen(token) - 1] == '\\')
+                token[strlen(token) - 1] = ' ';
+            path = realloc(path, sizeof(path) + sizeof(token) + 1);
+            strcat(path, token);
         }
     }
 
@@ -97,7 +108,7 @@ PathEntry *scanFilePath(char *path, int isR, int isL, PathEntry *entry)
         return entry;
     }
 
-    if (isL == 0)
+    if (isL == 1)
         stat(path, currentStat);
     if (checkOptions(currentStat))
         entry = S_ISLNK(currentStat->st_mode) ? addFileAnalisis(currentStat, getLinkAbsPath(path), entry) : addFileAnalisis(currentStat, realpath(path, NULL), entry);
