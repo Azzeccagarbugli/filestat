@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.5.9)  10 JUN 2019 21:07
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.5.9)  12 JUN 2019 19:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -882,11 +882,11 @@ less on input line 151.
 
 ]
 LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <9> not available
-(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 214.
+(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 216.
  [3]
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <9> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 248.
-LaTeX Font Info:    Try loading font information for TS1+pcr on input line 249.
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 250.
+LaTeX Font Info:    Try loading font information for TS1+pcr on input line 251.
 
  (/usr/share/texmf-dist/tex/latex/psnfss/ts1pcr.fd
 File: ts1pcr.fd 2001/06/04 font definitions for TS1/pcr.
@@ -895,42 +895,42 @@ Capitolo 2.
 <ssdraw.png, id=144, 784.9325pt x 748.7975pt>
 File: ssdraw.png Graphic file (type png)
 <use ssdraw.png>
-Package pdftex.def Info: ssdraw.png  used on input line 313.
+Package pdftex.def Info: ssdraw.png  used on input line 315.
 (pdftex.def)             Requested size: 469.76541pt x 448.12796pt.
 
 Package Fancyhdr Warning: \fancyfoot's `E' option without twoside option is use
-less on input line 315.
+less on input line 317.
 
 [5
 
 ] [6 <./ssdraw.png>] [7] [8]
-Underfull \vbox (badness 10000) detected at line 505
+Underfull \vbox (badness 10000) detected at line 507
  []
 
 
-Underfull \vbox (badness 10000) detected at line 505
+Underfull \vbox (badness 10000) detected at line 507
  []
 
 [9] [10]
 Capitolo 3.
 
 Package Fancyhdr Warning: \fancyfoot's `E' option without twoside option is use
-less on input line 556.
+less on input line 558.
 
 [11
 
 ] [12]
 Capitolo 4.
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <10> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 566.
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 568.
 
 Package Fancyhdr Warning: \fancyfoot's `E' option without twoside option is use
-less on input line 642.
+less on input line 644.
 
 [13
 
 ] [14] [15] [16] [17] [18]
-Underfull \hbox (badness 5036) in paragraph at lines 1345--1347
+Underfull \hbox (badness 5036) in paragraph at lines 1347--1349
 \T1/ptm/m/n/10 Aggiunta di un nuo-vo path al-l'in-ter-no di una strut-tu-ra da-
 ti Pa-thEn-try. Me-to-do au-si-lia-rio ad
  []
@@ -944,11 +944,11 @@ less on input line 98.
 
 
 ])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1544.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1544.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1546.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1546.
  (./filestat.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1544.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1544.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1546.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1546.
 
 Package rerunfilecheck Info: File `filestat.out' has not changed.
 (rerunfilecheck)             Checksum: 1648E8A61F9E986BCFE8F19A9A5EA6B9;3534.
@@ -969,7 +969,7 @@ type1/urw/helvetic/uhvbo8a.pfb></usr/share/texmf-dist/fonts/type1/urw/helvetic/
 uhvr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/
 texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-dist/fonts/type1/
 urw/times/utmri8a.pfb>
-Output written on filestat.pdf (23 pages, 190216 bytes).
+Output written on filestat.pdf (23 pages, 190321 bytes).
 PDF statistics:
  385 PDF objects out of 1000 (max. 8388607)
  340 compressed objects within 4 object streams
