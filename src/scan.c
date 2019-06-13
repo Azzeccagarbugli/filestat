@@ -63,6 +63,7 @@ int startScan(FILE *input, FILE *output)
 
     if (!options.noscan_flag)
         printOnOutput(output, outputData);
+
     freePath(outputData);
     if (options.stat_flag)
         printStats();
@@ -248,9 +249,9 @@ void freePath(PathEntry *entry)
     {
         free(entry->path);
         freeAnalisis(getFirstAnalisis(entry));
-        free(getNextPath(entry));
-        free(entry);
+        freePath(getNextPath(entry));
     }
+    free(entry);
 }
 
 /**
@@ -263,9 +264,9 @@ void freeAnalisis(AnalisisEntry *entry)
     if (!isAnalisisEmpty(entry))
     {
         free(entry->analisis);
-        free(getNextAnalisis(entry));
-        free(entry);
+        freeAnalisis(getNextAnalisis(entry));
     }
+    free(entry);
 }
 
 /**

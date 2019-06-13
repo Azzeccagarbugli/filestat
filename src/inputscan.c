@@ -238,6 +238,7 @@ PathEntry *addFileAnalisis(struct stat *currentStat, char *path, PathEntry *entr
             printf("Analisi del file effettuata correttamente\n\n");
         free(record);
     }
+    free(path);
     return entry;
 }
 
