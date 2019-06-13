@@ -64,7 +64,7 @@ I parametri di esecuzione di un programma vengono definiti in un file di testo c
 
 Dove ``r`` indica che occorre leggere ricorsivamente i file nelle directory sottostanti (applicando le stesse opzioni) mentre ``l`` indica che i link devono essere trattati come file/directory regolari, in questo caso le informazioni collezionate fanno riferimento al file riferito dal link e non a link stesso.
 
-**Per poter specificare pathname che presentano spazi al loro interno è necessario far precedere tali spazi dal carattere \**
+Per poter specificare pathname che presentano spazi al loro interno è necessario far precedere tali spazi dal carattere ``\``
 
 Formato del file di output
 ----------------------------
