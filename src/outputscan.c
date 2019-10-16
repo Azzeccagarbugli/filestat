@@ -33,7 +33,7 @@ PathEntry *readOutputFile(FILE *output, PathEntry *data)
         {
             if (options.noscan_flag)
                 printf("%s", line);
-            data = addPathAndAnalisis(data, currentPath, strtok(line, "\r\n"));
+            data = addPathAndAnalysis(data, currentPath, strtok(line, "\r\n"));
         }
         else
         {

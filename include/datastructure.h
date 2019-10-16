@@ -1,12 +1,12 @@
 #ifndef _TREEH_
 #define _TREEH_
 
-typedef struct analisisentry AnalisisEntry;
+typedef struct analysisentry AnalysisEntry;
 
-struct analisisentry
+struct analysisentry
 {
-    char *analisis;
-    AnalisisEntry *nextAnalisis;
+    char *analysis;
+    AnalysisEntry *nextAnalysis;
 };
 
 typedef struct pathentry PathEntry;
@@ -14,19 +14,19 @@ typedef struct pathentry PathEntry;
 struct pathentry
 {
     char *path;
-    AnalisisEntry *analisis;
+    AnalysisEntry *analysis;
     PathEntry *nextPath;
 };
 
-AnalisisEntry *emptyAnalisis();
+AnalysisEntry *emptyAnalysis();
 PathEntry *emptyPath();
 PathEntry *createNewPath(char *);
-int isAnalisisEmpty(AnalisisEntry *);
+int isAnalysisEmpty(AnalysisEntry *);
 int isPathEmpty(PathEntry *);
-PathEntry *addPathAndAnalisis(PathEntry *, char *, char *);
+PathEntry *addPathAndAnalysis(PathEntry *, char *, char *);
 PathEntry *getNextPath(PathEntry *);
-AnalisisEntry *getFirstAnalisis(PathEntry *);
-AnalisisEntry *getNextAnalisis(AnalisisEntry *);
+AnalysisEntry *getFirstAnalysis(PathEntry *);
+AnalysisEntry *getNextAnalysis(AnalysisEntry *);
 PathEntry *getPathEntry(PathEntry *, char *);
 int containsPath(PathEntry *, char *);
 
