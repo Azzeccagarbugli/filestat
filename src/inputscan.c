@@ -14,16 +14,16 @@
 #include "../include/datastructure.h"
 #include "../include/scan.h"
 
-PathEntry *inputLineAnalisis(char *, PathEntry *);
+PathEntry *inputLineAnalysis(char *, PathEntry *);
 PathEntry *scanFilePath(char *, int, int, PathEntry *);
-PathEntry *addFileAnalisis(struct stat *, char *, PathEntry *);
+PathEntry *addFileAnalysis(struct stat *, char *, PathEntry *);
 int checkLength(struct stat *);
 int checkUID(struct stat *);
 int checkGID(struct stat *);
 int checkOptions(struct stat *);
 char *findLastOf(char *, char);
 char *getLinkAbsPath(char *);
-PathEntry *directoryAnalisis(struct stat *, PathEntry *, int, int, char *);
+PathEntry *directoryAnalysis(struct stat *, PathEntry *, int, int, char *);
 
 /**
  * Gestione completa delle analisi delle informazioni presenti sul file di input trattato dal programma.
@@ -38,7 +38,7 @@ PathEntry *readInputFile(FILE *input, PathEntry *entry)
     char *line = NULL;
     for (ssize_t read = getline(&line, &t, input); read >= 0; read = getline(&line, &t, input))
     {
-        entry = inputLineAnalisis(strtok(line, "\r\n"), entry);
+        entry = inputLineAnalysis(strtok(line, "\r\n"), entry);
     }
 
     free(line);
@@ -52,7 +52,7 @@ PathEntry *readInputFile(FILE *input, PathEntry *entry)
  * :param entry: puntatore alla struttura dati PathEntry in cui inserire le informazioni recuperate grazie all'analisi della riga
  * :return: puntatore alla struttura dati PathEntry aggiornata
  */
-PathEntry *inputLineAnalisis(char *riga, PathEntry *entry)
+PathEntry *inputLineAnalysis(char *riga, PathEntry *entry)
 {
     char *path;
     int isR = 0;
@@ -111,10 +111,10 @@ PathEntry *scanFilePath(char *path, int isR, int isL, PathEntry *entry)
     if (isL == 1)
         stat(path, currentStat);
     if (checkOptions(currentStat))
-        entry = S_ISLNK(currentStat->st_mode) ? addFileAnalisis(currentStat, getLinkAbsPath(path), entry) : addFileAnalisis(currentStat, realpath(path, NULL), entry);
+        entry = S_ISLNK(currentStat->st_mode) ? addFileAnalysis(currentStat, getLinkAbsPath(path), entry) : addFileAnalysis(currentStat, realpath(path, NULL), entry);
 
     if (isR)
-        entry = directoryAnalisis(currentStat, entry, isR, isL, path);
+        entry = directoryAnalysis(currentStat, entry, isR, isL, path);
 
     free(currentStat);
     return entry;
@@ -130,7 +130,7 @@ PathEntry *scanFilePath(char *path, int isR, int isL, PathEntry *entry)
  * :param path: puntatore all'array di caratteri contenente il pathname associato a dirStat
  * :return: puntatore alla struttura dati PathEntry aggiornata
  */
-PathEntry *directoryAnalisis(struct stat *dirStat, PathEntry *entry, int isR, int isL, char *path)
+PathEntry *directoryAnalysis(struct stat *dirStat, PathEntry *entry, int isR, int isL, char *path)
 {
     if (S_ISDIR(dirStat->st_mode))
     {
@@ -168,7 +168,7 @@ PathEntry *directoryAnalisis(struct stat *dirStat, PathEntry *entry, int isR, in
  * :param entry: puntatore alla struttura dati PathEntry in cui inserire le informazioni recuperate grazie all'analisi del file
  * :return: puntatore alla struttura dati PathEntry aggiornata
  */
-PathEntry *addFileAnalisis(struct stat *currentStat, char *path, PathEntry *entry)
+PathEntry *addFileAnalysis(struct stat *currentStat, char *path, PathEntry *entry)
 {
     if (!containsPath(entry, path))
     {
@@ -231,7 +231,7 @@ PathEntry *addFileAnalisis(struct stat *currentStat, char *path, PathEntry *entr
         if (options.length_flag || options.group_flag || options.user_flag)
             printf("# Analisi effettuata su: %s\n%s\n", path, record);
 
-        entry = addPathAndAnalisis(entry, path, strtok(record, "\r\n"));
+        entry = addPathAndAnalysis(entry, path, strtok(record, "\r\n"));
         updateStats(currentStat->st_size);
 
         if (options.verbose_flag)

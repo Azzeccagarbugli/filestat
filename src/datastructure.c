@@ -4,17 +4,17 @@
 #include "../include/main.h"
 #include <string.h>
 
-AnalisisEntry *createNewAnalisis(char *an);
-AnalisisEntry *addAnalisisByAnalisisEntry(AnalisisEntry *entry, char *newanalisis);
-PathEntry *addAnalisis(PathEntry *pathentry, char *path, char *newanalisis);
+AnalysisEntry *createNewAnalysis(char *an);
+AnalysisEntry *addAnalysisByAnalysisEntry(AnalysisEntry *entry, char *newanalysis);
+PathEntry *addAnalysis(PathEntry *pathentry, char *path, char *newanalysis);
 PathEntry *addPath(PathEntry *, char *);
 
 /**
- * Ottenimento di un elemento vuoto della struttura dati AnalisisEntry.
+ * Ottenimento di un elemento vuoto della struttura dati AnalysisEntry.
  * 
- * :return: puntatore ad un'istanza vuota di AnalisisEntry
+ * :return: puntatore ad un'istanza vuota di AnalysisEntry
  */
-AnalisisEntry *emptyAnalisis(void)
+AnalysisEntry *emptyAnalysis(void)
 {
     return NULL;
 }
@@ -30,16 +30,16 @@ PathEntry *emptyPath(void)
 }
 
 /**
- * Creazione di un nuovo elemento della struttura dati AnalisisEntry.
+ * Creazione di un nuovo elemento della struttura dati AnalysisEntry.
  * 
  * :param an: puntatore all'array di caratteri contenente la stringa contentente l'analisi da inserire all'interno dell'elemento
- * :return: puntatore ad un nuovo elemento di AnalisisEntry
+ * :return: puntatore ad un nuovo elemento di AnalysisEntry
  */
-AnalisisEntry *createNewAnalisis(char *an)
+AnalysisEntry *createNewAnalysis(char *an)
 {
-    AnalisisEntry *newEntry = malloc(sizeof(AnalisisEntry));
-    newEntry->analisis = strdup(an);
-    newEntry->nextAnalisis = emptyAnalisis();
+    AnalysisEntry *newEntry = malloc(sizeof(AnalysisEntry));
+    newEntry->analysis = strdup(an);
+    newEntry->nextAnalysis = emptyAnalysis();
     return newEntry;
 }
 
@@ -53,18 +53,18 @@ PathEntry *createNewPath(char *pt)
 {
     PathEntry *newEntry = malloc(sizeof(PathEntry));
     newEntry->path = strdup(pt);
-    newEntry->analisis = emptyAnalisis();
+    newEntry->analysis = emptyAnalysis();
     newEntry->nextPath = emptyPath();
     return newEntry;
 }
 
 /**
- * Verifica che un puntatore ad AnalisisEntry corrisponda ad un elemento vuoto.
+ * Verifica che un puntatore ad AnalysisEntry corrisponda ad un elemento vuoto.
  * 
- * :param entry: puntatore all'elemento AnalisisENtry da analizzare
+ * :param entry: puntatore all'elemento AnalysisENtry da analizzare
  * :return: 0 in caso di errore, non-zero in caso di successo
  */
-int isAnalisisEmpty(AnalisisEntry *entry)
+int isAnalysisEmpty(AnalysisEntry *entry)
 {
     return (entry == NULL);
 }
@@ -82,7 +82,7 @@ int isPathEmpty(PathEntry *entry)
 
 /**
  * Aggiunta di un nuovo path all'interno di una struttura dati PathEntry.
- * Metodo ausiliario ad addPathAndAnalisis(PathEntry*, char*, char*).
+ * Metodo ausiliario ad addPathAndAnalysis(PathEntry*, char*, char*).
  * 
  * :param entry: puntatore alla struttura dati PathEntry da aggiornare
  * :param newpath: puntatore all'array di caratteri contenente il path da inserire
@@ -106,49 +106,49 @@ PathEntry *addPath(PathEntry *entry, char *newpath)
 }
 
 /**
- * Aggiunta di una nuova analisi all'interno di una struttura AnalisisEntry.
- * Metodo ausiliario ad addAnalisis(PathEntry*, char*, char*).
+ * Aggiunta di una nuova analisi all'interno di una struttura AnalysisEntry.
+ * Metodo ausiliario ad addAnalysis(PathEntry*, char*, char*).
  * 
- * :param entry: puntatore alla struttura dati AnalisisEntry da aggiornare
- * :param newanalisis: puntatore all'array di caratteri contenente l'analisi da inserire
- * :return: puntatore alla struttura AnalisisEntry aggiornata
+ * :param entry: puntatore alla struttura dati AnalysisEntry da aggiornare
+ * :param newanalysis: puntatore all'array di caratteri contenente l'analisi da inserire
+ * :return: puntatore alla struttura AnalysisEntry aggiornata
  */
-AnalisisEntry *addAnalisisByAnalisisEntry(AnalisisEntry *entry, char *newanalisis)
+AnalysisEntry *addAnalysisByAnalysisEntry(AnalysisEntry *entry, char *newanalysis)
 {
-    if (isAnalisisEmpty(entry))
+    if (isAnalysisEmpty(entry))
     {
-        return createNewAnalisis(newanalisis);
+        return createNewAnalysis(newanalysis);
     }
-    if (strcmp(entry->analisis, newanalisis) == 0)
+    if (strcmp(entry->analysis, newanalysis) == 0)
     {
         return entry;
     }
     else
     {
-        entry->nextAnalisis = addAnalisisByAnalisisEntry(entry->nextAnalisis, newanalisis);
+        entry->nextAnalysis = addAnalysisByAnalysisEntry(entry->nextAnalysis, newanalysis);
         return entry;
     }
 }
 
 /**
  * Aggiunta di una nuova analisi all'interno di una struttura dati PathEntry dato il path a cui corrisponde.
- * Metodo ausiliario ad addPathAndAnalisis(PathEntry*, char*, char*).
+ * Metodo ausiliario ad addPathAndAnalysis(PathEntry*, char*, char*).
  * 
  * :param pathentry: puntatore alla struttura dati PathEntry da aggiornare
  * :param path: puntatore all'array di caratteri contenente il path associato all'analisi da inserire
- * :param newanalisis: ountatore alla stringa contenente l'analisi da inserire
+ * :param newanalysis: ountatore alla stringa contenente l'analisi da inserire
  * :return: puntatore alla struttura PathEntry aggiornata
  */
-PathEntry *addAnalisis(PathEntry *pathentry, char *path, char *newanalisis)
+PathEntry *addAnalysis(PathEntry *pathentry, char *path, char *newanalysis)
 {
     if (strcmp(pathentry->path, path) == 0)
     {
-        pathentry->analisis = addAnalisisByAnalisisEntry(pathentry->analisis, newanalisis);
+        pathentry->analysis = addAnalysisByAnalysisEntry(pathentry->analysis, newanalysis);
         return pathentry;
     }
     else
     {
-        pathentry->nextPath = addAnalisis(pathentry->nextPath, path, newanalisis);
+        pathentry->nextPath = addAnalysis(pathentry->nextPath, path, newanalysis);
         return pathentry;
     }
 }
@@ -158,14 +158,14 @@ PathEntry *addAnalisis(PathEntry *pathentry, char *path, char *newanalisis)
  * 
  * :param pathentry: puntatore alla struttura dati PathEntry da aggiornare
  * :param path: puntatore all'array di caratteri contenente il path associato all'analisi da inserire
- * :param newanalisis: stringa contenente l'analisi da inserire
+ * :param newanalysis: stringa contenente l'analisi da inserire
  * :return: puntatore alla struttura PathEntry aggiornata
  */
-PathEntry *addPathAndAnalisis(PathEntry *entry, char *path, char *analisis)
+PathEntry *addPathAndAnalysis(PathEntry *entry, char *path, char *analysis)
 {
     if (!containsPath(entry, path))
         entry = addPath(entry, path);
-    entry = addAnalisis(entry, path, analisis);
+    entry = addAnalysis(entry, path, analysis);
     return entry;
 }
 
@@ -184,22 +184,22 @@ PathEntry *getNextPath(PathEntry *entry)
  * Metodo che restituisce la prima analisi all'interno della struttura associata al path passato come argomento.
  * 
  * :param entry: puntatore ll PathEntry di cui si vuole analizzare la prima analisi associata
- * :return: puntatore alla struttura AnalisisEntry richiesta
+ * :return: puntatore alla struttura AnalysisEntry richiesta
  */
-AnalisisEntry *getFirstAnalisis(PathEntry *entry)
+AnalysisEntry *getFirstAnalysis(PathEntry *entry)
 {
-    return entry->analisis;
+    return entry->analysis;
 }
 
 /**
- *  Metodo che restituisce l'elemento contentente l'analisi successiva a quella contenuto in un elemento di AnalisisEntry.
+ *  Metodo che restituisce l'elemento contentente l'analisi successiva a quella contenuto in un elemento di AnalysisEntry.
  * 
- * :param entry: puntatore all'elemento AnalisisEntry di cui si vuole ottenere il successivo
- * :return: puntatore all'elemento AnalisisEntry richiesta
+ * :param entry: puntatore all'elemento AnalysisEntry di cui si vuole ottenere il successivo
+ * :return: puntatore all'elemento AnalysisEntry richiesta
  */
-AnalisisEntry *getNextAnalisis(AnalisisEntry *entry)
+AnalysisEntry *getNextAnalysis(AnalysisEntry *entry)
 {
-    return entry->nextAnalisis;
+    return entry->nextAnalysis;
 }
 
 /**

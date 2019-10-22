@@ -19,7 +19,7 @@ void cleanFile(FILE *);
 void printStats();
 void printHistory(PathEntry *, char *);
 void printOnFile(PathEntry *, FILE *);
-void freeAnalisis(AnalisisEntry *);
+void freeAnalysis(AnalysisEntry *);
 void freePath(PathEntry *);
 PathEntry *merge(PathEntry *, PathEntry *);
 
@@ -210,9 +210,9 @@ void printHistory(PathEntry *entry, char *path)
     else
     {
         printf("\n### Cronologia del file al path: %s\n", path);
-        for (AnalisisEntry *curanalisis = getFirstAnalisis(pEntry); !isAnalisisEmpty(curanalisis); curanalisis = getNextAnalisis(curanalisis))
+        for (AnalysisEntry *curanalysis = getFirstAnalysis(pEntry); !isAnalysisEmpty(curanalysis); curanalysis = getNextAnalysis(curanalysis))
         {
-            printf("%s\n", curanalisis->analisis);
+            printf("%s\n", curanalysis->analysis);
         }
         printf("### Fine cronologia\n\n");
     }
@@ -229,9 +229,9 @@ void printOnFile(PathEntry *pathentry, FILE *file)
     for (PathEntry *curpath = pathentry; !isPathEmpty(curpath); curpath = getNextPath(curpath))
     {
         fprintf(file, "# %s\n", curpath->path);
-        for (AnalisisEntry *curanalisis = getFirstAnalisis(curpath); !isAnalisisEmpty(curanalisis); curanalisis = getNextAnalisis(curanalisis))
+        for (AnalysisEntry *curanalysis = getFirstAnalysis(curpath); !isAnalysisEmpty(curanalysis); curanalysis = getNextAnalysis(curanalysis))
         {
-            fprintf(file, "%s\n", curanalisis->analisis);
+            fprintf(file, "%s\n", curanalysis->analysis);
         }
         fprintf(file, "###\n", NULL);
     }
@@ -248,23 +248,23 @@ void freePath(PathEntry *entry)
     if (!isPathEmpty(entry))
     {
         free(entry->path);
-        freeAnalisis(getFirstAnalisis(entry));
+        freeAnalysis(getFirstAnalysis(entry));
         freePath(getNextPath(entry));
     }
     free(entry);
 }
 
 /**
- * Gestione completa delle operazioni di rilascio delle risorse da operare su una struttura dati AnalisisEntry.
+ * Gestione completa delle operazioni di rilascio delle risorse da operare su una struttura dati AnalysisEntry.
  *
  * :param entry: puntatore alla struttura dati su cui effetturare l'operazione completa di rilascio delle risorse
  */
-void freeAnalisis(AnalisisEntry *entry)
+void freeAnalysis(AnalysisEntry *entry)
 {
-    if (!isAnalisisEmpty(entry))
+    if (!isAnalysisEmpty(entry))
     {
-        free(entry->analisis);
-        freeAnalisis(getNextAnalisis(entry));
+        free(entry->analysis);
+        freeAnalysis(getNextAnalysis(entry));
     }
     free(entry);
 }
@@ -280,9 +280,9 @@ PathEntry *merge(PathEntry *out, PathEntry *in)
 {
     for (PathEntry *curpath = in; !isPathEmpty(curpath); curpath = getNextPath(curpath))
     {
-        for (AnalisisEntry *curanalisis = getFirstAnalisis(curpath); !isAnalisisEmpty(curanalisis); curanalisis = getNextAnalisis(curanalisis))
+        for (AnalysisEntry *curanalysis = getFirstAnalysis(curpath); !isAnalysisEmpty(curanalysis); curanalysis = getNextAnalysis(curanalysis))
         {
-            out = addPathAndAnalisis(out, curpath->path, curanalisis->analisis);
+            out = addPathAndAnalysis(out, curpath->path, curanalysis->analysis);
         }
     }
     return out;
