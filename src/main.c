@@ -15,6 +15,7 @@ void printOpt();
 
 /**
  * Struct in cui viene eseguito lo storage delle possibili opzioni. 
+ * E così è ancora.
  */
 OptInfo options = {0, 0, 0, 0, NULL, 0, NULL, 0, NULL, 0, 0, 0, 0};
 
